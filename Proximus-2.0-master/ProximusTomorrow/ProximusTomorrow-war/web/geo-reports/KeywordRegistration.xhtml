@@ -1,0 +1,159 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core">
+    <h:head>
+        <link rel="stylesheet" type="text/css" href="/ProximusTomorrow-war/faces/jsfcrud.css" />
+        <h:outputStylesheet name="css/jsfcrud.css"/>
+    </h:head>
+
+    <h:body>
+        <ui:composition template="/template.xhtml">
+            <ui:define name="title">
+                <h:outputText value="#{message.registrationReport}"></h:outputText>
+            </ui:define>
+            <ui:define name="pageHeader">
+                <h:outputText value="#{message.registrationReport}"></h:outputText>
+            </ui:define>
+
+            <h:form rendered="#{!loginController.privileges.contains(bundle.ViewGeoRegistration)}">
+                <h:outputText value="#{bundle.InsufficientPrivileges}" 
+                              style="font-family: Arial;font-size: 16px;color: red;"/>
+            </h:form>
+
+
+            <h:form id="formId" prependId="false" enctype="multipart/form-data" rendered="#{loginController.privileges.contains(bundle.ViewGeoRegistration)}">
+
+                <ui:insert name="body">
+                    <ui:include src="/reports/ReportTemplate.xhtml"/>
+                </ui:insert>
+
+
+                <p:panel id="criteria"  header="#{message.reportCriteria}" toggleable="true" closable="false" toggleSpeed="500" closeSpeed="2000" widgetVar="panel" style="min-width:500px;">  
+
+                    <h:panelGrid columns="1" cellpadding="2">
+                        <h:outputText value="#{message.startDate}:" />
+                        <p:calendar navigator="true" value="#{keywordRegistrationReportController.startDate}" pattern="yyyy-MM-dd" showOn="button" id="startDate">
+                        </p:calendar>
+
+                        <h:outputText value="#{message.endDate}:" />
+                        <p:calendar navigator="true" value="#{keywordRegistrationReportController.endDate}" pattern="yyyy-MM-dd" showOn="button" id="endDate">                       
+                        </p:calendar>  
+
+                        <h:outputText value="#{message.languageSelector}: " />
+                        <p:selectOneMenu id="languageSelector" value="#{keywordRegistrationReportController.selectedLocale.name}" >   
+                            <f:selectItem itemLabel="#{message.all}" itemValue="" />  
+                            <f:selectItems value="#{keywordRegistrationReportController.localeList}"/> 
+                        </p:selectOneMenu> 
+                    </h:panelGrid>
+                </p:panel>
+
+                <p:commandButton action="#{keywordRegistrationReportController.updateInterface()}" value="#{message.updateReport}" update=":formId"  ajax="false"/>
+
+                <br/>
+                <br/>
+
+                <p:panel id="optInChartPanel"  header="#{message.totalOptInsPerKeyword}" toggleable="true" closable="false" toggleSpeed="500" closeSpeed="2000" widgetVar="optInChartPanel" style="min-width:500px;">  
+
+                    <br/>
+                    <h:outputText value="#{message.displayTop}: " />
+                    <br/>
+                    <p:selectOneMenu id="top" value="#{keywordRegistrationReportController.top}" >
+                        <f:selectItems value="#{keywordRegistrationReportController.selectableTops}"/>  
+                        <p:ajax listener="#{keywordRegistrationReportController.updateInterface()}" update="optInChart"/>
+                    </p:selectOneMenu>
+                    <p:lineChart id="optInChart" value="#{keywordRegistrationReportController.optInsChart}" legendPosition="nw"  
+                                 title=" " minY="0" maxY="#{keywordRegistrationReportController.maxChartValue}"
+                                 style="min-width:420px;min-height:420px"/> 
+
+                </p:panel>
+
+                <br/>
+
+                <p:dataTable id="registrationSummary" var="stats" value="#{keywordRegistrationReportController.keywordSummaryStatsList}"
+                             paginator="true" rows="20"
+                             currentPageReportTemplate="{currentPage} #{message.of} {totalPages}" 
+                             paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                             rowsPerPageTemplate="5,10,15,20,50,100" >  
+                    <f:facet name="header">
+                        <p:column colspan="2">#{message.keywordRegistrationData} #{keywordRegistrationReportController.formattedStartDate} - #{keywordRegistrationReportController.formattedEndDate} </p:column> 
+                    </f:facet>
+
+                    <p:column  headerText="#{message.keyword}" footerText="#{message.keyword}" sortBy="#{stats.keyword.keyword}" filterBy="#{stats.keyword.keyword}" filterMatchMode="contains" filterStyle="display: none;">
+                        <h:outputText value="#{stats.keyword.keyword}" />
+                    </p:column>
+                    <p:column  headerText="#{message.source}" footerText="#{message.source}" sortBy="#{stats.keyword.sourceType}" filterBy="#{stats.keyword.sourceType}" filterMatchMode="contains" filterStyle="display: none;">
+                        <h:outputText value="#{stats.keyword.sourceType}" />
+                    </p:column>
+                    <p:column  headerText="#{message.dma}" footerText="#{message.dma}" sortBy="#{stats.keyword.property.dma.name}" filterBy="#{stats.keyword.property.dma.name}" filterMatchMode="contains" filterStyle="display: none;">
+                        <h:outputText value="#{stats.keyword.property.dma.name}" rendered="#{stats.keyword.property.dma.name!=null}" />
+                    </p:column>
+
+                    <p:column  headerText="#{message.totalOptIn}" footerText="#{message.totalOptIn}" sortBy="#{stats.totalOptIns}" filterBy="#{stats.totalOptIns}" filterMatchMode="contains" filterStyle="display: none;">
+                        <h:outputText value="#{stats.totalOptIns}" />
+                    </p:column>
+                    <p:column  headerText="#{message.totalPendingOptIn}" footerText="#{message.totalPendingOptIn}" sortBy="#{stats.totalOptInsPending}" filterBy="#{stats.totalOptInsPending}" filterMatchMode="contains" filterStyle="display: none;">
+                        <h:outputText value="#{stats.totalOptInsPending}" />
+                    </p:column>
+                    <p:column headerText="#{message.totalOptOut}" footerText="#{message.totalOptOut}" sortBy="#{stats.totalOptOuts}" filterBy="#{stats.totalOptOuts}" filterMatchMode="contains" filterStyle="display: none;">
+                        <h:outputText value="#{stats.totalOptOuts}" />
+                    </p:column>
+                    <p:column headerText="#{message.marketShare}" footerText="#{message.marketShare}" sortBy="#{stats.marketShare}" filterBy="#{stats.marketShare}" filterMatchMode="contains" filterStyle="display: none;">
+                        <h:outputText value="#{stats.formattedMarketShare}" >
+                            <f:convertNumber minFractionDigits="2" maxFractionDigits="2" type="percent"></f:convertNumber>
+                        </h:outputText>
+                    </p:column>
+
+                    <p:columnGroup type="footer">  
+                        <p:row>  
+                            <p:column colspan="3" footerText="#{message.total}"/>  
+                            <p:column footerText="#{keywordRegistrationReportController.totalOptIns}" style="text-align: left;"/>  
+                            <p:column footerText="#{keywordRegistrationReportController.totalOptInsPending}" style="text-align: left;"/>  
+                            <p:column footerText="#{keywordRegistrationReportController.totalOptOuts}" style="text-align: left;"/>  
+                            <p:column footerText="#{keywordRegistrationReportController.formattedTotalMarketShare}" style="text-align: left;"/>  
+
+                        </p:row>  
+                    </p:columnGroup>  
+                </p:dataTable>
+
+
+
+                <br/>
+                <center>
+
+                    <h:panelGrid columns="2" rendered="#{keywordRegistrationReportController.keywordSummaryStatsList.size()>0}">  
+                        <p:panel header="#{message.exportAllData}" style="border: 0px">  
+                            <h:panelGrid columns="2">  
+                                <h:commandLink>  
+                                    <p:graphicImage value="/images/excel-logo.png" />  
+                                    <p:dataExporter type="xls" target="registrationSummary" fileName="registrations" pageOnly="false" />  
+                                </h:commandLink>  
+
+                                <h:commandLink>  
+                                    <p:graphicImage value="/images/csv-logo.png" />  
+                                    <p:dataExporter type="csv" target="registrationSummary" fileName="registrations" pageOnly="false" />  
+                                </h:commandLink>  
+                            </h:panelGrid>  
+                        </p:panel>  
+
+                        <p:panel header="#{message.exportPageData}" style="border: 0px">
+                            <h:panelGrid columns="2">  
+                                <h:commandLink>  
+                                    <p:graphicImage value="/images/excel-logo.png"/>  
+                                    <p:dataExporter type="xls" target="registrationSummary" fileName="registrations" pageOnly="true"/>  
+                                </h:commandLink>  
+
+                                <h:commandLink>  
+                                    <p:graphicImage value="/images/csv-logo.png" />  
+                                    <p:dataExporter type="csv" target="registrationSummary" fileName="registrations" pageOnly="true"/>  
+                                </h:commandLink>  
+                            </h:panelGrid>  
+                        </p:panel>  
+                    </h:panelGrid>  
+
+                </center>
+            </h:form>
+        </ui:composition>
+    </h:body>
+</html>

@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html>
+    
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <title>ValuText</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="stylesheet" type="text/css" href="css/index.css" />
+        <link rel="stylesheet" href="jquery/jquery.mobile-1.2.0.css" />
+        <link rel="stylesheet" href="jquery/jquery.mobile.actionsheet/jquery.mobile.actionsheet.css" />
+        <link rel="stylesheet" href="jquery/ValuText.min.css" />
+        <script src="jquery/jquery-1.8.2.js"></script>
+        <script src="jquery/jquery.mobile-1.2.0.js"></script>
+        <script src="jquery/jquery.viewport.mini.js" type="text/javascript"></script>
+        <script src="jquery/jquery.mobile.actionsheet/jquery.mobile.actionsheet.js"></script>
+        <script src="js/jquery.qrcode.min.js"></script>
+        
+        
+        <!-- USED FOR JQUERY GOOGLE MAPS API -->
+        <script src="http://maps.google.com/maps/api/js?sensor=true" type="text/javascript"></script>
+        <script src="js/jquery_ui_map/jquery.ui.map.js" type="text/javascript"></script>
+        <script src="js/jquery_ui_map/jquery.ui.map.extensions.js" type="text/javascript"></script>
+        <script src="js/jquery_ui_map/jquery.ui.map.overlays.js" type="text/javascript"></script>
+        
+        <!-- Order of Import Matters! Must load cordova since plugins depend on it, then util follows because 
+        util uses the plugins.-->
+        <script type="text/javascript">
+			if (/iPhone/i.test(navigator.userAgent)) {
+                $("script").attr("src", "ios.cordova-2.4.0.js").appendTo("head");
+			} else {
+                $("script").attr("src", "android.cordova-2.4.0.js").appendTo("head");
+			}
+        </script>
+        
+        <script type="text/javascript" src="js/android_plugin/mac_address.js"></script>
+        <script type="text/javascript" src="js/android_plugin/msisdn.js"></script>
+        <script type="text/javascript" src="js/android_plugin/map_chooser.js"></script>
+        <script type="text/javascript" src="js/android_plugin/wireless_settings.js"></script>        
+        <script type="text/javascript" src="js/prox_mac/ios.prox.js"></script>
+        <!-- Common functions used eg. getUUID etc -->
+        <script type="text/javascript" src="js/valutext/util.js"></script>
+        <script type="text/javascript" src="js/valutext/offer.js"></script>
+        <script type="text/javascript" src="js/valutext/category.js"></script>
+        <script type="text/javascript" src="js/index.js"></script>
+        
+        
+        <!--  3rd Party utility for Ajax Message while loading -->
+        <script type="text/javascript" src="js/valutext/jquery.mobile.utils.js"></script>
+        
+
+
+        <script type="text/javascript">
+        
+        	function connectionCheck(){
+        			if(!checkConnection()){
+                        if(navigator.userAgent.toLowerCase().indexOf("android") != -1){
+
+        				showConfirm();
+                    
+        			} 
+        		} else {
+                    initAll();
+                }
+        	}
+        
+	        function initAll() {
+	    	   if (navigator.userAgent.toLowerCase().indexOf("android") != -1) {
+		        	getAndroidMacAddress();
+					getMsisdn();
+				}
+                else if ( navigator.userAgent.toLowerCase().indexOf("iphone os") != -1) {
+                    console.log("this is ios");
+                    getiOSMacAddress();
+                    getiOSMCC();
+                    getiOSMNC();
+                    getiOSCarrier();
+                }
+                else
+                {
+                    console.log(navigator.userAgent.toLowerCase());
+                }
+                
+                
+		        window.latitude = 33.777354;
+		        window.longitude = -84.389567;
+		        window.locale = "en";
+		        if(localStorage.getItem("max_distance") == null) {
+		            localStorage.setItem("max_distance", 5);
+		        }
+		        var distance = localStorage.getItem("max_distance");
+		        window.maxDistance = distance;
+		        var zipcode = localStorage.getItem("zipcode");
+		        var useMyLocation = localStorage.getItem("use_my_location");
+		
+		        if (useMyLocation == null) {
+		            localStorage.setItem("use_my_location", true);
+		        }
+		        getLocationOfDevice();
+	        }
+        
+        
+        
+			$(document).ready(function () {
+			    $('#use_my_location').change(function () {
+			        if ($(this).is(':checked')) {
+			            $('#zipcodeField').hide("slow");
+			        } else {
+			            $('#zipcodeField').show("slow");
+			        }
+			    });
+			    
+			    
+			    
+			    //THIS IS USE TO TEST ON FIREFOX ON LAPTOP
+			    if (navigator.userAgent.toLowerCase().indexOf("firefox") != -1) {
+			       initAll();
+			    }
+                // THIS IS TO TEST ON OSX
+                else if (navigator.userAgent.indexOf("Intel Mac OS X") != -1) {
+			       initAll();
+			    }
+
+			});
+			
+			
+			
+			//ACTUAL CALL USED ON DEVICES
+			document.addEventListener('deviceready', onDeviceReady, false);
+			//document.addEventListener('online', onDeviceOnline, false);
+
+			
+			function onDeviceReady() {
+			    // do Something!
+			    // example: display a Cordova Alert
+			    // see docs.cordova.io for full details
+			    console.log("Device ready");
+                
+                //TODO PAY ATTENTION TO ME! DELETE ME ONCE THE CHECK FIRST TIME USER WARNING IS DONE!  LEAVE ME ALONE IF YOU WANT TO SEE THE ALERT EVERY TIME!!!!
+                if ( navigator.userAgent.toLowerCase().indexOf("iphone os") != -1) {
+                   // delete localStorage.first_time;
+                
+                    checkFirstTimeUser(onFirstTime);
+                } else {
+                    connectionCheck();
+                }
+                
+            
+                //debug(localStorage);
+        
+			    //connectionCheck();
+			}
+			
+			function onDeviceOnline(){
+			    initAll();
+			}
+            
+            function onFirstTime() {
+                document.addEventListener('online', onDeviceOnline, false);
+                connectionCheck();
+            }
+
+        </script>
+        
+        <script type="text/javascript">
+			$(document).on("mobileinit", function () {
+			    // Make your jQuery Mobile framework configuration changes here!
+			    $.mobile.allowCrossDomainPages = true;
+			    $.mobile.phonegapNavigationEnabled = true;
+			});
+
+			
+			$('#offer').live('pageshow', function (event) {
+			    //Taking out the rendering of Map since we are moving to static
+			    //renderMap(window.activeOffer);
+			    createStaticMap();
+			    buildOfferPageTemplate("#offer", retrieveActiveOffer());
+                $("#qrcode").text('');
+                $("#qrcode").qrcode({
+                                    width: 100,
+                                    height: 100,
+                                    color: '#000000',
+                                    text: '37K8BL1K0GBU0T'
+                                    });
+
+			});
+            
+				
+			$('#settings').live('pageshow', function (event) {
+			    getCategories(categoryRetrievalSuccess,categoryRetrievalFailed);
+			});
+						
+			$('#settings')
+			    .live(
+			    'pagehide',
+			
+			function (event) {
+			    saveUserPreferences();
+			
+			});
+        </script>
+    </head>
+    
+    <body style="background: #01a1dd;">
+        
+        <!-- PAGE:HOME INIT -->
+        <div data-role="page" id="home">
+            <!-- HEADER -->
+            <div data-role="header" data-position="fixed">
+                <h1>ValuText</h1>
+                
+                <a href="#settings" data-rel="dialog" data-transition="pop" data-icon="gear" data-iconpos="notext" class="ui-btn-right">settings</a>
+            </div>
+            <!-- CONTENT -->
+            <div data-role="content">
+                <ul data-role="listview" id="offerList">
+                    <!-- HERE IS WHERE THE DYNAMIC LIST WILL POPULATE -->
+                    <!-- Magic. Do not touch. -->
+                    <!-- Here be dragons -->
+                </ul>
+            </div>
+        </div>
+        <!-- PAGE:HOME END-->
+        
+        <!-- PAGE:OFFER INIT-->
+        <div data-role="page" id="offer">
+            <!-- HEADER -->
+            <div id="pheader" data-role="header" data-position="fixed">
+                <!-- HEADER -->
+                <a data-role="button" href="#home" data-icon="back" data-transition="slide" data-direction="reverse" onclick="removeCategories()">Back</a>
+                <h1 class="offer-retailerName"></h1>
+            </div>
+            <!-- CONTENT -->
+            <div data-role="content">
+                <div class="ui-grid-solo ui-responsive">
+                    <div id="offer-image-container" class="ui-block-a">
+                        <img class="offer-offerImage" style="width: auto; max-height: 100px; max-width: 300px; margin: -10px auto; display: block" src="" alt="" title="" />
+                    </div>
+                    <div class="ui-grid-solo ui-responsive">
+                        <h3 class="offer-cleanOfferText"></h3>
+                        
+                        <h3>
+                            Distance:&nbsp;<span class="offer-distance"></span>
+                        </h3>
+                        
+                        <h4 class="offer-expirationDate"></h4>
+                        
+                    </div>
+                </div>
+                <div class="ui-grid-solo ui-responsive">
+                    <div class="ui-block-a">
+                        <!-- style="width: 100%; height: 300px; margin: 0 auto; text-align: center" -->
+                        <!-- TAKING OUT MAP CANVAS USING STATIC MAP INSTEAD -->
+                        
+                        <!--
+                         <div id="map_canvas" style="width: 100%; height: 175px;"></div>
+                         -->
+                        
+                        <img src="" id="static_map" style="width:100%"/>
+                        
+                        
+                    </div>
+                </div>
+                <div class="ui-grid-solo ui-responsive">
+                    <div class="ui-block-a">
+                        <ul class="offer-bottom-list" data-role="listview">
+                            <li class="offer-retailerName" data-role="list-divider"></li>
+                            <li><span class="offer-address"></span>
+                                <br /> <span class="offer-city"></span>&nbsp; <span class="offer-zipcode"></span>&nbsp;,	<span class="offer-stateProvince"></span>&nbsp;</li>
+                        </ul>
+                        <center><h3>Categories</h3></center>
+                        <table id="categoryTable"></table>
+                    </div>
+                </div>
+                <div style="margin-top: 30px; text-align: center">
+                    <a href="#claim" data-transition="pop" data-rel="dialog" data-role="button" data-icon="check" data-inline="true" onclick="removeCategories()">CLAIM OFFER</a>
+                </div>
+            </div>
+        </div>
+        <!-- PAGE:OFFER END -->
+        <!-- PAGE:CLAIM INIT -->
+        <div data-role="dialog" id="claim">
+            <!-- HEADER -->
+            <div data-role="header" data-position="fixed">
+                <h1>Claim Offer</h1>
+            </div>
+            <!-- CONTENT -->
+            <div data-role="content" style="padding-top: 0px; text-align: center;">
+                <h3 class="offer-retailerName"></h3>
+                <h3 class="offer-cleanOfferText"></h3>
+                
+                <p>Cashiers:
+                <br />Record this unique code
+                <br /> <b>37K8BL1K0GBU0T</b>
+                
+                </p>
+                
+                <div id="qrcode">&nbsp;</div>
+                
+                <script type="text/javascript">
+					var test = navigator.userAgent;
+					if ((test.indexOf("iPhone") != -1) || (test.indexOf("Mac OS X") != -1)) {
+					    $("#passbooktest").show();
+					} else {
+					    $("#passbooktest").hide();
+					}
+                    </script>
+                
+                <script type="text/javascript">
+                    $('#passbooktest').click(function() {
+                        $('a#passbookDownloadButton')[0].click();
+                    });
+                </script>
+                
+                <img id="passbooktest" src="images/Add_To_Passbook_US_UK@2x.png" style="margin-top: 30px; width: 150px; height: 50px; border: 0;"/>
+                
+                <a id="passbookDownloadButton" href="#" ></a>
+                
+            </div>
+        </div>
+        <!-- PAGE:CLAIM END -->
+        <!-- PAGE:SETTINGS INIT -->
+        <div data-role="dialog" id="settings">
+            <div data-role="header" data-position="fixed">
+                <!-- HEADER -->
+                <h1>Settings</h1>
+            </div>
+            <div data-role="content">
+                <form id="settingsform">
+                    <div data-role="fieldcontain" id="userLocationField">
+                        <fieldset data-role="controlgroup">
+                            <legend>Use My Location:</legend>
+                            <input type="checkbox" name="use_my_location" id="use_my_location" class="custom" />
+                            <label for="use_my_location">Yes</label>
+                        </fieldset>
+                    </div>
+                    <div data-role="fieldcontain" id="zipcodeField">
+                        <fieldset data-role="controlgroup">
+                            <legend>Use Zipcode:</legend>
+                            <input type="text" name="zipcode" id="zipcode" value="" class="custom" />
+                        </fieldset>
+                    </div>
+                    <div data-role="fieldcontain">
+                        <fieldset data-role="controlgroup">
+                            <legend>View Offers Within:</legend>
+                            <fieldset data-type="horizontal" data-role="fieldcontain">
+                                <input type="radio" name="offer_max_distance" id="offer_max_distance_5" value="5" checked="checked" />
+                                <label for="offer_max_distance_5">5 Miles</label>
+                                <input type="radio" name="offer_max_distance" id="offer_max_distance_10" value="10" />
+                                <label for="offer_max_distance_10">10 Miles</label>
+                                <input type="radio" name="offer_max_distance" id="offer_max_distance_25" value="25" />
+                                <label for="offer_max_distance_25">25 Miles</label>
+                                <input type="radio" name="offer_max_distance" id="offer_max_distance_50" value="50" />
+                                <label for="offer_max_distance_50">50 Miles</label>
+                            </fieldset>
+                        </fieldset>
+                    </div>
+                    <div data-role="fieldcontain">
+                        <fieldset data-role="controlgroup">
+                            <legend>Choose Categories For Offers</legend>
+                            <div class="ui-block-a" id="settingsCategoryBlock-a"></div>
+                        </fieldset>
+                    </div>
+                </form>
+            </div>
+            <!-- /CONTENT -->
+        </div>
+        <!-- PAGE:SETTINGS END -->
+    </body>
+    
+</html>

@@ -1,0 +1,23 @@
+K 25
+svn:wc:ra_dav:version-url
+V 51
+/svn/!svn/ver/1222/code/java/example/oauth-provider
+END
+pom.xml
+K 25
+svn:wc:ra_dav:version-url
+V 59
+/svn/!svn/ver/1222/code/java/example/oauth-provider/pom.xml
+END
+readme
+K 25
+svn:wc:ra_dav:version-url
+V 57
+/svn/!svn/ver/311/code/java/example/oauth-provider/readme
+END
+build.xml
+K 25
+svn:wc:ra_dav:version-url
+V 60
+/svn/!svn/ver/465/code/java/example/oauth-provider/build.xml
+END

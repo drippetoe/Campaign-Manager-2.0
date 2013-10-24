@@ -1,0 +1,17 @@
+K 25
+svn:wc:ra_dav:version-url
+V 50
+/svn/!svn/ver/1183/code/java/jmeter/example/webapp
+END
+pom.xml
+K 25
+svn:wc:ra_dav:version-url
+V 58
+/svn/!svn/ver/1183/code/java/jmeter/example/webapp/pom.xml
+END
+build.xml
+K 25
+svn:wc:ra_dav:version-url
+V 60
+/svn/!svn/ver/1183/code/java/jmeter/example/webapp/build.xml
+END

@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+
+    <h:head>
+        <link rel="stylesheet" type="text/css" href="/ProximusTomorrow-war/faces/jsfcrud.css" />
+        <h:outputStylesheet name="css/jsfcrud.css"/>
+    </h:head>
+
+    <h:body>
+
+        <ui:composition template="/template.xhtml">
+            <style>
+                .ui-picklist .ui-picklist-list {
+                    width: 100%;
+                }
+            </style>
+            <ui:define name="pageHeader">
+                <h:outputText value="#{message.groupRetailers}"></h:outputText>
+            </ui:define>
+
+            <h:form rendered="#{!loginController.privileges.contains(bundle.RetailerPrivilege)}">
+                <h:outputText value="#{message.InsufficientPrivileges}" 
+                              style="font-family: Arial;font-size: 16px;color: red;"/>
+            </h:form>
+
+            <h:form id="propertyRetailerForm" rendered="#{loginController.privileges.contains(bundle.RetailerPrivilege)}">
+                <p:panelGrid columns="1" style="width:100%">
+                    <f:facet name="header">
+                        <h:outputText value="#{message.assignRetailersToAProperty}"/>
+                    </f:facet> 
+                    <p:column>
+                        <h:outputLabel value="#{message.property}" for="propertyDropDown" />
+                        <br />
+                        <p:selectOneMenu id="propertyDropDown" value="#{propertyController.selectedProperty.name}" style="width: 250px">  
+                            <f:selectItem itemLabel="#{message.selectProperty}" itemValue=""  />  
+                            <f:selectItems value="#{propertyController.propertyList}"/>  
+                            <p:ajax update="propertyRetailerForm" listener="#{propertyController.recreatePickList()}"/>
+                        </p:selectOneMenu>
+                    </p:column>
+
+                    <p:column rendered="#{propertyController.selectedProperty.name.length() gt 1}">
+                        <h:outputLabel value="#{message.editRetailers}: " style="font-family: Arial,sans-serif; font-size: 1 em;"/>
+
+                        <p:selectBooleanCheckbox value="#{propertyController.editUI}">  
+                            <p:ajax update="propertyRetailerForm" />  
+                        </p:selectBooleanCheckbox>  
+                    </p:column>
+                </p:panelGrid>
+                <br />
+
+                <p:panelGrid columns="1" style="width:50%" rendered="#{propertyController.selectedProperty.name.length() gt 1 and !propertyController.editUI and propertyController.selectedProperty.retailers.size() gt 1}">
+                    <p:column >
+                        <p:dataList value="#{propertyController.listOfRetailers()}" var="dispretailers" id="dataListretailers" paginator="true" rows="20" 
+                                    paginatorTemplate="{PreviousPageLink} {CurrentPageReport} {NextPageLink} {RowsPerPageDropdown}"
+                                    rowsPerPageTemplate="5,10,15,20,50" type="none">
+                            <f:facet name="header">
+                                #{message.retailers}
+                            </f:facet>
+                            <h:outputText value="#{dispretailers}" style="margin-left: 10%;"/>
+                            <br />                        
+                        </p:dataList>
+                    </p:column>
+                </p:panelGrid>
+                <p:panelGrid columns="1" style="width:100%" rendered="#{propertyController.selectedProperty.name.length() gt 1 and propertyController.editUI}">
+
+                    <p:column >
+                        <p:pickList id="pickList" value="#{propertyController.picklistModel}"  
+                                    var="retailers"  
+                                    itemLabel="#{retailers}"  
+                                    itemValue="#{retailers}" style="width:100%;"
+                                    onTransfer="modifyTable();" >
+
+                            <f:facet name="sourceCaption">#{message.available}</f:facet>  
+                            <f:facet name="targetCaption">#{message.inTheProperty}</f:facet> 
+
+                        </p:pickList>  
+                        <p:remoteCommand name="modifyTable">
+                            <f:setPropertyActionListener value="#{propertyController.picklistModel.target}"
+                                                         target="#{propertyController.picklistTarget}" />
+                        </p:remoteCommand>
+                    </p:column>
+
+                </p:panelGrid>
+                <br />
+                <p:commandButton value="#{message.save}" action="#{propertyController.savePropertyRetailer()}" update="propertyRetailerForm"/>
+            </h:form>
+        </ui:composition>
+    </h:body> 
+</html>

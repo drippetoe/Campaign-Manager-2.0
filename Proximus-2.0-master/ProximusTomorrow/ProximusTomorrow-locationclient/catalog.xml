@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<catalog xmlns="urn:oasis:names:tc:entity:xmlns:xml:catalog" prefer="system">
+    <system systemId="file:/C:/MyProjects/Proximus-2.0/ProximusTomorrow/ProximusTomorrow-locationclient/src/META-INF/wsdl/ws.LOC-AID.net_443/webservice/LatitudeLongitudeServices.wsdl" uri="xml-resources/web-service-references/LatitudeLongitudeServices_1/wsdl/LatitudeLongitudeServices.wsdl"/>
+    <system systemId="file:/C:/MyProjects/Proximus-2.0/ProximusTomorrow/ProximusTomorrow-locationclient/src/META-INF/wsdl/LatitudeLongitudeServices.wsdl" uri="xml-resources/web-service-references/LatitudeLongitudeServices/wsdl/LatitudeLongitudeServices.wsdl"/>
+    <system systemId="file:/C:/MyProjects/Proximus-2.0/ProximusTomorrow/ProximusTomorrow-locationclient/src/com/proximus/location/wsdl/LatitudeLongitudeServices.wsdl" uri="xml-resources/web-service-references/LatitudeLongitudeServices/wsdl/LatitudeLongitudeServices.wsdl"/>
+    <system systemId="https://ws.LOC-AID.net:443/webservice/LatitudeLongitudeServices?wsdl" uri="xml-resources/web-service-references/LatitudeLongitudeServices/wsdl/ws.LOC-AID.net_443/webservice/LatitudeLongitudeServices.wsdl"/>
+    <system systemId="file:/C:/MyProjects/Proximus-2.0/ProximusTomorrow/WSDLs/LatitudeLongitudeServices.wsdl" uri="xml-resources/web-service-references/LatitudeLongitudeServices_1/wsdl/LatitudeLongitudeServices.wsdl"/>
+    <system systemId="file:/C:/MyProjects/Proximus-2.0/ProximusTomorrow/ProximusTomorrow-locationclient/WSDL/LatitudeLongitudeServices.wsdl" uri="xml-resources/web-service-references/LatitudeLongitudeServices/wsdl/LatitudeLongitudeServices.wsdl"/>
+    <system systemId="https://ws.LOC-AID.net:443/webservice/LatitudeLongitudeServices?xsd=1" uri="xml-resources/web-service-references/LatitudeLongitudeServices/wsdl/ws.LOC-AID.net_443/webservice/LatitudeLongitudeServices.xsd_1.xsd"/>
+    <system systemId="file:/C:/MyProjects/Proximus-2.0/ProximusTomorrow/ProximusTomorrow-registrationclient/src/META-INF/wsdl/ws.loc-aid.net/webservice/RegistrationServices.wsdl" uri="xml-resources/web-service-references/RegistrationServices/wsdl/RegistrationServices.wsdl"/>
+    <system systemId="https://ws.loc-aid.net:443/webservice/RegistrationServices?xsd=1" uri="xml-resources/web-service-references/RegistrationServices/wsdl/ws.loc-aid.net_443/webservice/RegistrationServices.xsd_1.xsd"/>
+</catalog>

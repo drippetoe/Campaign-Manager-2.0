@@ -1,0 +1,41 @@
+K 25
+svn:wc:ra_dav:version-url
+V 39
+/svn/!svn/ver/1183/code/java/jmeter/lib
+END
+jetty-6.1.11.jar
+K 25
+svn:wc:ra_dav:version-url
+V 56
+/svn/!svn/ver/1183/code/java/jmeter/lib/jetty-6.1.11.jar
+END
+commons-httpclient-3.1.jar
+K 25
+svn:wc:ra_dav:version-url
+V 66
+/svn/!svn/ver/1183/code/java/jmeter/lib/commons-httpclient-3.1.jar
+END
+junit.jar
+K 25
+svn:wc:ra_dav:version-url
+V 49
+/svn/!svn/ver/1183/code/java/jmeter/lib/junit.jar
+END
+jetty-util-6.1.11.jar
+K 25
+svn:wc:ra_dav:version-url
+V 61
+/svn/!svn/ver/1183/code/java/jmeter/lib/jetty-util-6.1.11.jar
+END
+commons-logging-1.1.jar
+K 25
+svn:wc:ra_dav:version-url
+V 63
+/svn/!svn/ver/1183/code/java/jmeter/lib/commons-logging-1.1.jar
+END
+servlet-api-2.5-6.1.11.jar
+K 25
+svn:wc:ra_dav:version-url
+V 66
+/svn/!svn/ver/1183/code/java/jmeter/lib/servlet-api-2.5-6.1.11.jar
+END

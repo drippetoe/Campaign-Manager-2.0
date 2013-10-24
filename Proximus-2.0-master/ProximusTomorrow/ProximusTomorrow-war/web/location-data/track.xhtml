@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core" xmlns:c="http://java.sun.com/jsp/jstl/core">
+
+    <ui:define name="title">
+        <h:outputText value="List"></h:outputText>
+    </ui:define>
+    <ui:define name="body">
+        <ui:composition template="/template.xhtml">
+            <ui:define name="pageHeader">
+                <h:outputText value="Track Mobile Number"></h:outputText>
+            </ui:define>
+
+            <h:form id="trackerForm" rendered="#{loginController.privileges.contains(bundle.ViewLocationData)}">
+                <h:outputText value="Enter mobile number:  " style="font-family: sans-serif"/>
+                <p:inputText id="mobile" label="Enter mobile number" value="#{locationDataController.mobileNumber}"/>
+                <br/>
+                <br/>
+                <p:commandButton value="Register" action="#{locationDataController.registerMobile()}" ajax="false"/>
+                <p:commandButton value="Opt-In" action="#{locationDataController.optInMobile()}" ajax="false"/>
+                <p:commandButton value="Track" action="#{locationDataController.trackMobile()}" ajax="false"/>
+                <p:commandButton value="Reset" action="#{locationDataController.prepareTracker()}" ajax="false"/>
+
+                <p:separator/>
+                <p:panelGrid id="trackerPanel" columns="2" rendered="#{locationDataController.previousLocations != null and locationDataController.previousLocations.size() > 0  }">
+                    <h:outputLabel value="Event Date: "></h:outputLabel>
+                    <h:outputText value="#{locationDataController.trackerData.eventDate}"/>
+
+                    <h:outputLabel value="Status: "></h:outputLabel>
+                    <h:outputText value="#{locationDataController.trackerData.status}"/>
+
+                    <h:outputLabel value="Latitude: "></h:outputLabel>
+                    <h:outputText value="#{locationDataController.trackerData.latitude}"/>
+                    
+                    <h:outputLabel value="Longitude: "></h:outputLabel>
+                    <h:outputText value="#{locationDataController.trackerData.longitude}"/>
+
+                </p:panelGrid>
+
+
+                <p:gmap id="map" 
+                        rendered="#{locationDataController.getTrackerData() != null and locationDataController.getTrackerData().getLatitude() != null  }"
+                        center="#{locationDataController.getMapCenter()}"
+                        zoom="#{locationDataController.mapZoomLevel}"
+                        type="roadmap"
+                        model="#{locationDataController.mapModel}"
+                        mapTypeControl="false"
+                        streetView="false"
+                        fitBounds="true"
+                        style="margin-left: .5em; float: left; width:500px; height: 400px;" >
+                    <p:ajax event="stateChange" listener="#{locationDataController.onStateChange}"/>
+                </p:gmap>
+
+                    <p:dataTable id="locationDataList" var="locationData" widgetVar="locationDataTable" value="#{locationDataController.previousLocations}" 
+                                 rowKey="#{locationData.msisdn}"
+                                 paginator="true" rows="10"
+                                 currentPageReportTemplate="{currentPage} #{message.of} {totalPages}" 
+                                 paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                 rowsPerPageTemplate="5,10,15,20,50,100">
+
+                        <f:facet name="header">
+                            <p:outputPanel>
+                                <h:outputText value="Previous Lookups"/>
+                            </p:outputPanel>
+                        </f:facet>
+                        <p:column id="phoneNumber" headerText="Phone Number" filterBy="#{locationData.msisdn}" filterStyle="display: none;" 
+                                  sortBy="#{locationData.msisdn}" style="width:120px">
+                            <h:outputText value="#{locationData.msisdn}"/>
+                        </p:column>
+                        <p:column id="latitude" headerText="Latitude" sortBy="#{locationData.xcoor}" style="width:130px">
+                            <h:outputText value="#{locationData.latitude}">
+                            </h:outputText>
+                        </p:column>
+                        <p:column id="longitude" headerText="Longitude" sortBy="#{locationData.ycoor}" style="width:120px">                     
+                            <h:outputText value="#{locationData.longitude}">
+                            </h:outputText>
+                        </p:column>
+                        <p:column id="status" headerText="Status" sortBy="#{locationData.status}" style="width:120px">                     
+                            <h:outputText value="#{locationData.status}">
+                            </h:outputText>
+                        </p:column>
+                        <p:column id="eventDate" headerText="Event Date" sortBy="#{locationData.eventDate}" style="width:165px">  
+                            <h:outputText value="#{locationData.eventDate}">
+                                <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                            </h:outputText>
+                        </p:column>
+
+                        <f:facet name="footer">
+                        </f:facet>
+                    </p:dataTable>
+            </h:form>
+
+        </ui:composition>
+    </ui:define>
+</html>

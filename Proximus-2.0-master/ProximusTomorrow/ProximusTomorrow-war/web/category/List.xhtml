@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+
+     <h:head>
+        <title>
+            <ui:insert name="title">
+                <h:outputText value="#{logoLoginController.companyName}" rendered="#{logoLoginController.customLogoExists}" />
+                <h:outputText value="Proximus Mobility, LLC." rendered="#{!logoLoginController.customLogoExists}" /> 
+            </ui:insert>
+        </title>
+        <link rel="stylesheet" type="text/css" href="/ProximusTomorrow-war/faces/jsfcrud.css" />
+        <h:outputStylesheet name="css/jsfcrud.css"/>
+    </h:head>
+
+
+    <h:body>
+        <ui:composition template="/template.xhtml">
+            <ui:define name="pageHeader">
+                <h:outputText value="#{message.manageCategories}"></h:outputText>
+            </ui:define>
+
+            <h:form rendered="#{!loginController.privileges.contains(bundle.BrandCategory)}">
+                <h:outputText value="#{message.InsufficientPrivileges}" 
+                              style="font-family: Arial;font-size: 16px;color: red;"/>
+            </h:form>
+
+            <h:form id="categoryForm" rendered="#{loginController.privileges.contains(bundle.BrandCategory)}">
+
+                <p:commandButton id="addButton" value="#{message.newCategory}" oncomplete="categoryDialog.show()" icon="ui-icon-plus" title="#{message.addACategory}"/>  
+
+
+                <h:panelGroup rendered="#{categoryController.categoryModel.rowCount > 0}">
+
+                    <p:dataTable id="categoryList" var="category" widgetVar="categoryTable" value="#{categoryController.categoryModel}" 
+                                 rowKey="#{category.name}" selection="#{categoryController.selectedCategory}" selectionMode="single"
+                                 paginator="true" rows="20" filteredValue="#{categoryController.filteredCategories}"
+                                 currentPageReportTemplate="{currentPage} #{message.of} {totalPages}" 
+                                 paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                 rowsPerPageTemplate="5,10,15,20,50,100">
+
+                        <f:facet name="header">
+                            <p:outputPanel>
+                                <h:outputText value="#{message.search}: "/>
+                                <p:inputText id="globalFilter" onkeyup="categoryTable.filter()"/>
+                            </p:outputPanel>
+                        </f:facet>
+
+                        <p:column id="name" headerText="#{message.name}" filterBy="#{category.name}" filterMatchMode="contains" filterStyle="display: none;">
+                            <h:outputText value="#{category.name}"/>
+                        </p:column>
+
+
+                        <p:column headerText="#{message.editOptions}" style="width:10px;">
+                            <p:commandButton id="editButton" update=":categoryForm" oncomplete="editDialog.show()" icon="ui-icon-pencil" title="#{message.edit}">                                
+                                <f:setPropertyActionListener value="#{category}" target="#{categoryController.selectedCategory}"/>
+                            </p:commandButton>
+                            <p:commandButton id="deleteButton" update=":categoryForm" oncomplete="confirmation.show()" icon="ui-icon-trash" title="#{message.delete}">                                
+                                <f:setPropertyActionListener value="#{category}" target="#{categoryController.selectedCategory}"/>
+                            </p:commandButton>
+                        </p:column>
+                        <f:facet name="footer">
+                        </f:facet>
+                    </p:dataTable>
+                </h:panelGroup>
+
+
+                <p:confirmDialog id="confirmDialog" message="#{message.sureYouWantToDelete} #{categoryController.selectedCategory.name}? #{message.categoryHasXOffers} #{categoryController.selectedCategory.mobileOffers.size()} #{message.mobileOffers}" 
+                                 severity="alert" widgetVar="confirmation">
+                    <p:commandButton id="confirm" value="#{message.yes}" onclick="confirmation.hide()" actionListener="#{categoryController.deleteCategory()}"
+                                     update="categoryForm" />
+                    <p:commandButton id="decline" value="#{message.no}" onclick="confirmation.hide()"/>    
+                </p:confirmDialog>
+
+
+
+                <p:dialog id="dialog" header="#{message.addACategory}" widgetVar="categoryDialog" resizable="true" height="180" width="400" showEffect="clip" hideEffect="fold">
+                    <h:panelGrid id="display" columns="2" cellpadding="5">       
+
+                        <h:outputLabel value="#{message.name}" for="name" />
+                        <p:inputText id="name" value="#{categoryController.newCategory.name}">          
+                        </p:inputText>    
+                        <p:commandButton action="#{categoryController.createNewCategory(categoryController.newCategory)}" ajax="false" value="#{message.save}" 
+                                         id="iconOnly" icon="ui-icon-disk" title="Icon Only">
+                            <f:param name="property" value="#{categoryController.newCategory}"/>
+                        </p:commandButton>            
+                    </h:panelGrid>
+                </p:dialog>
+
+                <p:dialog id="editDialog" header="#{message.editRetailer}" widgetVar="editDialog" resizable="true" height="180" width="400" showEffect="clip" hideEffect="fold">
+                    <h:panelGrid id="displayEdit" columns="2" cellpadding="5">       
+
+                        <h:outputLabel value="#{message.name}:" for="ename" />
+                        <p:inputText id="ename" value="#{categoryController.selectedCategory.name}">                        
+                        </p:inputText>    
+                        <p:commandButton actionListener="#{categoryController.editCategory()}" update=":categoryForm" value="#{message.save}" id="eiconOnly"
+                                         icon="ui-icon-disk" title=""/>  
+                    </h:panelGrid>
+                </p:dialog>
+            </h:form>
+        </ui:composition>
+    </h:body>
+</html>

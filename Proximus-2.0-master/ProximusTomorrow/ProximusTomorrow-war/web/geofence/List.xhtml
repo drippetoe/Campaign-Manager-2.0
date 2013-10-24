@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core" xmlns:c="http://java.sun.com/jsp/jstl/core">
+
+    <ui:define name="title">
+        <h:outputText value="#{message.listGeofence}"></h:outputText>
+    </ui:define>
+    <ui:define name="body">
+        <ui:composition template="/template.xhtml">
+            <ui:define name="pageHeader">
+                <h:outputText value="#{message.listGeofence}"></h:outputText>
+            </ui:define>
+
+            <h:form rendered="#{!loginController.privileges.contains(bundle.GeoFencePrivilege)}">
+
+                <h:outputText value="#{message.InsufficientPrivileges}" 
+                              style="font-family: Arial;font-size: 16px;color: red;"/>
+            </h:form>
+
+            
+            <p:ajaxStatus onstart="statusDialog.show();" onsuccess="statusDialog.hide();"/>
+            <p:dialog modal="true" widgetVar="statusDialog"
+                      draggable="false" closable="false" resizable="false">  
+                <p:graphicImage value="/images/loading.gif" />  
+            </p:dialog>  
+            
+            
+            <h:form id="noPropertis">
+                <h1><h:outputText escape="false" value="#{message.pleaseAddAPropertyFirst}" rendered="#{geoFenceController.dmaDataModel.rowCount lt 1}"/></h1>
+            </h:form>
+            
+            <h:form id="mapForm" rendered="#{geoFenceController.dmaDataModel.rowCount gt 0}">
+  
+                <p:panelGrid id="countryGrid" columns="1" cellpadding="5">       
+                    <p:column>
+                    <h:outputText value="#{message.country}: " />
+                    <br />
+                    <p:selectOneMenu id="countrySelector" value="#{geoFenceController.selectedCountry.name}" >   
+                        <p:ajax  update=":mapForm" listener="#{geoFenceController.populateGeoFenceList()}" />
+                        <f:selectItem itemLabel="#{message.chooseCountry}" itemValue="" />  
+                        <f:selectItems value="#{geoFenceController.countryList}"/> 
+                    </p:selectOneMenu> 
+                    </p:column>
+                </p:panelGrid>
+
+                <br />
+                <p:layout style="min-width:400px;min-height:300px;" id="layout" rendered="#{geoFenceController.selectedCountry!=null}">              
+                    <p:layoutUnit position="west" resizable="true" style="border: 0px">  
+                        <p:dataTable id="geoFenceList" var="geoFence" widgetVar="geoFencetable" value="#{geoFenceController.geoFenceModel}"
+                                     rowKey="#{geoFence.name}" selection="#{geoFenceController.selectedGeoFence}" selectionMode="single" rowIndexVar="indexVar"  
+                                     paginator="true" rows="17"
+                                     currentPageReportTemplate="{currentPage} #{message.of} {totalPages}" 
+                                     paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                     rowsPerPageTemplate="5,10,15,20,50,100">
+
+                            <p:ajax event="rowSelect" listener="#{geoFenceController.onRowSelect}"   update=":mapForm" global="false"/>  
+                            <p:column id="name" headerText="#{message.geofences}" >
+                                <h:outputText value="#{geoFence.name}"/>          
+                            </p:column>
+
+                        </p:dataTable>          
+                    </p:layoutUnit>  
+
+                    <p:layoutUnit position="center" style="border: 0px">  
+                        <p:column >
+                            <p:gmap id="map"
+                                    center="#{geoFenceController.center}"
+                                    zoom="#{geoFenceController.zoom}"
+                                    type="roadmap"
+                                    model="#{geoFenceController.fenceModel}"
+                                    widgetVar="fenceMap"
+                                    mapTypeControl="false"
+                                    streetView="false"
+                                    fitBounds="false"
+                                    style="margin-left: .5em; float: left; width:100%; height: 600px;" >
+
+                                <p:ajax event="stateChange" listener="#{geoFenceController.onStateChange}" global="false"/>  
+                                <p:ajax  global="false" event="overlaySelect" listener="#{geoFenceController.onMarkerSelect}"/>  
+
+                                <p:gmapInfoWindow maxWidth="100">  
+                                    <p:panelGrid columns="2">  
+                                        <h:outputText value="#{message.geofenceName}"/>
+                                        <p:inputText value="#{geoFenceController.selectedGeoPointMarker.name}">
+                                            <p:ajax event="keyup" global="false" process="@this" />
+                                        </p:inputText>
+                                        <h:outputText value="#{message.radius}" />                                            
+                                        <p:inputText id="radius" value="#{geoFenceController.selectedGeoPointMarker.radius}" >  
+                                            <p:ajax event="blur" global="false" process="@this"/>
+                                        </p:inputText>
+                                        <h:outputText value="#{message.address}:"/><h:outputText value="#{geoFenceController.selectedGeoPointMarker.address}"/>
+                                        <h:outputText value="#{message.lat}:"/><h:outputText value="#{geoFenceController.selectedGeoPointMarker.marker.latlng.lat}"/>
+                                        <h:outputText value="#{message.lng}:"/><h:outputText value="#{geoFenceController.selectedGeoPointMarker.marker.latlng.lng}"/>
+                                    </p:panelGrid>
+
+                                    <p:commandButton actionListener="#{geoFenceController.updateGeoFence(geoFenceController.selectedGeoFence.property)}"  value="#{message.save}"  
+                                                     update=":mapForm"  icon="ui-icon-disk" global="false" ajax="true">
+                                        <f:param name="property" value="#{geoFenceController.selectedGeoFence.property}" />
+                                    </p:commandButton>    
+                                    <p:commandButton global="false" ajax="true" id="deleteButton" value="#{message.delete}" oncomplete="confirmation.show()" icon="ui-icon-trash" title="#{message.delete}"
+                                                     rendered="#{loginController.privileges.contains(bundle.SuperUser)}"/>                               
+                                </p:gmapInfoWindow>
+                            </p:gmap> 
+                        </p:column>
+                    </p:layoutUnit>  
+                </p:layout> 
+                <p:confirmDialog id="confirmDialog" message="#{message.sureYouWantToDelete} #{message.geofence}?" 
+                                 severity="alert" widgetVar="confirmation">
+                    <p:commandButton id="confirm" value="#{message.yes}" onclick="confirmation.hide()" actionListener="#{geoFenceController.deleteGeoFence()}"
+                                     update=":mapForm" immediate="true" global="false" ajax="true">
+                    </p:commandButton>
+                    <p:commandButton id="decline" value="#{message.no}" onclick="confirmation.hide()" global="false" ajax="true"/>    
+                </p:confirmDialog>
+            </h:form>
+        </ui:composition>
+    </ui:define> 
+</html>

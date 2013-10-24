@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core">
+    
+<!--ROLES LIST-->
+
+    <ui:composition template="/template.xhtml">
+        <ui:define name="title">
+            <h:outputText value="Roles List"></h:outputText>
+        </ui:define>
+        <ui:define name="body">
+            <h:form styleClass="jsfcrud_list_form">
+                <h:panelGroup id="messagePanel" layout="block">
+                    <h:messages errorStyle="color: red" infoStyle="color: green" layout="table"/>
+                </h:panelGroup>
+                <h:outputText escape="false" value="No Users Found" rendered="#{roleController.items.rowCount == 0}"/>
+                    
+                <h:panelGroup rendered="#{roleController.items.rowCount > 0}">
+                    <h:outputText value="#{roleController.pagination.pageFirstItem + 1}..#{roleController.pagination.pageLastItem + 1}/#{roleController.pagination.itemsCount}"/>&nbsp;
+                    <h:commandLink action="#{roleController.previous}" value="Previous #{roleController.pagination.pageSize}" rendered="#{roleController.pagination.hasPreviousPage}"/>&nbsp;
+                    <h:commandLink action="#{roleController.next}" value="Next #{roleController.pagination.pageSize}" rendered="#{roleController.pagination.hasNextPage}"/>&nbsp;
+                    <p:dataTable value="#{roleController.items}" var="item">
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="Id"/>
+                            </f:facet>
+                            <h:outputText value="#{item.id}"/>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="Role Name"/>
+                            </f:facet>
+                            <h:outputText value="#{item.name}"/>
+                        </p:column>
+                           
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="Edit"/>
+                            </f:facet>
+                             <h:commandLink action="#{roleController.prepareEdit}" value="Edit Role"/>
+                        </p:column>
+                    </p:dataTable>
+                </h:panelGroup>
+                <br />
+                <h:commandLink action="#{roleController.prepareCreate}" value="Create New Role"/>
+                <bpr />
+                <br />
+                <h:commandLink value="Index" action="/home" immediate="true" />
+            </h:form>
+        </ui:define>
+    </ui:composition>
+
+</html>

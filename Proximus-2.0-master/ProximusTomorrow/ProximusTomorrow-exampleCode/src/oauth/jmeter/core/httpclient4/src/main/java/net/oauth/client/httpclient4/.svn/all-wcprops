@@ -1,0 +1,53 @@
+K 25
+svn:wc:ra_dav:version-url
+V 95
+/svn/!svn/ver/1183/code/java/jmeter/core/httpclient4/src/main/java/net/oauth/client/httpclient4
+END
+HttpClient4.java
+K 25
+svn:wc:ra_dav:version-url
+V 112
+/svn/!svn/ver/1183/code/java/jmeter/core/httpclient4/src/main/java/net/oauth/client/httpclient4/HttpClient4.java
+END
+package-info.java
+K 25
+svn:wc:ra_dav:version-url
+V 113
+/svn/!svn/ver/1183/code/java/jmeter/core/httpclient4/src/main/java/net/oauth/client/httpclient4/package-info.java
+END
+OAuthScheme.java
+K 25
+svn:wc:ra_dav:version-url
+V 112
+/svn/!svn/ver/1183/code/java/jmeter/core/httpclient4/src/main/java/net/oauth/client/httpclient4/OAuthScheme.java
+END
+HttpClientPool.java
+K 25
+svn:wc:ra_dav:version-url
+V 115
+/svn/!svn/ver/1183/code/java/jmeter/core/httpclient4/src/main/java/net/oauth/client/httpclient4/HttpClientPool.java
+END
+PreemptiveAuthorizer.java
+K 25
+svn:wc:ra_dav:version-url
+V 121
+/svn/!svn/ver/1183/code/java/jmeter/core/httpclient4/src/main/java/net/oauth/client/httpclient4/PreemptiveAuthorizer.java
+END
+OAuthSchemeFactory.java
+K 25
+svn:wc:ra_dav:version-url
+V 119
+/svn/!svn/ver/1183/code/java/jmeter/core/httpclient4/src/main/java/net/oauth/client/httpclient4/OAuthSchemeFactory.java
+END
+OAuthCredentials.java
+K 25
+svn:wc:ra_dav:version-url
+V 117
+/svn/!svn/ver/1183/code/java/jmeter/core/httpclient4/src/main/java/net/oauth/client/httpclient4/OAuthCredentials.java
+END
+HttpMethodResponse.java
+K 25
+svn:wc:ra_dav:version-url
+V 119
+/svn/!svn/ver/1183/code/java/jmeter/core/httpclient4/src/main/java/net/oauth/client/httpclient4/HttpMethodResponse.java
+END

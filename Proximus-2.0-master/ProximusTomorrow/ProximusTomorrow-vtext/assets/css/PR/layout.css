@@ -1,0 +1,35 @@
+/*
+* Espanol
+*/
+#content {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    right: 0px;
+    bottom: 0px;
+}
+#header {
+    position: relative;
+    top: 0px;
+    left: 0px;
+    right: 0px;
+    padding: 1em;
+    background-color: pink;
+}
+#main {
+    position: relative;
+    left: 0px;
+    right: 0px;
+    padding: 1em;
+    background-color: goldenrod;
+    margin-bottom: 0px;
+    border-top: 1px solid #FFF;
+}
+#footer {
+    position: absolute;
+    bottom: 0px;
+    left: 0px;
+    right: 0px;
+    padding: 1em;
+    background-color: #d65e5e;
+}

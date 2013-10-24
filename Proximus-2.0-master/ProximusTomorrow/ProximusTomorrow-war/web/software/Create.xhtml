@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core" xmlns:c="http://java.sun.com/jsp/jstl/core">
+
+
+    <h:head>
+        <link rel="stylesheet" type="text/css" href="/ProximusTomorrow-war/faces/jsfcrud.css" />
+        <h:outputStylesheet name="css/jsfcrud.css"/>
+    </h:head>
+
+
+    <h:body id="deviceBody">
+        <ui:composition id="main"  template="/template.xhtml">
+            <script type="text/javascript">
+                function handleEditRequest(args) {
+                    if(!args.validation) {
+                        jQuery('#editDialog').effect("shake", { times:2 }, 100);
+                    } else {
+                        editDlg.hide();
+                       
+                    }
+                }
+                function handleEditLightRequest(args) {
+                    if(!args.validation) {
+                        jQuery('#editLightDialog').effect("shake", { times:2 }, 100);
+                    } else {
+                        editLightDlg.hide();
+                       
+                    }
+                }
+                function handleDeviceUtilRequest(args) {
+                    if(!args.validation) {
+                        jQuery('#deviceUtilsDialog').effect("shake", { times:2 }, 100);
+                    } else {
+                        deviceUtilsDlg.hide();
+                    }
+                }
+            </script>
+            <ui:define name="pageHeader">
+                <h:outputText value="Software Update"></h:outputText>
+            </ui:define>
+            <h:form rendered="#{!loginController.privileges.contains(bundle.SuperUser)}">
+                <h:outputText value="#{bundle.InsufficientPrivileges}" 
+                              style="font-family: Arial;font-size: 16px;color: red;"/>
+            </h:form>
+
+            <h:form id="form" enctype="multipart/form-data" rendered="#{loginController.privileges.contains(bundle.SuperUser)}" >
+
+                <p:panelGrid columns="4" style="width:100%">
+                    <f:facet name="header">
+                        <h:outputLabel value="Create New Software Update"/>
+                    </f:facet>
+
+
+                    <h:outputLabel value="Platform" for="platform" />
+                    <p:selectOneMenu id="platform" value="#{softwareReleaseController.softwareRelease.platform}">
+                        <f:selectItems value="#{softwareReleaseController.platforms}" /> 
+                    </p:selectOneMenu>
+
+
+
+                    <h:outputLabel value="Release Date" for="releaseDate" />
+                    <p:calendar id="releaseDate" value="#{softwareReleaseController.softwareRelease.releaseDate}" title="#{bundle.CreateSoftwareReleaseTitle_releaseDate}" showOn="button" />
+                </p:panelGrid>
+                <br/>
+                <p:panelGrid columns="4" style="width:100%">
+                    <f:facet name="header">
+                        <h:outputLabel value="Update From Version"/>
+                    </f:facet>
+                    <h:outputLabel value="Major" for="major" />
+                    <h:outputLabel value="Minor" for="minor" />
+                    <h:outputLabel value="Build" for="build" />
+                    <h:outputLabel value="Kernel" for="kernel" />
+                    <p:inputText id="major" value="#{softwareReleaseController.softwareRelease.major}" title="#{bundle.CreateSoftwareReleaseTitle_major}" />                   
+                    <p:inputText id="minor" value="#{softwareReleaseController.softwareRelease.minor}" title="#{bundle.CreateSoftwareReleaseTitle_minor}" />                    
+                    <p:inputText id="build" value="#{softwareReleaseController.softwareRelease.build}" title="#{bundle.CreateSoftwareReleaseTitle_build}" />                    
+                    <p:inputText id="kernel" value="#{softwareReleaseController.softwareRelease.kernel}" title="#{bundle.CreateSoftwareReleaseTitle_kernel}" />
+
+
+                </p:panelGrid>
+                <br/>
+
+                <p:selectBooleanCheckbox id="single" value="#{softwareReleaseController.softwareRelease.single}" itemLabel="#{bundle.CreateSoftwareReleaseTitle_single}" >
+                    <p:ajax update="devices"/>
+                </p:selectBooleanCheckbox>
+                <!--                    Use output panel so we can update part of the page-->
+                <p:outputPanel id="devices">
+                    <h:outputLabel value="#{bundle.CreateSoftwareReleaseLabel_device}" for="device" rendered="#{softwareReleaseController.softwareRelease.single}"/>
+                    <!--                        <h:selectOneMenu id="device" value="# {softwareReleaseController.selected.device}" title="# bundle.CreateSoftwareReleaseTitle_device}" converter="deviceControllerConverter" rendered="# {softwareReleaseController.selected.single}" disabled="# {!softwareReleaseController.selected.single}">
+                                                <f:selectItems value="" noSelectionValue="# {null}"/>
+                                            </h:selectOneMenu>-->
+                </p:outputPanel>
+
+                <h:outputLabel value="#{bundle.CreateSoftwareReleaseLabel_description}" for="description" />
+                <p:inputTextarea  id="description" value="#{softwareReleaseController.softwareRelease.description}" />
+
+
+
+
+                <br/>
+                <p:panelGrid columns="1" style="width:100%">
+                    <f:facet name="header">
+                        <h:outputLabel value="Create New Software Update"/>
+                    </f:facet>
+                    <p:outputPanel id="uploadPanel">
+                        <p:fileUpload fileUploadListener="#{softwareReleaseController.handleFileUpload}"
+                                      mode="advanced,uploadPanel"
+                                      update="uploadPanel,files"
+                                      auto="true"
+                                      allowTypes="/(\.|\/)(tar|tar\.gz|tgz|wpk)$/" required="true" rendered="#{softwareReleaseController.file==null}" />
+                    </p:outputPanel>
+                    <p:outputPanel id="files">
+
+                        <p:dataTable id="filesTable" value="#{softwareReleaseController.file}" var="file">
+
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="File" />
+                                </f:facet>
+                                <h:outputText value="#{file}"/>
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Operation" />
+                                </f:facet>
+                                <p:commandLink value="Remove" update=":form:files,:form:uploadPanel" process=":form:files" action="#{softwareReleaseController.removeFile}"/>
+                            </p:column>
+
+                        </p:dataTable>
+                    </p:outputPanel>
+                </p:panelGrid>
+            </h:form>
+
+        </ui:composition>
+    </h:body>
+</html>

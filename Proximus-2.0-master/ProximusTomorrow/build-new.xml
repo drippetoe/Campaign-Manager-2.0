@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- You may freely edit this file. See commented blocks below for -->
+<!-- some examples of how to customize the build. -->
+<!-- (If you delete it and reopen the project it will be recreated.) -->
+<!-- By default, only the Clean and Build commands use this build script. -->
+<!-- Commands such as Run, Debug, and Test only use this build script if -->
+<!-- the Compile on Save feature is turned off for the project. -->
+<!-- You can turn off the Compile on Save (or Deploy on Save) setting -->
+<!-- in the project's Project Properties dialog box.-->
+<project name="ProximusTomorrow" default="default" basedir="." xmlns:ear="http://www.netbeans.org/ns/j2ee-earproject/2">
+    <description>Builds, tests, and runs the project ProximusTomorrow.</description>
+    
+    <property name="build" value="${basedir}/build_new"/>
+    <property name="build.lib" value="${build}/lib"/>
+    <property name="dist" value="${basedir}/dist"/>
+    
+    <!-- project folders -->
+    <property name="ProximusTomorrow-datamodel" value="${basedir}/ProximusTomorrow-datamodel"/>
+    <property name="ProximusTomorrow-ejb" value="${basedir}/ProximusTomorrow-ejb"/>
+    <property name="ProximusTomorrow-jars" value="${basedir}/ProximusTomorrow-jars"/>
+    <property name="ProximusTomorrow-war" value="${basedir}/ProximusTomorrow-war"/>
+    <property name="ProximusTomorrow-locationclient" value="${basedir}/ProximusTomorrow-locationclient"/>
+    <property name="ProximusTomorrow-registrationclient" value="${basedir}/ProximusTomorrow-registrationclient"/>
+    <property name="ProximusTomorrow-util" value="${basedir}/ProximusTomorrow-util"/>
+    
+    <target depends="war_dist" description="Build whole project." name="default"/>
+    
+    <target depends="clean,datamodel,ejb,war,jars,locationclient,registrationclient" description="Build distribution (WAR)." name="war_dist">
+        <mkdir dir="${dist}" />
+        <copy todir="${dist}" flatten="true" failonerror="true" overwrite="true">
+            <resources>
+                <file file="${ProximusTomorrow-war}/dist/ProximusTomorrow-war.war"/>
+            </resources>
+        </copy>
+     
+    </target>
+    
+    <!-- clean,datamodel,ejb,war,jars,locationclient,registrationclient -->
+    <target depends="clean,datamodel,ejb,war,jars,locationclient,registrationclient" description="Build distribution (EAR)." name="ear">
+        <mkdir dir="${build}" />
+        
+        <copy todir="${build}" flatten="true" failonerror="true" overwrite="true">
+            <resources>
+                <file file="${ProximusTomorrow-ejb}/dist/ProximusTomorrow-ejb.jar"/>
+                <file file="${ProximusTomorrow-war}/dist/ProximusTomorrow-war.war"/>
+                <file file="${ProximusTomorrow-datamodel}/dist/ProximusTomorrow-datamodel.jar"/>
+            </resources>
+        </copy>
+        <copy todir="${build.lib}" flatten="true" failonerror="true" overwrite="true">
+            <resources>
+                <file file="${ProximusTomorrow-datamodel}/dist/ProximusTomorrow-datamodel.jar"/>
+                <file file="${ProximusTomorrow-locationclient}/dist/ProximusTomorrow-locationclient.jar"/>
+                <file file="${ProximusTomorrow-registrationclient}/dist/ProximusTomorrow-registrationclient.jar"/>
+                <file file="${ProximusTomorrow-util}/dist/ProximusTomorrow-util.jar"/>
+                <file file="${ProximusTomorrow-jars}/libs/server-libs.jar"/>
+            </resources>
+        </copy>
+        
+        <mkdir dir="${dist}" />
+        <jar destfile="${dist}/ProximusTomorrow.ear" basedir="${build}" includes="**/*"/>
+        
+    </target>
+    
+    <target name="clean" depends="">
+        <ant antfile="${ProximusTomorrow-datamodel}/build.xml" target="clean" usenativebasedir="true"/>
+        <ant antfile="${ProximusTomorrow-ejb}/build.xml" target="clean" usenativebasedir="true"/>
+        <ant antfile="${ProximusTomorrow-war}/build.xml" target="clean" usenativebasedir="true"/>
+        <ant antfile="${ProximusTomorrow-locationclient}/build.xml" target="clean" usenativebasedir="true"/>
+        <ant antfile="${ProximusTomorrow-registrationclient}/build.xml" target="clean" usenativebasedir="true"/>
+        <ant antfile="${ProximusTomorrow-util}/build.xml" target="clean" usenativebasedir="true"/>
+        
+        <mkdir dir="${build}" />
+        <mkdir dir="${dist}" />
+        
+        <delete includeemptydirs="true">
+            <fileset dir="${build}" includes="**/*"/>
+            <fileset dir="${dist}" includes="**/*"/>
+        </delete>
+        
+        <mkdir dir="${build}" />
+        <mkdir dir="${dist}" />
+    </target>
+    
+    <target name="datamodel" depends="">
+        <ant antfile="${ProximusTomorrow-datamodel}/build.xml" target="default" usenativebasedir="true"/>
+    </target>
+    
+    <target name="ejb" depends="datamodel">
+        <ant antfile="${ProximusTomorrow-ejb}/build.xml" target="default" usenativebasedir="true"/>
+    </target>
+    
+    <target name="war" depends="datamodel,ejb,locationclient,registrationclient,util">
+        <ant antfile="${ProximusTomorrow-war}/build.xml" target="default" usenativebasedir="true"/>
+    </target>
+    
+    <target name="jars" depends="">
+        <ant antfile="${ProximusTomorrow-jars}/build.xml" target="default" usenativebasedir="true"/>
+    </target>
+    
+    <target name="locationclient" depends="datamodel,ejb">
+        <ant antfile="${ProximusTomorrow-locationclient}/build.xml" target="default" usenativebasedir="true"/>
+    </target>
+    
+    <target name="registrationclient" depends="datamodel,ejb">
+        <ant antfile="${ProximusTomorrow-registrationclient}/build.xml" target="default" usenativebasedir="true"/>
+    </target>
+    
+    <target name="util" depends="datamodel">
+        <ant antfile="${ProximusTomorrow-util}/build.xml" target="default" usenativebasedir="true"/>
+    </target>
+    
+    
+</project>

@@ -1,0 +1,247 @@
+<?xml version="1.0" encoding="UTF-8"?><!-- Published by JAX-WS RI at http://jax-ws.dev.java.net. RI's version is JAX-WS RI 2.1.2-hudson-182-RC1. --><xs:schema xmlns:tns="http://webservice.portico.locaid.net/" xmlns:xs="http://www.w3.org/2001/XMLSchema" version="1.0" targetNamespace="http://webservice.portico.locaid.net/">
+
+<xs:element name="SOAPException" type="tns:SOAPException"></xs:element>
+
+<xs:element name="getLocation" type="tns:getLocation"></xs:element>
+
+<xs:element name="getLocationMLP" type="tns:getLocationMLP"></xs:element>
+
+<xs:element name="getLocationMLPResponse" type="tns:getLocationMLPResponse"></xs:element>
+
+<xs:element name="getLocationResponse" type="tns:getLocationResponse"></xs:element>
+
+<xs:element name="getLocations" type="tns:getLocations"></xs:element>
+
+<xs:element name="getLocationsAnswer" type="tns:getLocationsAnswer"></xs:element>
+
+<xs:element name="getLocationsAnswerMLP" type="tns:getLocationsAnswerMLP"></xs:element>
+
+<xs:element name="getLocationsAnswerMLPResponse" type="tns:getLocationsAnswerMLPResponse"></xs:element>
+
+<xs:element name="getLocationsAnswerResponse" type="tns:getLocationsAnswerResponse"></xs:element>
+
+<xs:element name="getLocationsMLP" type="tns:getLocationsMLP"></xs:element>
+
+<xs:element name="getLocationsMLPResponse" type="tns:getLocationsMLPResponse"></xs:element>
+
+<xs:element name="getLocationsResponse" type="tns:getLocationsResponse"></xs:element>
+
+<xs:element name="getLocationsX" type="tns:getLocationsX"></xs:element>
+
+<xs:element name="getLocationsXResponse" type="tns:getLocationsXResponse"></xs:element>
+
+<xs:complexType name="getLocationMLP">
+<xs:sequence>
+<xs:element name="login" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="password" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="classId" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="mlp" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="overage" type="xs:int" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="getLocationMLPResponse">
+<xs:sequence>
+<xs:element name="return" type="xs:string" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="SOAPException">
+<xs:sequence>
+<xs:element name="message" type="xs:string" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="getLocations">
+<xs:sequence>
+<xs:element name="login" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="password" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="classId" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="msisdnList" type="xs:string" minOccurs="0" maxOccurs="unbounded"></xs:element>
+<xs:element name="coorType" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="locationMethod" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="overage" type="xs:int" minOccurs="0"></xs:element>
+<xs:element name="delayTime" type="xs:int" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="getLocationsResponse">
+<xs:sequence>
+<xs:element name="return" type="xs:long" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="getLocationsAnswer">
+<xs:sequence>
+<xs:element name="login" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="password" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="classId" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="transactionId" type="xs:long" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="getLocationsAnswerResponse">
+<xs:sequence>
+<xs:element name="return" type="tns:locationAnswerResponseBean" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="locationAnswerResponseBean">
+<xs:complexContent>
+<xs:extension base="tns:baseTransactionResponseBean">
+<xs:sequence>
+<xs:element name="locationResponse" type="tns:locationResponseBean" nillable="true" minOccurs="0" maxOccurs="unbounded"></xs:element>
+<xs:element name="msisdnError" type="tns:msisdnErrorResponseBean" nillable="true" minOccurs="0" maxOccurs="unbounded"></xs:element>
+<xs:element name="status" type="xs:string" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+
+<xs:complexType name="baseTransactionResponseBean">
+<xs:complexContent>
+<xs:extension base="tns:baseResponseBean">
+<xs:sequence>
+<xs:element name="transactionId" type="xs:long" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+
+<xs:complexType name="baseResponseBean">
+<xs:sequence>
+<xs:element name="error" type="tns:baseErrorResponseBean" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="locationResponseBean">
+<xs:complexContent>
+<xs:extension base="tns:baseResponseBean">
+<xs:sequence>
+<xs:element name="coordinateGeo" type="tns:coordinateGeo" minOccurs="0"></xs:element>
+<xs:element name="direction" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="geometry" type="tns:geometry" minOccurs="0"></xs:element>
+<xs:element name="locationTime" type="tns:locationTime" minOccurs="0"></xs:element>
+<xs:element name="number" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="speed" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="status" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="technology" type="xs:string" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+
+<xs:complexType name="coordinateGeo">
+<xs:sequence>
+<xs:element name="format" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="x" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="y" type="xs:string" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="geometry">
+<xs:sequence>
+<xs:element name="distanceUnit" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="inRadius" type="xs:double"></xs:element>
+<xs:element name="outRadius" type="xs:double"></xs:element>
+<xs:element name="radius" type="xs:double"></xs:element>
+<xs:element name="startAngle" type="xs:double"></xs:element>
+<xs:element name="stopAngle" type="xs:double"></xs:element>
+<xs:element name="type" type="xs:string" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="locationTime">
+<xs:sequence>
+<xs:element name="time" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="utc" type="xs:string" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="baseErrorResponseBean">
+<xs:sequence>
+<xs:element name="errorCode" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="errorMessage" type="xs:string" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="msisdnErrorResponseBean">
+<xs:complexContent>
+<xs:extension base="tns:baseErrorResponseBean">
+<xs:sequence>
+<xs:element name="msisdn" type="xs:string" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+
+<xs:complexType name="getLocationsAnswerMLP">
+<xs:sequence>
+<xs:element name="login" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="password" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="classId" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="transactionId" type="xs:long" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="getLocationsAnswerMLPResponse">
+<xs:sequence>
+<xs:element name="return" type="xs:string" minOccurs="0" maxOccurs="unbounded"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="getLocationsX">
+<xs:sequence>
+<xs:element name="login" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="password" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="classId" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="msisdnList" type="xs:string" minOccurs="0" maxOccurs="unbounded"></xs:element>
+<xs:element name="coorType" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="locationMethod" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="syncType" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="overage" type="xs:int" minOccurs="0"></xs:element>
+<xs:element name="delayTime" type="xs:int" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="getLocationsXResponse">
+<xs:sequence>
+<xs:element name="return" type="tns:locationAnswerResponseBean" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="getLocationsMLP">
+<xs:sequence>
+<xs:element name="login" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="password" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="classId" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="mlpList" type="xs:string" minOccurs="0" maxOccurs="unbounded"></xs:element>
+<xs:element name="overage" type="xs:int" minOccurs="0"></xs:element>
+<xs:element name="delayTime" type="xs:int" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="getLocationsMLPResponse">
+<xs:sequence>
+<xs:element name="return" type="xs:long" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="getLocation">
+<xs:sequence>
+<xs:element name="login" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="password" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="classId" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="msisdn" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="coorType" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="locationMethod" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="overage" type="xs:int" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="getLocationResponse">
+<xs:sequence>
+<xs:element name="return" type="tns:locationResponseBean" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+</xs:schema>

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <h:head>
+        <title>Import Device</title>
+        <link rel="stylesheet" type="text/css" href="/ProximusTomorrow-war/faces/jsfcrud.css" />
+        <h:outputStylesheet name="css/jsfcrud.css"/>
+    </h:head>
+
+    <h:body>
+        <ui:composition template="/template.xhtml">
+            <ui:define name="pageHeader">
+                <h:outputText value="Import Device"></h:outputText>
+            </ui:define>
+
+
+            <h:form rendered="#{!loginController.privileges.contains(bundle.SuperUser)}">
+                <h:outputText value="#{bundle.InsufficientPrivileges}" 
+                              style="font-family: Arial;font-size: 16px;color: red;"/>
+            </h:form>
+
+            <h:form id="uploadForm" enctype="multipart/form-data" rendered="#{loginController.privileges.contains(bundle.SuperUser)}">
+                <p:panelGrid columns="2">
+                    <f:facet name="header">  
+                        Import Devices
+                    </f:facet> 
+                    <h:outputLabel value="Select Platform: " for="platform" />  
+                    <p:selectOneMenu id="platform" value="#{deviceImportController.platform}" required="true">
+                        <f:selectItem itemLabel="Select a Platform" itemValue=""/>
+                        <f:selectItems value="#{deviceImportController.platforms}"/>
+                        <p:ajax update="uploadForm"/> 
+                    </p:selectOneMenu>
+
+                    <h:outputLabel value="Select a company: " for="company" />  
+
+                    <p:column>
+                        <p:selectOneMenu id="company" value="#{deviceImportController.company}" converter="#{companySelectorConverter}"  >  
+                            <f:selectItem itemLabel="Select Company:" itemValue=""  />  
+                            <f:selectItems value="#{userController.listCompanies}"/>  
+                            <p:ajax update="uploadForm"/> 
+                        </p:selectOneMenu>
+                        <p:remoteCommand name="ajaxSubmit"/>
+                    </p:column>
+
+                    <h:outputLabel value="File Upload: " for="fileupload" />
+                    <p:column>
+                        <p:fileUpload id="fileupload" fileUploadListener="#{deviceImportController.handleFileUpload}" rendered="#{deviceImportController.company != null and deviceImportController.platform!=null}"
+                                      mode="advanced" 
+                                      auto="true"
+                                      update="uploadForm"
+                                      allowTypes="/(\.|\/)(csv)$/"/>
+                    </p:column>
+                    <f:facet name="footer">
+                        Supported file types: csv
+                    </f:facet>
+                </p:panelGrid>
+            </h:form>
+
+        </ui:composition>
+    </h:body>
+</html>
+
+

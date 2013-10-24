@@ -1,0 +1,30 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+                      http://maven.apache.org/xsd/maven-4.0.0.xsd">
+   <modelVersion>4.0.0</modelVersion>
+   <groupId>com.proximus</groupId>
+   <version>2.0</version>
+   <artifactId>proximus-suite</artifactId>
+   <packaging>pom</packaging>
+   <name>Proximus 2.0</name>
+   <modules>
+      <module>projects</module>
+   </modules><!--
+   <build>
+      <pluginManagement>
+         <plugins>
+            <plugin>
+               <groupId>org.apache.maven.plugins</groupId>
+               <artifactId>maven-site-plugin</artifactId>
+               <configuration>
+                  <unzipCommand>/usr/bin/unzip -o > err.txt</unzipCommand>
+               </configuration>
+            </plugin>
+         </plugins>
+      </pluginManagement>
+   </build> -->
+   <properties>
+   	<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+   </properties>
+</project>

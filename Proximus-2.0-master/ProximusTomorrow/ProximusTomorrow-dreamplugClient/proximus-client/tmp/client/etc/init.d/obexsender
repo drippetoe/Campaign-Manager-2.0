@@ -1,0 +1,160 @@
+#!/bin/bash
+
+##
+# INSTALL
+# chmod +x /etc/init.d/obexsender
+# update-rc.d -f obexsender start 80 2 3 4 5 . stop 30 0 1 6 .
+##
+
+### BEGIN INIT INFO
+# Provides:          obexsender
+# Required-Start:    bluetooth
+# Required-Stop:
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: Send files over Bluetooth OBEX.
+# Description:       Send files over Bluetooth OBEX.
+### END INIT INFO
+
+mypid=$$
+startscript=/home/proximus/bin/obexsender/start.sh
+kernelrelease=`uname -r`
+driverdir=/root/k$kernelrelease
+##DEBUG
+#set -x
+## Exit on error
+#set -e
+. /lib/init/vars.sh
+. /lib/lsb/init-functions
+
+if [ "$(id -u)" != "0" ]; then
+	log_progress_msg "Permission Denined!"
+	log_end_msg 1
+	exit 1
+fi
+
+##
+# Enable Bluetooth
+# Load Modules
+##
+do_load_drivers(){
+	if [ -z "$(lsmod | grep mbtchar)" ]; then
+	  echo "#######################"
+	  modinfo $driverdir/mbtchar.ko
+	  echo "#######################"
+	  insmod -f $driverdir/mbtchar.ko
+	else
+	  echo "Module mbtchar.ko already loaded"
+	fi
+	if [ -z "$(lsmod | grep bt8xxx)" ]; then
+	  btdriver=`ls $driverdir | egrep '^bt8*.ko$'`
+	  echo "#######################"
+	  modinfo $driverdir/bt8787.ko
+	  echo "#######################"
+	  insmod -f $driverdir/bt8787.ko
+	else
+	  echo "Module $btdriver already loaded"
+	fi
+}
+
+##
+# Start obexsender
+##
+do_start(){
+	log_daemon_msg "Loading drivers"
+	do_load_drivers
+	btservice=`/etc/init.d/bluetooth status`
+	if [ "$btservice" == "bluetooth is running." ]; then
+	   log_daemon_msg "bluetoothd running..."
+	else
+	   log_daemon_msg "starting bluetoothd running..."
+	   res=`/etc/init.d/bluetooth start`
+	   log_daemon_msg "$res"
+	fi
+	hciconfig hci0 up
+	sleep 2
+	hciconfig hci0 piscan
+	SERVICES=(`ps aux | grep obexsender | grep -v grep | grep -v "$0 $*" | awk '{print $2}'`)
+	TOTAL=${#SERVICES[@]}
+	if [ "$TOTAL" -gt 0 ]; then
+		log_daemon_msg "Already started" "obexsender ${SERVICES[0]}"
+		log_end_msg 1
+	else
+		log_daemon_msg "Starting" "obexsender"
+		$startscript > /dev/null 2>&1 &
+		pid="$!"
+		log_progress_msg "Started ${pid}"
+		log_end_msg 0
+	fi
+	echo "default-on" > /sys/class/leds/guruplug\:green\:health/trigger
+
+}
+
+##
+# Stop obexsender
+##
+do_stop(){
+	log_daemon_msg "Stopping ALL" "obexsenders"
+	SERVICES=(`ps aux | grep obexsender | grep -v grep | grep -v "$0 $*"  | awk '{print $2}'`)
+	TOTAL=${#SERVICES[@]}
+	if [ "$TOTAL" -gt 0 ]; then
+		for (( i=0; i<=$(( $TOTAL -1 )); i++ ))
+		do
+		  if [ ${SERVICES[$i]} -ne ${mypid} ]; then
+		    log_progress_msg "stopped ${SERVICES[$i]}"		
+		    kill -9 "${SERVICES[$i]}" 2>/dev/null
+		  else
+			log_progress_msg "ignored ${SERVICES[$i]}"
+	      fi
+		done
+	else
+		log_progress_msg "No obexsender running"
+	fi
+	log_end_msg 0
+	blinkbtled 0xf1010148 w 0x000 > /dev/null
+        echo "none" > /sys/class/leds/guruplug\:green\:health/trigger
+
+}
+
+##
+# Status of obexsender
+##
+do_status() {
+	SERVICES=(`ps aux | grep obexsender | grep -v grep | grep -v "$0 $*" | awk '{print $2}'`)
+	TOTAL=${#SERVICES[@]}
+	if [ "$TOTAL" -gt 0 ]; then
+		log_progress_msg "${TOTAL} obexsender(s) running"
+		echo "default-on" > /sys/class/leds/guruplug\:green\:health/trigger
+
+	else
+		log_progress_msg "obexsender NOT running"
+		blinkbtled 0xf1010148 w 0x000 > /dev/null
+		echo "none" > /sys/class/leds/guruplug\:green\:health/trigger
+
+	fi
+	log_end_msg 0
+}
+
+
+
+case "$1" in
+    start)
+		do_start
+        ;;
+    restart)
+        do_stop
+		sleep 1
+        do_start
+        ;;
+    status)
+        do_status
+        ;;
+	stop|killall)
+		do_stop		
+		;;
+    *)
+        log_progress_msg "Usage: $0 {start|{stop|killall}|restart|status}"
+        exit 1
+        ;;
+esac
+exit 0

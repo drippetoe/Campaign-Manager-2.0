@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?><!-- Published by JAX-WS RI at http://jax-ws.dev.java.net. RI's version is JAX-WS RI 2.1.2-hudson-182-RC1. --><xs:schema xmlns:tns="http://webservice.portico.locaid.net/" xmlns:xs="http://www.w3.org/2001/XMLSchema" version="1.0" targetNamespace="http://webservice.portico.locaid.net/">
+
+<xs:element name="getPhoneStatus" type="tns:getPhoneStatus"></xs:element>
+
+<xs:element name="getPhoneStatusResponse" type="tns:getPhoneStatusResponse"></xs:element>
+
+<xs:element name="subscribePhone" type="tns:subscribePhone"></xs:element>
+
+<xs:element name="subscribePhoneAll" type="tns:subscribePhoneAll"></xs:element>
+
+<xs:element name="subscribePhoneAllResponse" type="tns:subscribePhoneAllResponse"></xs:element>
+
+<xs:element name="subscribePhoneResponse" type="tns:subscribePhoneResponse"></xs:element>
+
+<xs:complexType name="subscribePhoneAll">
+<xs:sequence>
+<xs:element name="login" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="password" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="command" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="msisdnList" type="xs:string" minOccurs="0" maxOccurs="unbounded"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="subscribePhoneAllResponse">
+<xs:sequence>
+<xs:element name="return" type="tns:subscribePhoneAllResponseBean" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="subscribePhoneAllResponseBean">
+<xs:complexContent>
+<xs:extension base="tns:baseTransactionResponseBean">
+<xs:sequence>
+<xs:element name="msisdnList" type="tns:complexMsisdnResponseBean" nillable="true" minOccurs="0" maxOccurs="unbounded"></xs:element>
+</xs:sequence>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+
+<xs:complexType name="baseTransactionResponseBean">
+<xs:complexContent>
+<xs:extension base="tns:baseResponseBean">
+<xs:sequence>
+<xs:element name="transactionId" type="xs:long" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+
+<xs:complexType name="baseResponseBean">
+<xs:sequence>
+<xs:element name="error" type="tns:baseErrorResponseBean" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="complexMsisdnResponseBean">
+<xs:complexContent>
+<xs:extension base="tns:baseResponseBean">
+<xs:sequence>
+<xs:element name="classIdList" type="tns:classIdStatusResponseBean" nillable="true" minOccurs="0" maxOccurs="unbounded"></xs:element>
+<xs:element name="msisdn" type="xs:string" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+
+<xs:complexType name="classIdStatusResponseBean">
+<xs:complexContent>
+<xs:extension base="tns:baseResponseBean">
+<xs:sequence>
+<xs:element name="classId" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="status" type="xs:string" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+
+<xs:complexType name="baseErrorResponseBean">
+<xs:sequence>
+<xs:element name="errorCode" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="errorMessage" type="xs:string" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="getPhoneStatus">
+<xs:sequence>
+<xs:element name="login" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="password" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="msisdnList" type="xs:string" minOccurs="0" maxOccurs="unbounded"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="getPhoneStatusResponse">
+<xs:sequence>
+<xs:element name="return" type="tns:getPhoneStatusResponseBean" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="getPhoneStatusResponseBean">
+<xs:complexContent>
+<xs:extension base="tns:baseTransactionResponseBean">
+<xs:sequence>
+<xs:element name="msisdnList" type="tns:complexStatusMsisdnResponseBean" nillable="true" minOccurs="0" maxOccurs="unbounded"></xs:element>
+</xs:sequence>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+
+<xs:complexType name="complexStatusMsisdnResponseBean">
+<xs:complexContent>
+<xs:extension base="tns:complexMsisdnResponseBean">
+<xs:sequence>
+<xs:element name="status" type="xs:string" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+
+<xs:complexType name="subscribePhone">
+<xs:sequence>
+<xs:element name="login" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="password" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="command" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="classIdList" type="tns:classIdList" minOccurs="0" maxOccurs="unbounded"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="classIdList">
+<xs:sequence>
+<xs:element name="classId" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="msisdnList" type="xs:string" maxOccurs="unbounded"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="subscribePhoneResponse">
+<xs:sequence>
+<xs:element name="return" type="tns:subscribePhoneResponseBean" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="subscribePhoneResponseBean">
+<xs:complexContent>
+<xs:extension base="tns:baseTransactionResponseBean">
+<xs:sequence>
+<xs:element name="classIdList" type="tns:complexClassIdResponseBean" nillable="true" minOccurs="0" maxOccurs="unbounded"></xs:element>
+</xs:sequence>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+
+<xs:complexType name="complexClassIdResponseBean">
+<xs:complexContent>
+<xs:extension base="tns:baseResponseBean">
+<xs:sequence>
+<xs:element name="classId" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="msisdnList" type="tns:msisdnStatusResponseBean" nillable="true" minOccurs="0" maxOccurs="unbounded"></xs:element>
+</xs:sequence>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+
+<xs:complexType name="msisdnStatusResponseBean">
+<xs:complexContent>
+<xs:extension base="tns:baseResponseBean">
+<xs:sequence>
+<xs:element name="msisdn" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="status" type="xs:string" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+</xs:schema>

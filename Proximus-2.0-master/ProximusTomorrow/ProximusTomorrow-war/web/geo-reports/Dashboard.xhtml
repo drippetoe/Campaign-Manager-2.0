@@ -1,0 +1,187 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core" xmlns:c="http://java.sun.com/jsp/jstl/core">
+    <h:head>
+        <title>Geo-Fence Dashboard</title>
+        <link rel="stylesheet" type="text/css" href="/ProximusTomorrow-war/faces/jsfcrud.css" />
+        <h:outputStylesheet name="css/jsfcrud.css"/>
+    </h:head>
+
+    <h:body>
+        <ui:composition template="/template.xhtml">
+            <ui:define name="title">
+                <h:outputText value="Geo-Fence Dashboard"></h:outputText>
+            </ui:define>
+            <ui:define name="pageHeader">
+                <h:outputText value="Geo-Fence Dashboard"></h:outputText>
+            </ui:define>
+
+            <h:form rendered="#{!loginController.privileges.contains(bundle.SuperUser)}">
+                <h:outputText value="#{bundle.InsufficientPrivileges}" 
+                              style="font-family: Arial;font-size: 16px;color: red;"/>
+            </h:form>
+            <br />
+            <h:form id="dashboardForm">
+             <p:panel id="geoMetrics" header="Reporting Metrics" toggleable="false" closable="false" toggleSpeed="500" closeSpeed="2000" widgetVar="panel" style="min-width:500px;">    
+                <p:panelGrid style="margin-top:20px;" >  
+                    <f:facet name="header">  
+                        <p:row>  
+                            <p:column colspan="4">Geo-Fence Dashboard</p:column>  
+                        </p:row>  
+                        <p:row>  
+                            <p:column colspan="1" style="font-weight: bold;">Metric</p:column>  
+                            <p:column colspan="1" style="font-weight: bold;">Last 6 Months</p:column>  
+                            <p:column colspan="1" style="font-weight: bold;">Last Month</p:column>  
+                            <p:column colspan="1" style="font-weight: bold;">This Month</p:column>
+
+                        </p:row>  
+                    </f:facet>  
+
+                    <p:row>  
+                        <p:column style="font-weight: bold;">Total Active Subscribers</p:column>  
+                        <p:column rowspan="1">
+                            <h:outputText value="#{dashboardController.totalActiveSubscribersOverSixMonths}"/>
+                        </p:column>
+                        <p:column rowspan="1">
+                            <h:outputText value="#{dashboardController.totalActiveSubscribersLastMonth}"/>
+                        </p:column>
+                        <p:column rowspan="1">
+                            <h:outputText value="#{dashboardController.totalActiveSubscribersThisMonth}"/>
+                        </p:column> 
+                    </p:row>
+                    <p:row>
+                        <p:column style="font-weight: bold;">Theoretical Lookups</p:column>  
+                        <p:column rowspan="1">
+                            <h:outputText value="#{dashboardController.theoreticalLookupsOverSixMonths}" />
+                        </p:column>
+                        <p:column rowspan="1" >
+                            <h:outputText value="#{dashboardController.theoreticalLookupsLastMonth}"/>
+                    </p:column>
+                        <p:column rowspan="1" >
+                            <h:outputText value="#{dashboardController.theoreticalLookupsCurrentMonth}"/>
+                        </p:column>
+                    </p:row>
+                    <p:row>                        
+                        <p:column style="font-weight: bold;">Actual Lookups</p:column>  
+                        <p:column rowspan="1">
+                            <h:outputText value="#{dashboardController.actualLookupsOverSixMonths}"/>
+                        </p:column>
+                        <p:column rowspan="1">
+                            <h:outputText value="#{dashboardController.actualLookupsLastMonth}"/>
+                        </p:column>
+                        <p:column rowspan="1">
+                            <h:outputText value="#{dashboardController.actualLookupsThisMonth}"/>
+                        </p:column> 
+                    </p:row>
+                    <p:row>  
+                        <p:column style="font-weight: bold;">Actual/Theoretical Lookups</p:column>  
+                        <p:column rowspan="1">
+                            <h:outputText value="#{dashboardController.actualTheoreticalLookupsPercentSixMonths}%"/>
+                        </p:column>
+                        <p:column rowspan="1">
+                            <h:outputText value="#{dashboardController.actualTheoreticalLookupsPercentLastMonth}%"/>
+                        </p:column>
+                        <p:column rowspan="1">
+                            <h:outputText value="#{dashboardController.actualTheoreticalLookupsPercentCurrentMonth}%"/>
+                        </p:column> 
+                    </p:row>
+                    <p:row>
+                        <p:column style="font-weight: bold;">Theoretical Messages Sent</p:column>  
+                        <p:column rowspan="1" >
+                            <h:outputText value="#{dashboardController.theoreticalMessagesSentSixMonths}"/>
+                        </p:column>
+                        <p:column rowspan="1">
+                            <h:outputText value="#{dashboardController.theoreticalMessagesSentLastMonth}"/>
+                        </p:column>
+                        <p:column rowspan="1">
+                            <h:outputText value="#{dashboardController.theoreticalMessagesSentThisMonth}"/>
+                        </p:column>
+                    </p:row>  
+                    <p:row>  
+                        <p:column style="font-weight: bold;">Actual Messages Sent</p:column>  
+                        <p:column rowspan="1" >
+                            <h:outputText value="#{dashboardController.actualMessagesSentOverSixMonths}"/>
+                        </p:column>
+                        <p:column rowspan="1" >
+                            <h:outputText value="#{dashboardController.actualMessagesSentLastMonth}"/>
+                        </p:column>
+                        <p:column rowspan="1" >
+                            <h:outputText value="#{dashboardController.actualMessagesSentThisMonth}"/>
+                        </p:column> 
+                    </p:row>
+                    <p:row>  
+                        <p:column style="font-weight: bold;">Actual/Theoretical Messages Sent</p:column>  
+                        <p:column rowspan="1" >
+                            <h:outputText value="#{dashboardController.actualTheoreticalMessagesPercentSixMonths}%" />
+                        </p:column>
+                        <p:column rowspan="1" >
+                            <h:outputText value="#{dashboardController.actualTheoreticalMessagesPercentLastMonth}%" />
+                        </p:column>
+                        <p:column rowspan="1" >
+                            <h:outputText value="#{dashboardController.actualTheoreticalMessagesPercentCurrentMonth}%" />
+                        </p:column> 
+                    </p:row> 
+                    <p:row>  
+                        <p:column style="font-weight: bold;">Lookup/Messages Conversion Rate</p:column>  
+                        <p:column rowspan="1" >
+                            <h:outputText value="#{dashboardController.conversionRateSixMonths}"/>
+                        </p:column>
+                        <p:column rowspan="1" >
+                            <h:outputText value="#{dashboardController.conversionRateLastMonth}" />
+                        </p:column>
+                        <p:column rowspan="1" >
+                            <h:outputText value="#{dashboardController.conversionRateThisMonth}" />
+                        </p:column> 
+                    </p:row>
+                </p:panelGrid>
+             </p:panel>
+                <p:separator></p:separator>
+                           <p:panel id="slopeIntercept" header="Geo-Fence Sizing" toggleable="false" closable="false" toggleSpeed="500" closeSpeed="2000" widgetVar="panel" style="min-width:500px;">    
+               <p:panelGrid style="margin-top:20px">  
+                    <f:facet name="header">  
+                        <p:row>  
+                            <p:column colspan="6">Geo-Fence Size In Miles By Day of the Month</p:column>  
+                        </p:row>
+                        <p:row>  
+                            <p:column colspan="6" styleClass="ui-widget-header" style="text-align: left">
+                                <h:outputText value="Slope: #{dashboardController.slope}"/>                       
+                                <p:spacer height="0"/>
+                            </p:column>
+                        </p:row>
+                        <p:row>
+                            <p:column colspan="6" styleClass="ui-widget-header" style="text-align: left">
+                                <h:outputText value ="Intercept: #{dashboardController.intercept}" />                    
+                                <p:spacer height="0"/> 
+                            </p:column>  
+                        </p:row>
+                        <p:row>  
+                            <p:column colspan="1" style="font-weight: bold;">Day 5</p:column>  
+                            <p:column colspan="1" style="font-weight: bold;">Day 10</p:column>  
+                            <p:column colspan="1" style="font-weight: bold;">Day 15</p:column>  
+                            <p:column colspan="1" style="font-weight: bold;">Day 20</p:column>
+                            <p:column colspan="1" style="font-weight: bold;">Day 25</p:column>
+                            <p:column colspan="1" style="font-weight: bold;">Day 30</p:column>
+                        </p:row>  
+                    </f:facet>  
+
+                    <p:row>
+                        <p:column rowspan="1" >#{dashboardController.getGeofenceSize(5)}</p:column>  
+                        <p:column rowspan="1" >#{dashboardController.getGeofenceSize(10)}</p:column>
+                        <p:column rowspan="1" >#{dashboardController.getGeofenceSize(15)}</p:column>
+                        <p:column rowspan="1" >#{dashboardController.getGeofenceSize(20)}</p:column>
+                        <p:column rowspan="1" >#{dashboardController.getGeofenceSize(25)}</p:column>
+                        <p:column rowspan="1" >#{dashboardController.getGeofenceSize(30)}</p:column>
+                    </p:row>
+
+                </p:panelGrid>
+             </p:panel>   
+
+            </h:form>  
+
+
+
+        </ui:composition>
+    </h:body>
+</html>

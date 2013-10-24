@@ -1,0 +1,25 @@
+#!/bin/sh
+## PRE SETUP
+postinstdir=/tmp/client/postinst
+PLATFORM_LINUX_BLUEGIGA="Bluegiga"
+PLATFORM_LINUX_DREAMPLUG="Dreamplug"
+PLATFORM_LINUX_DDWRT="DDWRT"
+PLATFORM_MAC="MacOSX"
+PLATFORM_UNKNOWN="Unknown"
+
+if [ -d  /etc/bluegiga-release ]; then
+  echo "$PLATFORM_LINUX_BLUEGIGA"
+  $postinstdir/$PLATFORM_LINUX_BLUEGIGA
+elif [ -f  /etc/rc.local ]; then
+  echo "$PLATFORM_LINUX_DREAMPLUG"
+  $postinstdir/$PLATFORM_LINUX_DREAMPLUG
+elif [ -d  /jffs ]; then
+  echo "$PLATFORM_LINUX_DDWRT"
+  $postinstdir/$PLATFORM_LINUX_DDWRT
+elif [ -d  /Library ]; then
+  echo "$PLATFORM_MAC"
+else
+  echo "$PLATFORM_UNKNOWN"
+fi
+
+exit 0

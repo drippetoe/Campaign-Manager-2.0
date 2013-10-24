@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+
+    <h:head>
+        <title>
+            <ui:insert name="title">
+                <h:outputText value="#{logoLoginController.companyName}" rendered="#{logoLoginController.customLogoExists}" />
+                <h:outputText value="Proximus Mobility, LLC." rendered="#{!logoLoginController.customLogoExists}" /> 
+            </ui:insert>
+        </title>
+        <link rel="stylesheet" type="text/css" href="/ProximusTomorrow-war/faces/jsfcrud.css" />
+        <h:outputStylesheet name="css/jsfcrud.css"/>
+        <style type="text/css"> 
+        </style>   
+    </h:head>
+
+
+    <ui:define name="title">
+        <h:outputText value="#{message.welcome}"></h:outputText>
+    </ui:define>
+    <ui:define name="body">
+        <ui:composition template="/template.xhtml">
+            <ui:define name="pageHeader">
+                <h:outputText value="#{message.campaignManagerHeader}"></h:outputText>
+            </ui:define>
+
+            <h:form id="main">
+                <center>
+                    <h:panelGrid columns="3" cellspacing="25">
+
+                        <h:commandButton id="reportsButton" image="/images/campaign_reports.png" alt="#{bundle.ReportsGraphic}" 
+                                         action="#{summaryReportController.prepareIndex}" title ="#{message.reports}" disabled="false" rendered="#{(loginController.hasProximityLicense or loginController.hasGeoFenceLicense) and loginController.privileges.contains(bundle.ViewReports)}">
+                            <p:tooltip for="reportsButton" value="#{message.reportButtonDesc}"
+                                       showEffect="clip" hideEffect="explode" />
+                        </h:commandButton>
+                        <h:commandButton id="campaignsButton" image="/images/campaigns.png"  alt="#{bundle.CampaignGraphic}" 
+                                         action="#{campaignController.prepareList}" title="#{message.campaigns}" rendered="#{loginController.hasProximityLicense and loginController.privileges.contains(bundle.ViewCampaign)}">
+                            <p:tooltip for="campaignsButton" value="#{message.campaignButtonDesc}"
+                                       showEffect="clip" hideEffect="explode" />
+                        </h:commandButton>
+                        <h:commandButton id="tagsButton" alt="#{bundle.TargetsGraphic}" image="/images/tags_and_groups.png"  title="#{message.deviceGroups}"
+                                         action="#{tagController.prepareList}" rendered="#{loginController.hasProximityLicense and loginController.privileges.contains(bundle.ViewCampaign)}">
+                            <p:tooltip for="tagsButton" value="#{deviceGroupsButtonDesc}"
+                                       showEffect="clip" hideEffect="explode" />
+                        </h:commandButton>
+
+
+
+                        <h:commandButton id="mobileOfferButton" image="/images/mobile_offers.png"
+                                         action="#{mobileOfferAbstractController.prepareList(s)}" title="#{message.mobileOffers}" rendered="#{loginController.hasGeoFenceLicense and loginController.privileges.contains(bundle.ViewMobileOffer)}">
+                            <p:tooltip for="mobileOfferButton" value="#{message.mobileOffersButtonDesc}"
+                                       showEffect="clip" hideEffect="explode" />
+                        </h:commandButton>
+                        <h:commandButton id="settingsButton" alt="#{bundle.TargetsGraphic}" image="/images/offer_settings.png"  title="#{message.offerSettings}"
+                                         action="#{mobileOfferSettingsController.prepareSettings()}" rendered="#{loginController.hasGeoFenceLicense and loginController.privileges.contains(bundle.BrandAccess)}">
+                            <p:tooltip for="settingsButton" value="#{message.offerSettingsButtonDesc}"
+                                       showEffect="clip" hideEffect="explode" />
+                        </h:commandButton>
+                    </h:panelGrid>
+                </center>
+            </h:form>
+        </ui:composition>
+    </ui:define>
+
+
+
+</html>

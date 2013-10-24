@@ -1,0 +1,23 @@
+K 25
+svn:wc:ra_dav:version-url
+V 69
+/svn/!svn/ver/1211/code/java/core/test/src/test/java/net/oauth/client
+END
+StreamTest.java
+K 25
+svn:wc:ra_dav:version-url
+V 85
+/svn/!svn/ver/1032/code/java/core/test/src/test/java/net/oauth/client/StreamTest.java
+END
+OAuthClientTest.java
+K 25
+svn:wc:ra_dav:version-url
+V 90
+/svn/!svn/ver/1032/code/java/core/test/src/test/java/net/oauth/client/OAuthClientTest.java
+END
+ProtectedResource.java
+K 25
+svn:wc:ra_dav:version-url
+V 92
+/svn/!svn/ver/1211/code/java/core/test/src/test/java/net/oauth/client/ProtectedResource.java
+END

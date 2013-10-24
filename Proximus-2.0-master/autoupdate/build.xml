@@ -1,0 +1,80 @@
+<project name="proximus-auto-update" default="dist-lib" basedir="." xmlns:artifact="antlib:org.apache.maven.artifact.ant">
+	<description>
+		Utility to upgrade the client version installed on Proximus devices in the field. This version builds a manifest file and 
+		includes it in the *.jar distribution to allow for a self-executing jar file.
+	</description>
+	
+	<!-- set global properties for this build -->
+	<property name="project.dir"	location="./"/>
+	<property name="src.dir" 		location="src"/>
+	<property name="build.dir" 		location="obj"/>
+	<property name="lib.dir"		location="libs"/>
+	<property name="dist.dir"		location="bin"/>
+	
+	<path id="classpath">
+		<fileset dir="${lib.dir}" includes="**/*.jar"/>
+	</path>
+	
+	<!-- create a property containing all .jar files, prefix lib/, and seperated with a space -->
+	<pathconvert property="libs.project" pathsep=" ">
+		<mapper>
+			<chainedmapper>
+		
+				<!-- remove absolute path -->
+				<flattenmapper />
+		
+				<!-- add lib/ prefix -->
+				<globmapper from="*" to="libs/*" />
+			</chainedmapper>
+		</mapper>
+		
+		<path>
+			<!-- lib.home contains all jar files, in several subdirectories -->
+			<fileset dir="${lib.dir}">
+				<include name="**/*.jar" />
+			</fileset>
+		</path>
+	</pathconvert>
+  
+	<target name="init">
+		<!-- create the build directory structure used by compile -->
+		<mkdir dir="${build.dir}"/>
+	</target>
+	
+	<target name="compile-lib" depends="init" description="compile the common library source">
+		<!-- compile the java code from ${src.dir} into ${build.dir} -->
+		<javac includeantruntime="false" srcdir="${src.dir}" destdir="${build.dir}" classpathref="classpath">
+			<!-- classpath refid="dependency.classpath"/ -->
+			<compilerarg value="-Xlint:unchecked"/>
+			<compilerarg value="-Xlint:deprecation"/>
+		</javac>
+	</target>
+	
+	<!-- common-type library -->
+	<target name="dist-lib" depends="compile-lib" description="generate the proximus auto jar.">
+		<!-- put everything in ${build.dir} into the MyProject-${DSTAMP}.jar file -->
+		<jar jarfile="${dist.dir}/proximus-auto-update.jar" basedir="${build.dir}">
+			<manifest>
+				<attribute name="Built-By" value="Proximus Mobility"/>
+				<attribute name="Main-Class" value="com.proximus.AutoUpdate"/>
+				<attribute name="Class-Path" value="${libs.project}"/>
+			</manifest>
+		</jar>
+	</target>
+	
+	<target name="clean" description="clean up ritedrive libraries">
+		<!-- delete the ${lib.common.dir} directory trees -->
+		<delete dir="${build.dir}"/>
+	</target>
+
+	<target name="run" depends="dist-lib">
+		<java fork="true" classname="com.proximus.AutoUpdate">
+			<classpath>
+				<path refid="classpath"/>
+				<!-- <path location="${dist.dir}/lib/${ant.project.name}.jar"/> -->
+				<path location="${dist.dir}/proximus-auto-update.jar"/>
+			</classpath>
+			<arg value="/Projects/Proximus-LLC/research/src-proximus-configs/java/resources"/>
+		</java>
+	</target>
+</project>

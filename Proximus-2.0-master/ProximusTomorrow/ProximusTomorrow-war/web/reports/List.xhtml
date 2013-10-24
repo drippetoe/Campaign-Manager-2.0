@@ -1,0 +1,36 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core" xmlns:c="http://java.sun.com/jsp/jstl/core">
+    <h:head>
+        <title></title>
+        <link rel="stylesheet" type="text/css" href="/ProximusTomorrow-war/faces/jsfcrud.css" />
+        <h:outputStylesheet name="css/jsfcrud.css"/>
+    </h:head>
+
+    <h:body>
+        <ui:composition template="/template.xhtml">
+            <ui:define name="title">
+                <h:outputText value="#{message.reports}"></h:outputText>
+            </ui:define>
+            <ui:define name="pageHeader">
+                <h:outputText value="#{message.reports}"></h:outputText>
+            </ui:define>
+
+            <h:form rendered="#{!loginController.privileges.contains(bundle.ViewReports)}">
+                <h:outputText value="#{bundle.InsufficientPrivileges}" 
+                              style="font-family: Arial;font-size: 16px;color: red;"/>
+            </h:form>    
+
+            <h:form rendered="#{loginController.privileges.contains(bundle.ViewReports)}">
+                <ui:insert name="body">
+                    <ui:include src="/reports/ReportTemplate.xhtml"/>
+                </ui:insert>
+            </h:form>
+
+        </ui:composition>
+    </h:body>
+</html>
+
+

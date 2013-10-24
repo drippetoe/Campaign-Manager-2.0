@@ -1,0 +1,335 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core" 
+      xmlns:c="http://java.sun.com/jsp/jstl/core">
+
+
+    <h:body id="deviceBody">
+        <ui:composition id="main"  template="/template.xhtml">
+
+            <style type="text/css">
+                .customPanelGrid table {
+                    border: 2px solid;
+                    border-color: white;
+                }
+                .customPanelGrid td { 
+                    border-width: 1px;
+                    border-color: white;
+                }
+                .customPanelGrid tr {
+                    border-width: 0px;
+                    border-color: white;
+                }
+            </style>
+            <script type="text/javascript">
+                function handleEditRequest(args) {
+                    if(!args.validation) {
+                        jQuery('#editDialog').effect("shake", { times:2 }, 100);
+                    } else {
+                        editDlg.hide();
+                       
+                    }
+                }
+                function handleEditLightRequest(args) {
+                    if(!args.validation) {
+                        jQuery('#editLightDialog').effect("shake", { times:2 }, 100);
+                    } else {
+                        editLightDlg.hide();
+                       
+                    }
+                }
+                function handleDeviceUtilRequest(args) {
+                    if(!args.validation) {
+                        jQuery('#deviceUtilsDialog').effect("shake", { times:2 }, 100);
+                    } else {
+                        deviceUtilsDlg.hide();
+                    }
+                }
+            </script>
+            <ui:define name="pageHeader">
+                <h:outputText value="#{message.devices}"></h:outputText>
+            </ui:define>
+            
+            
+            <h:form rendered="#{!loginController.privileges.contains(bundle.ViewDevice)}">
+                <h:outputText value="#{bundle.InsufficientPrivileges}" 
+                              style="font-family: Arial;font-size: 16px;color: red;"/>
+            </h:form>
+
+            
+            
+            <h:form id="deviceForm" rendered="#{loginController.privileges.contains(bundle.ViewDevice)}" >
+                <h1><h:outputText escape="false" value="#{message.noDevicesFound}" rendered="#{deviceController.deviceModel.rowCount lt 1}"/></h1>
+
+                <h:panelGroup rendered="#{deviceController.deviceModel.rowCount > 0}">
+                    <p:dataTable id="deviceList" var="device" widgetVar="deviceTable" value="#{deviceController.deviceModel}" rowKey="#{device.macAddress}" selection="#{deviceController.selectedDevice}" selectionMode="single"
+                                 paginator="true" rows="10" filteredValue="#{deviceController.filteredDevices}"
+                                 currentPageReportTemplate="{currentPage} #{message.of} {totalPages}" 
+                                 paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                 rowsPerPageTemplate="5,10,15,20,50,100">
+                        <f:facet name="header">
+                            <p:outputPanel>
+                                <h:outputText value="#{message.search}: "/>
+                                <p:inputText id="globalFilter" onkeyup="deviceTable.filter()"/>
+                            </p:outputPanel>
+                        </f:facet>
+                        
+                         <p:column  id="dbIdColumn" headerText="#{message.id}" filterBy="#{device.id}" filterMatchMode="contains" filterStyle="display: none;" 
+                                    sortBy="#{device.id}" style="text-align: center; width: 120px" rendered="#{loginController.privileges.contains(bundle.SuperUser)}">
+                             <h:outputText value="#{device.id}"/>
+                        </p:column>
+
+                        <p:column id="name" sortBy="#{device.name}" headerText="#{message.name}" filterBy="#{device.name}" filterMatchMode="contains" filterStyle="display: none;">
+                            <h:outputText value="#{device.name}"/>
+                        </p:column>
+                        
+                        <p:column  id="serialColumn" headerText="#{message.serialNumber}" filterBy="#{device.serialNumber}" filterMatchMode="contains" filterStyle="display: none;"
+                                   sortBy="#{device.serialNumber}" style="width:155px">
+                            <h:outputText value="#{device.serialNumber}"/>
+                        </p:column>
+                        <p:column id="wifiColumn" headerText="#{message.wifiChannel}" filterBy="#{device.wifiChannel}" filterMatchMode="contains" filterStyle="display: none;">
+                            <h:outputText value="#{device.wifiChannel}"/>
+                        </p:column>
+
+                       
+
+                        <p:column  id="connectStatusColumn" headerText="#{message.connectStatus}" filterBy="#{device.getConnectStatus()}" filterMatchMode="contains" filterStyle="display: none;" 
+                                   style="text-align:center; width: 155px" sortBy="#{device.getConnectStatus()}">
+                            <h:outputText id="connectStatusValue" value="#{device.getConnectStatus()}" class="#{device.getConnectStatus()}" />
+                            <p:tooltip for="connectStatusValue" value="#{message.lastSeen}: #{device.getLastSeenFmt()}"/>
+                        </p:column>
+
+                        <p:column  id="tagColumn" headerText="#{message.deviceGroup}" filterBy="#{device.tag}" filterMatchMode="contains" filterStyle="display: none;">
+                            <h:outputText value="#{device.tag}"/>
+                        </p:column>
+
+                        <p:column  id="contactColumn" headerText="#{message.contact}" filterBy="#{device.contact}" filterMatchMode="contains" filterStyle="display: none;">
+                            <h:outputText value="#{device.contact}"/>
+                        </p:column>
+
+                        <p:column headerText="#{message.options}" rendered="#{loginController.privileges.contains(bundle.DeviceEdit)}">
+                            <p:outputPanel style="border-width:0px">
+                                <p:panelGrid columns="4" id="optionGrid" style="border-width:0px" styleClass="customPanelGrid">
+                                    <p:commandButton id="editButton" update=":editLightDialog" oncomplete="editLightDlg.show()" icon="ui-icon-pencil" title="#{message.edit}" rendered="#{!loginController.privileges.contains(bundle.SuperUser)}">                                
+                                        <f:setPropertyActionListener value="#{device}" target="#{deviceController.selectedDevice}"/>
+                                        <f:setPropertyActionListener value="#{device.tag.name}" target="#{deviceController.tagName}"/>
+                                    </p:commandButton>
+                                    <p:commandButton id="editButtonSuperUser" update=":editDialog" oncomplete="editDlg.show()" icon="ui-icon-pencil" title="#{mesage.edit}"  rendered="#{loginController.privileges.contains(bundle.SuperUser)}">                                
+                                        <f:setPropertyActionListener value="#{device}" target="#{deviceController.selectedDevice}"/>
+                                        <f:setPropertyActionListener value="#{device.tag.name}" target="#{deviceController.tagName}"/>
+                                    </p:commandButton>
+
+                                    <p:commandButton id="detailButton" ajax="false" action="#{deviceDetailController.prepareView}" icon="ui-icon-info" title="#{message.deviceDetails}">                                
+                                        <f:setPropertyActionListener value="#{device}" target="#{deviceDetailController.selectedDevice}"/>                                
+                                    </p:commandButton>
+                                    <p:commandButton id="deviceUtilsButton" update=":deviceUtilsDialog" oncomplete="deviceUtilsDlg.show()" icon="ui-icon-wrench" title="#{message.deviceUtils}" rendered="#{loginController.privileges.contains(bundle.SuperUser)}">
+                                        <f:setPropertyActionListener value="#{device}" target="#{deviceController.selectedDevice}"/>   
+                                    </p:commandButton>
+
+                                    <p:commandButton id="changeCompany" oncomplete="changeCompanyDialog.show()" 
+                                                     icon="ui-icon-arrowreturnthick-1-e" title="#{message.changeCompany}" rendered="#{loginController.privileges.contains(bundle.SuperUser)}">
+                                        <f:setPropertyActionListener value="#{device}" target="#{deviceController.selectedDevice}"/>
+                                    </p:commandButton>  
+                                </p:panelGrid>
+                            </p:outputPanel>
+                        </p:column>
+                        <f:facet name="footer">
+                        </f:facet>
+                    </p:dataTable>
+                </h:panelGroup>
+                
+                <p:dialog id="companyDialog" header="#{message.changeCompany}" widgetVar="changeCompanyDialog" resizable="true" height="180" width="400" 
+                          showEffect="clip" hideEffect="fold">
+                    <h:panelGrid id="display" columns="2" cellpadding="5">       
+
+                        <h:outputLabel value="#{message.selectCompany}" for="companyDropDown" />
+                        <p:selectOneMenu id="companyDropDown" value="#{deviceController.selectedCompany.name}" style="width: 150px">  
+                            <f:selectItem itemLabel="#{message.selectCompany}" itemValue=""  />  
+                            <f:selectItems value="#{deviceController.companyList}"/>  
+                        </p:selectOneMenu>
+
+                        <h:outputLabel value="#{message.name}:" for="name" />
+                        <p:inputText id="name" value="#{deviceController.newDevice.name}">          
+                        </p:inputText>    
+                        <p:commandButton action="#{deviceController.changeCompany()}" ajax="false" value="#{message.save}" 
+                                         id="iconOnly" icon="ui-icon-disk" title="">
+                        </p:commandButton>            
+                    </h:panelGrid>
+                </p:dialog>
+                
+                
+            </h:form>
+
+
+
+            <p:dialog id="deviceUtilsDialog" header="#{message.deviceUtilitiesFor} #{deviceController.selectedDevice.name}" widgetVar="deviceUtilsDlg" resizable="false" height="135" width="380" showEffect="clip" hideEffect="fold" closable="true">
+                <h:form>
+                    <p:panelGrid id="displayDeviceDetails" columns="2">
+                        <f:facet name="header">
+                        </f:facet>
+                        <p:commandButton actionListener="#{deviceController.openSSH(event)}" oncomplete="handleDeviceUtilRequest(args)" value="#{message.reverseSSH}" id="eiconssh" icon="ui-icon-gear" title="Icon Only"/>  
+                        <p:commandButton actionListener="#{deviceController.rebootDevice(event)}" oncomplete="handleDeviceUtilRequest(args)"   value="#{message.reboot}" id="eiconreboot" icon="ui-icon-power" title="Icon Only"/>  
+                        <p:commandButton actionListener="#{deviceController.locateLED(event)}" oncomplete="handleDeviceUtilRequest(args)"  value="#{message.ledLocation}" id="eiconled" icon="ui-icon-calculator" title="Icon Only"/>  
+
+                        <p:commandButton actionListener="#{deviceController.prepareList()}" oncomplete="deviceUtilsDlg.hide()"  value="#{message.cancel}" id="editcanceliconOnly" icon="ui-icon-wrench" title="Icon Only"/>  
+                        <f:facet name="footer">
+
+                        </f:facet>
+
+                    </p:panelGrid>
+                </h:form>
+
+            </p:dialog>
+
+
+
+
+            <p:dialog id="editLightDialog" header="#{message.editDevice}" widgetVar="editLightDlg" resizable="true" height="150" width="750" showEffect="clip" hideEffect="fold" closable="true" >
+                <p:ajax event="close" update="deviceForm" listener="#{deviceController.prepareList()}"/>  
+                <h:form>
+                    <p:panelGrid id="displayLightEdit" columns="4">       
+                        <f:facet name="header">
+                        </f:facet>
+                        <h:outputLabel value="#{message.name}: *" for="nameLight" />
+                        <p:inputText id="nameLight" value="#{deviceController.selectedDevice.name}"  required="false"  />
+
+                        <h:outputLabel value="#{message.wifi}*" for="wifiChannelLight" />
+                        <p:selectOneMenu id="wifiChannelLight"  value="#{deviceController.selectedDevice.wifiChannel}" requiredMessage="#{message.selectWifiChannel}">
+                            <f:selectItem itemLabel="#{message.selectWifiChannel}" itemValue="0" />
+                            <f:selectItem itemLabel="1" itemValue="1" />
+                            <f:selectItem itemLabel="2" itemValue="2"/> 
+                            <f:selectItem itemLabel="3" itemValue="3"/>  
+                            <f:selectItem itemLabel="4" itemValue="4"/> 
+                            <f:selectItem itemLabel="5" itemValue="5"/> 
+                            <f:selectItem itemLabel="6" itemValue="6"/> 
+                            <f:selectItem itemLabel="7" itemValue="7"/> 
+                            <f:selectItem itemLabel="8" itemValue="8"/> 
+                            <f:selectItem itemLabel="9" itemValue="9"/> 
+                            <f:selectItem itemLabel="10" itemValue="10"/> 
+                            <f:selectItem itemLabel="11" itemValue="11"/> 
+                        </p:selectOneMenu>
+
+
+
+                        <h:outputLabel value="#{message.deviceGroupName}:" for="tagdropdownlight" />
+                        <p:selectOneMenu id="tagdropdownlight" value="#{deviceController.tagName}">
+                            <f:selectItem itemLabel="#{message.selectGroupName}" itemValue="" />  
+                            <f:selectItems value="#{tagController.listTags}" /> 
+                        </p:selectOneMenu>
+
+                        <h:outputLabel value="#{message.active}:" for="activeCheckboxLight" />
+                        <p:selectBooleanCheckbox id="activeCheckboxLight" value="#{deviceController.selectedDevice.active}"/>
+                        <f:facet name="footer">
+                            <p:commandButton actionListener="#{deviceController.editDevice(event)}" oncomplete="handleEditLightRequest(args)" update=":deviceForm" value="#{message.save}" id="eiconOnly" icon="ui-icon-disk" title="Icon Only"/>  
+                            <p:commandButton actionListener="#{deviceController.prepareList()}" oncomplete="editLightDlg.hide()" update=":deviceForm" value="#{message.cancel}" id="editcanceliconOnly" icon="ui-icon-cancel" title="Icon Only"/>  
+                        </f:facet>
+
+                    </p:panelGrid>
+                </h:form>
+            </p:dialog>
+            
+            
+            <p:dialog id="editDialog" header="#{message.editDevice}" widgetVar="editDlg" resizable="false" draggable="false" height="350" width="750" showEffect="clip" hideEffect="fold" closable="true" >
+                <p:ajax event="close" update="deviceForm" listener="#{deviceController.prepareList()}"/>  
+                <h:form>
+                    <p:panelGrid id="displayEdit" columns="4">       
+                        <f:facet name="header">
+                        </f:facet>
+                        <h:outputLabel value="#{message.name}: *" for="name" />
+                        <p:inputText id="name" value="#{deviceController.selectedDevice.name}"  required="false"  />
+                        <h:outputLabel value="#{message.macAddress}" rendered="#{loginController.privileges.contains(bundle.SuperUser)}"/>
+                        <h:outputLabel value="#{deviceController.selectedDevice.macAddress}" rendered="#{loginController.privileges.contains(bundle.SuperUser)}"/>  
+                        <h:outputLabel value="#{message.serialNumber}: *" for="serialNumber"  rendered="#{loginController.privileges.contains(bundle.SuperUser)}" />
+                        <p:inputText id="serialNumber" value="#{deviceController.selectedDevice.serialNumber}"  required="false"  rendered="#{loginController.privileges.contains(bundle.SuperUser)}"/>
+                        <h:outputLabel value="#{message.platform}" for="platform" rendered="#{loginController.privileges.contains(bundle.SuperUser)}"/>
+                        <p:selectOneMenu id="platform" value="#{deviceController.selectedDevice.platform}" rendered="#{loginController.privileges.contains(bundle.SuperUser)}">
+                            <f:selectItem itemLabel="#{message.selectPlatform}" itemValue="" />
+                            <f:selectItems value="#{softwareReleaseController.platforms}" /> 
+                        </p:selectOneMenu>
+                        <h:outputLabel value="#{message.registered}:" rendered="#{loginController.privileges.contains(bundle.SuperUser)}"/>
+                        <h:outputLabel value="#{deviceController.selectedDevice.registrationDate}" rendered="#{loginController.privileges.contains(bundle.SuperUser)}">
+                            <f:convertDateTime pattern="MMM dd, YYYY - HH:mm:ss"/>
+                        </h:outputLabel>
+                        <h:outputLabel value="#{message.lastSeen}:" rendered="#{loginController.privileges.contains(bundle.SuperUser)}"/>
+                        <h:outputLabel value="#{deviceController.selectedDevice.lastSeen}" rendered="#{loginController.privileges.contains(bundle.SuperUser)}">
+                            <f:convertDateTime pattern="MMM dd, YYYY - HH:mm:ss"/>
+                        </h:outputLabel>
+                        <h:outputLabel value="#{message.wifiChannel}*" for="wifiChannel" />
+                        <p:selectOneMenu id="wifiChannel"  value="#{deviceController.selectedDevice.wifiChannel}" requiredMessage="#{message.selectWifiChannel}">
+                            <f:selectItem itemLabel="#{message.selectWifiChannel}" itemValue="0" />
+                            <f:selectItem itemLabel="1" itemValue="1" />
+                            <f:selectItem itemLabel="2" itemValue="2"/> 
+                            <f:selectItem itemLabel="3" itemValue="3"/>  
+                            <f:selectItem itemLabel="4" itemValue="4"/> 
+                            <f:selectItem itemLabel="5" itemValue="5"/> 
+                            <f:selectItem itemLabel="6" itemValue="6"/> 
+                            <f:selectItem itemLabel="7" itemValue="7"/> 
+                            <f:selectItem itemLabel="8" itemValue="8"/> 
+                            <f:selectItem itemLabel="9" itemValue="9"/> 
+                            <f:selectItem itemLabel="10" itemValue="10"/> 
+                            <f:selectItem itemLabel="11" itemValue="11"/> 
+                        </p:selectOneMenu>
+
+
+
+                        <h:outputLabel value="#{message.deviceGroup}:" for="tagdropdown" />
+                        <p:selectOneMenu id="tagdropdown" value="#{deviceController.tagName}">
+                            <f:selectItem itemLabel="#{message.selectGroupName}" itemValue="" />  
+                            <f:selectItems value="#{tagController.listTags}" /> 
+                        </p:selectOneMenu>
+
+                        <h:outputLabel value="#{message.reconnectInterval}" rendered="#{loginController.privileges.contains(bundle.SuperUser)}"/>
+                        <p:selectOneMenu id="reconnectInterval" value="#{deviceController.selectedDevice.reconnectInterval}" rendered="#{loginController.privileges.contains(bundle.SuperUser)}">
+                            <f:selectItem itemLabel="#{message.selectInterval}" itemValue="300000" />
+                            <f:selectItem itemLabel="#{message.thirtySec}" itemValue="#{30*1000}"/>
+                            <f:selectItem itemLabel="#{message.threeMin}" itemValue="#{3*60*1000}"/>
+                            <f:selectItem itemLabel="#{message.fiveMin}" itemValue="#{5*60*1000}"/> 
+                            <f:selectItem itemLabel="#{message.fifteenMin}" itemValue="#{15*60*1000}"/>  
+                            <f:selectItem itemLabel="#{message.thirtyMin}" itemValue="#{30*60*1000}"/> 
+                            <f:selectItem itemLabel="#{message.fortyFiveMin}" itemValue="#{45*60*1000}"/> 
+                            <f:selectItem itemLabel="#{message.oneHour}" itemValue="#{60*60*1000}"/> 
+                            <f:selectItem itemLabel="#{message.fourHours}" itemValue="#{4*60*60*1000}"/> 
+                            <f:selectItem itemLabel="#{message.sixHours}" itemValue="#{6*60*60*1000}"/> 
+                            <f:selectItem itemLabel="#{message.twelveHours}" itemValue="#{12*60*60*1000}"/> 
+                            <f:selectItem itemLabel="#{message.twentyFourHours}" itemValue="#{24*60*60*1000}"/> 
+                        </p:selectOneMenu>
+
+                        <h:outputLabel value="#{message.logRotation}" rendered="#{loginController.privileges.contains(bundle.SuperUser)}"/>
+
+                        <p:selectOneMenu id="rotation" value="#{deviceController.selectedDevice.rotation}" rendered="#{loginController.privileges.contains(bundle.SuperUser)}">
+                            <f:selectItem itemLabel="#{message.selectInterval}" itemValue="3600000" />
+                            <f:selectItem itemLabel="#{message.thirtySec}" itemValue="#{30*1000}"/>
+                            <f:selectItem itemLabel="#{message.threeMin}" itemValue="#{3*60*1000}"/>
+                            <f:selectItem itemLabel="#{message.fiveMin}" itemValue="#{5*60*1000}"/> 
+                            <f:selectItem itemLabel="#{message.fifteenMin}" itemValue="#{15*60*1000}"/>  
+                            <f:selectItem itemLabel="#{message.thirtyMin}" itemValue="#{30*60*1000}"/> 
+                            <f:selectItem itemLabel="#{message.fortyFiveMin}" itemValue="#{45*60*1000}"/> 
+                            <f:selectItem itemLabel="#{message.oneHour}" itemValue="#{60*60*1000}"/> 
+                            <f:selectItem itemLabel="#{message.fourHours}" itemValue="#{4*60*60*1000}"/> 
+                            <f:selectItem itemLabel="#{message.sixHours}" itemValue="#{6*60*60*1000}"/> 
+                            <f:selectItem itemLabel="#{message.twelveHours}" itemValue="#{12*60*60*1000}"/> 
+                            <f:selectItem itemLabel="#{message.twentyFourHours}" itemValue="#{24*60*60*1000}"/> 
+                        </p:selectOneMenu>
+
+                        <h:outputLabel value="#{message.active}:" for="activeCheckbox" />
+                        <p:selectBooleanCheckbox id="activeCheckbox" value="#{deviceController.selectedDevice.active}"/>
+                        <h:outputLabel value="#{message.wifiManualOverride}:" for="wifiOverride" rendered="#{loginController.privileges.contains(bundle.SuperUser)}" />
+                        <p:selectBooleanCheckbox id="wifiOverride" value="#{deviceController.selectedDevice.allowWifiClientOverride}" rendered="#{loginController.privileges.contains(bundle.SuperUser)}"/>
+
+
+                        <f:facet name="footer">
+                            <p:commandButton actionListener="#{deviceController.editDevice(event)}" oncomplete="handleEditRequest(args)" update=":growl" value="#{message.save}" id="eiconOnly" icon="ui-icon-disk" title="Icon Only"/>  
+                            <p:commandButton actionListener="#{deviceController.prepareList()}" oncomplete="editDlg.hide()" update=":deviceForm" value="#{message.cancel}" id="editcanceliconOnly" icon="ui-icon-cancel" title="Icon Only"/>  
+                        </f:facet>
+
+                    </p:panelGrid>
+                </h:form>
+            </p:dialog>
+        </ui:composition>
+    </h:body>
+
+</html>

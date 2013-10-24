@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+
+    <h:head>
+        <link rel="stylesheet" type="text/css" href="/ProximusTomorrow-war/faces/jsfcrud.css" />
+        <h:outputStylesheet name="css/jsfcrud.css"/>
+        
+    </h:head>
+
+    <h:body>
+
+        <ui:composition template="/template.xhtml">
+            <style>
+                .ui-picklist .ui-picklist-list {
+                    width: 100%;
+                }
+            </style>
+            
+             <style type="text/css">
+                .customPanelGrid table {
+                    border: 2px solid;
+                    border-color: lightgray;
+                }
+                .customPanelGrid td { 
+                    border-width: 1px;
+                    border-color: white;
+                }
+                .customPanelGrid tr {
+                    border-width: 0px;
+                    border-color: black;
+                }
+            </style>  
+            <ui:define name="pageHeader">
+                <h:outputText value="#{message.eventSubscription}"></h:outputText>
+            </ui:define>
+
+            <br />
+            <h:form rendered="#{!loginController.privileges.contains(bundle.UserPrivilege)}">
+                <h:outputText value="#{message.InsufficientPrivileges}" 
+                              style="font-family: Arial;font-size: 16px;color: red;"/>
+            </h:form>
+
+            <h:form id="eventSubscriptionForm" rendered="#{loginController.privileges.contains(bundle.SuperUser)}">
+
+                <p:dataTable id="subscriptionList" var="eventSubscription" widgetVar="subscriptionTable" value="#{eventSubscriptionController.eventSubscriptionModel}"
+                             rowKey="#{eventSubscription.eventType.id}" selection="#{eventSubscriptionController.selectedSubscription}" selectionMode="single"
+                             paginator="true" rows="10"
+                             currentPageReportTemplate="{currentPage} #{message.of} {totalPages}" 
+                             paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                             rowsPerPageTemplate="5,10,15,20,50,100" rendered="#{eventSubscriptionController.subscriptions.size() gt 0}">
+
+
+                    <p:column id="subscribedEventTypes" headerText="#{message.subscribedEventTypes}">
+                        <h:outputText value="#{eventSubscription.eventType.id}"/>          
+                    </p:column>
+
+                    <p:column id="subscriptionValue" headerText="#{message.subscriptions}">                        
+                        <h:outputText value="#{eventSubscription.friendlySubscriptions()}"/>          
+                    </p:column>
+
+                    <p:column headerText="#{message.editOptions}"  style="width:150px">
+
+                        <p:commandButton id="deleteButton" oncomplete="confirmation.show()" icon="ui-icon-trash" title="#{message.delete}" update=":eventSubscriptionForm">
+                            <f:setPropertyActionListener value="#{eventSubscription}" target="#{eventSubscriptionController.selectedSubscription}" />  
+                        </p:commandButton>
+                    </p:column>
+
+                </p:dataTable>
+                <br/>
+                <p:dataTable id="eventTypeList" var="eventType" widgetVar="eventTypeTable" value="#{eventSubscriptionController.eventTypeModel}"
+                             selection="#{eventSubscriptionController.selectedEventTypes}" 
+                             paginator="true" rows="10"
+                             currentPageReportTemplate="{currentPage} #{message.of} {totalPages}" 
+                             paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                             rowsPerPageTemplate="5,10,15,20,50,100">
+
+                    <p:column id="selections" selectionMode="multiple" style="width: 15px"/>
+
+                    <p:column id="name" headerText="#{message.availableEventTypes}">
+                        <h:outputText value="#{eventType.id}"/>          
+                    </p:column>
+                </p:dataTable>
+
+                <br/>
+                <center>
+                    <p:panelGrid styleClass="customPanelGrid" columns="1" rendered="#{eventSubscriptionController.eventTypeList.size() gt 0}">
+                        <h:outputText value="#{message.alertFrequency}"/>
+                        <p:selectManyButton value="#{eventSubscriptionController.selectedAlerts}" label="#{message.alertFrequency}"  >  
+                            <f:selectItems value="#{eventSubscriptionController.alerts}" />  
+                        </p:selectManyButton>  
+
+                        <p:commandButton id="subscribeButton" action="#{eventSubscriptionController.subscribeToEventType()}" icon="ui-icon-disk"
+                                         value="#{message.save}"  ajax="true"  update=":eventSubscriptionForm"/>
+                    </p:panelGrid>
+                </center>
+            </h:form>
+            <p:confirmDialog id="confirmDialog" message="#{message.sureYouWantToDelete} #{eventSubscriptionController.selectedSubscription.eventType.id}?" 
+                             severity="alert" widgetVar="confirmation">
+                <p:commandButton id="confirm" value="#{message.yes}" onclick="confirmation.hide()" 
+                                 actionListener="#{eventSubscriptionController.unsubscribeFromEventType()}" update=":eventSubscriptionForm" />
+                <p:commandButton id="decline" value="#{message.no}" onclick="confirmation.hide()"/>    
+            </p:confirmDialog>
+        </ui:composition>
+    </h:body> 
+</html>

@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+    <h:head>
+        <title>Local Offers Report</title>
+    </h:head>
+
+    <h:body>
+        <ui:composition template="/template.xhtml">
+            <ui:define name="pageHeader">
+                <h:outputText value="Local Offers Report"></h:outputText>
+            </ui:define>
+
+            <h:form rendered="#{!loginController.privileges.contains(bundle.ViewUserProfileReport)}">
+                <h:outputText value="#{bundle.InsufficientPrivileges}" 
+                              style="font-family: Arial;font-size: 16px;color: red;"/>
+            </h:form>
+
+            <h:form id="barcodeReportForm" rendered="#{loginController.privileges.contains(bundle.ViewUserProfileReport)}">
+
+                <p:panel id="criteria" header="Report Criteria" toggleable="true" closable="false" toggleSpeed="500" closeSpeed="2000" widgetVar="panel" style="min-width:500px;">  
+                    <h:panelGrid columns="3" cellpadding="2">
+                        <h:outputText value="Start Date:" />
+                        <p:calendar navigator="true" value="#{localOffersController.startDate}" pattern="yyyy-MM-dd" showOn="button" id="startDate">
+                        </p:calendar>
+                        <h:outputText/>
+
+                        <h:outputText value="End Date:" />
+                        <p:calendar navigator="true" value="#{localOffersController.endDate}" pattern="yyyy-MM-dd" showOn="button" id="endDate">                       
+                        </p:calendar>
+                        <h:outputText/>
+                        
+                         <h:outputText value="Campaign:" />
+                        <p:selectOneMenu id="campaigndropdown" value="#{localOffersController.selectedCampaign.name}" effect="fade">  
+                            <f:selectItem itemLabel="Select Campaign" itemValue="" />  
+                            <f:selectItems value="#{localOffersController.listCampaigns}"/>  
+                        </p:selectOneMenu>  
+                        <h:outputText value=" "/>
+
+                        <h:outputText value="Device" />
+                        <p:selectOneMenu id="deviceDropdown" value="#{localOffersController.selectedDevice.name}" effect="fade">  
+                            <f:selectItem itemLabel="Select Device" itemValue="" />  
+                            <f:selectItems value="#{localOffersController.listDevices}"/>  
+                        </p:selectOneMenu> 
+                        <h:outputText value=""/>
+                    </h:panelGrid>
+                    <p:commandButton action="#{localOffersController.prepareBarcodeList()}" value="Update Report" update=":printReport,:barcodeForm"/>
+                </p:panel>
+            </h:form>
+
+            <p:panel id="printReport" rendered="#{loginController.privileges.contains(bundle.ViewUserProfileReport)}" header="Local Offers from #{localOffersController.formattedStartDate} to #{localOffersController.formattedEndDate}">
+                <h:form id="barcodeForm" rendered="#{loginController.privileges.contains(bundle.TargetPrivilege)}">
+
+
+                    <p:dataTable id="summaries" var="profile" value="#{localOffersController.barcodeList}" widgetVar="profileTable"
+                                 paginator="true" rows="10" filteredValue="#{localOffersController.filteredBarcodes}"
+                                 currentPageReportTemplate="{currentPage} #{message.of} {totalPages}" 
+                                 paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                 rowsPerPageTemplate="5,10,15,20,50,100">  
+                           <f:facet name="header">
+                            <p:outputPanel>
+                                <h:outputText value="Search Devices: "/>
+                                <p:inputText id="globalFilter" onkeyup="profileTable.filter()"/>
+                                <p:tooltip for="globalFilter" value="Search on Mac Address or Phone Name"/>
+                            </p:outputPanel>
+                        </f:facet>
+                        
+                        <p:column id="typeLabel" sortBy="#{profile.type}" headerText="Barcode Type" style="width: 151px">    
+                            <h:outputText value="#{profile.type}" />
+                        </p:column> 
+                        
+                        <p:column id="barcodeNumber" headerText="Barcode Number" filterBy="#{profile.barcode}" 
+                                  filterMatchMode="contains" filterStyle="display: none;" >   
+                            <h:outputText value="#{profile.barcode}"/>
+                        </p:column>  
+                        
+                        <p:column id="macAddress" headerText="Users Mac Addresses" filterBy="#{profile.macAddress}" 
+                                  filterMatchMode="contains" filterStyle="display: none;">  
+                            <h:outputText value="#{profile.macAddress}"/>
+                        </p:column>  
+
+                        
+                        
+                       
+                        <p:column id="firstSeen" sortBy="#{profile.eventDate}" headerText="First Seen">    
+                            <h:outputText value="#{profile.eventDateFmt}"/>
+                        </p:column>  
+                    </p:dataTable>
+                </h:form>
+            </p:panel>
+        </ui:composition>
+    </h:body>
+</html>

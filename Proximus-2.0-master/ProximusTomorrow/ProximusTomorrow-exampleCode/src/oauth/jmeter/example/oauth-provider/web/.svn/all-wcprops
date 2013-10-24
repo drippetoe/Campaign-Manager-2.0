@@ -1,0 +1,29 @@
+K 25
+svn:wc:ra_dav:version-url
+V 62
+/svn/!svn/ver/1183/code/java/jmeter/example/oauth-provider/web
+END
+OAuthProblemException.jsp
+K 25
+svn:wc:ra_dav:version-url
+V 88
+/svn/!svn/ver/1183/code/java/jmeter/example/oauth-provider/web/OAuthProblemException.jsp
+END
+banner.jsp
+K 25
+svn:wc:ra_dav:version-url
+V 73
+/svn/!svn/ver/1183/code/java/jmeter/example/oauth-provider/web/banner.jsp
+END
+index.jsp
+K 25
+svn:wc:ra_dav:version-url
+V 72
+/svn/!svn/ver/1183/code/java/jmeter/example/oauth-provider/web/index.jsp
+END
+authorize.jsp
+K 25
+svn:wc:ra_dav:version-url
+V 76
+/svn/!svn/ver/1183/code/java/jmeter/example/oauth-provider/web/authorize.jsp
+END

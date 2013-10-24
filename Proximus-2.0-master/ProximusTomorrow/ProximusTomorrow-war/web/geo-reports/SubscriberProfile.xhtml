@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+
+
+    <h:head>
+        <title>Company</title>
+        <link rel="stylesheet" type="text/css" href="/ProximusTomorrow-war/faces/jsfcrud.css" />
+        <h:outputStylesheet name="css/jsfcrud.css"/>
+        <script src="http://maps.google.com/maps/api/js?sensor=false" type="text/javascript" ></script>
+
+    </h:head>
+
+    <h:body>
+        <ui:composition template="/template.xhtml">
+            <ui:define name="pageHeader">
+                <h:outputText value="Subscriber Profiler"></h:outputText>
+            </ui:define>
+            <br/>
+            <br/>
+            <h:form rendered="#{!loginController.privileges.contains(bundle.SuperUser)}">
+                <h:outputText value="#{bundle.InsufficientPrivileges}" 
+                              style="font-family: Arial;font-size: 16px;color: red;"/>
+            </h:form>
+
+            <h:form id="subscriberProfileForm" rendered="#{loginController.privileges.contains(bundle.SuperUser)}">
+                <p:panel id="configuration" header="Configuration" toggleable="true" closable="false" toggleSpeed="500" closeSpeed="2000" widgetVar="panel" style="min-width:500px;">  
+                    <h:panelGrid columns="2" cellpadding="2">
+                        <h:outputText value="Start Date:" />
+                        <p:calendar navigator="true" value="#{subscriberProfileController.startDate}" pattern="yyyy-MM-dd" showOn="button" id="startDate">
+                        </p:calendar>
+                        <h:outputText value="End Date:" />
+                        <p:calendar navigator="true" value="#{subscriberProfileController.endDate}" pattern="yyyy-MM-dd" showOn="button" id="endDate">                       
+                        </p:calendar>  
+                        <h:outputText value="Input MSISDN"/>
+                        <p:inputText value="#{subscriberProfileController.msisdn}"/>
+                        <p:commandButton value="Create Subscriber Profile" ajax="false" action="#{subscriberProfileController.createSubscriberProfile()}"/>
+                        <p:commandButton id="displayMap"   value="Create Subscriber Profile Map" title="Show Map" oncomplete="mapDialog.show()" update="map"
+                                         action="#{subscriberProfileController.createSubscriberMap()}" rendered="#{subscriberProfileController.subscriberList.size() > 0 and subscriberProfileController.locationProfiles.size() > 0}"/>                              
+                    </h:panelGrid>
+                </p:panel>
+                <br/>
+                <h:panelGroup rendered="#{subscriberProfileController.subscriberList.size() > 0}">
+                    <p:dataTable id="subscriberList" var="subscriber" value="#{subscriberProfileController.subscriberList}" >
+                        <f:facet name="header">
+                            <p:column colspan="2">Subscriber</p:column> 
+                        </f:facet>
+
+                        <p:column id="msisdn" headerText="MSISDN">
+                            <h:outputText value="#{subscriber.msisdn}"/>
+                        </p:column>
+
+                        <p:column id="subStatus" headerText="Subscriber Status">
+                            <h:outputText value="#{subscriber.status}"/>
+                        </p:column>
+
+                        <p:column id="locaidStatus" headerText="Locaid Status">
+                            <h:outputText value="#{subscriber.locaidStatus}"/>
+                        </p:column>
+
+                        <p:column id="registrationDate" headerText="Registration Date">
+                            <h:outputText value="#{subscriber.registrationDate}"/>
+                        </p:column>
+
+                        <p:column id="optInDate" headerText="Opt In Date">
+                            <h:outputText value="#{subscriber.smsOptInDate}"/>
+                        </p:column>
+
+                        <p:column id="optOutDate" headerText="Opt Out Date">
+                            <h:outputText value="#{subscriber.smsOptOutDate}"/>
+                        </p:column>
+
+                        <p:column id="carrier" headerText="Carrier">
+                            <h:outputText value="#{subscriber.carrier.name}"/>
+                        </p:column>
+
+                        <p:column id="keyword" headerText="Keyword">
+                            <h:outputText value="#{subscriber.keyword.keyword}"/>
+                        </p:column>
+
+                    </p:dataTable>
+
+                    <br/>
+                    <p:dataTable id="lookupList" var="lookups" widgetVar="lookupTable" value="#{subscriberProfileController.locationProfiles}" 
+                                 paginator="true" rows="20"
+                                 currentPageReportTemplate="{currentPage} #{message.of} {totalPages}" 
+                                 paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                 rowsPerPageTemplate="5,10,15,20,50,100">
+
+                        <f:facet name="header">
+                            <p:column colspan="2">
+                                <h:outputText value="Lookups from #{subscriberProfileController.formattedStartDate} to #{subscriberProfileController.formattedEndDate}"/>
+                            </p:column> 
+                        </f:facet>
+
+                        <p:column id="eventDate" headerText="Event Date" sortBy="#{lookups.locationData.eventDate}">
+                            <h:outputText value="#{lookups.locationData.eventDate}"/>
+                        </p:column>
+
+                        <p:column id="latitude" headerText="Latitude" sortBy="#{lookups.locationData.latitude}">
+                            <h:outputText value="#{lookups.locationData.latitude}"/>
+                        </p:column>
+
+                        <p:column id="longitude" headerText="Longitude" sortBy="#{lookups.locationData.longitude}">
+                            <h:outputText value="#{lookups.locationData.longitude}"/>
+                        </p:column>
+
+                        <p:column id="closestGeofence" headerText="Closest GeoFence" sortBy="#{lookups.geoFence.name}">
+                            <h:outputText value="#{lookups.geoFence.name}"/>
+                        </p:column>
+
+                        <p:column id="distanceAway" headerText="Distance Away From GeoFence" sortBy="#{lookups.locationData.distanceAwayFromGeoFence}">
+                            <h:outputText value="#{lookups.locationData.distanceAwayFromGeoFence}"/>
+                            <h:outputText value=" miles" rendered="#{lookups.locationData.distanceAwayFromGeoFence !=null}"/>
+                        </p:column>
+
+                    </p:dataTable>
+                    <br/>
+                    <p:dataTable id="messageList" var="messages" widgetVar="messageTable" value="#{subscriberProfileController.mobileOffers}"  
+                                 paginator="true" rows="20"
+                                 currentPageReportTemplate="{currentPage} #{message.of} {totalPages}" 
+                                 paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                 rowsPerPageTemplate="5,10,15,20,50,100">
+
+                        <f:facet name="header">
+                            <p:column colspan="2">
+                                <h:outputText value="Messages sent from #{subscriberProfileController.formattedStartDate} to #{subscriberProfileController.formattedEndDate}"/>
+                            </p:column> 
+                        </f:facet>
+
+                        <p:column id="messageSendDate" headerText="Event Date" sortBy="#{messages.eventDate}">
+                            <h:outputText value="#{messages.eventDate}"/>
+                        </p:column>
+
+                        <p:column id="messageName" headerText="Sent Offer" sortBy="#{messages.mobileOffer.name}">
+                            <h:outputText value="#{messages.mobileOffer.name}"/>
+                        </p:column>
+
+                        <p:column id="sentProperty" headerText="Property" sortBy="#{messages.property}">
+                            <h:outputText value="#{messages.property}"/>
+                        </p:column>
+
+                    </p:dataTable>
+                </h:panelGroup>
+
+                <p:dialog id="mapDialog" widgetVar="mapDialog" width="625" height="400" modal="true">  
+                    <p:gmap id="map"
+                            center="#{subscriberProfileController.center}"
+                            zoom="20"
+                            type="roadmap"
+                            model="#{subscriberProfileController.fenceModel}"
+                            widgetVar="fenceMap"
+                            mapTypeControl="false"
+                            streetView="false"
+                            fitBounds="true"
+                            style="margin-left: .5em; float: left; width:100%; height: 600px;" >
+
+                    </p:gmap> 
+                </p:dialog>  
+            </h:form>
+        </ui:composition>
+    </h:body>
+</html>

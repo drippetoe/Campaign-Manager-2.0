@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+        *** GENERATED FROM jax-ws.xml - DO NOT EDIT !                             ***
+        *** TO MODIFY wsimport options USE Web Service node -> Edit WS Attributes ***
+        *** TO CHANGE TARGETS GENERATED TO jaxws-build.xml COPY THOSE             ***
+        *** TARGETS TO ../build.xml AND MODIFY THAT FILE INSTEAD                  ***
+
+        -->
+<project xmlns:xalan="http://xml.apache.org/xslt" xmlns:j2seproject3="http://www.netbeans.org/ns/j2se-project/3" xmlns:jaxws="http://www.netbeans.org/ns/jax-ws/1">
+    <!--
+                ===================
+                JAX-WS WSIMPORT SECTION
+                ===================
+            -->
+    <target name="wsimport-init" depends="init">
+        <mkdir dir="${build.generated.sources.dir}/jax-ws"/>
+        <taskdef name="wsimport" classname="com.sun.tools.ws.ant.WsImport">
+            <classpath path="${libs.jaxws21.classpath}"/>
+        </taskdef>
+    </target>
+    <target name="wsimport-client-LatitudeLongitudeServices" depends="wsimport-init">
+        <mkdir dir="${build.generated.dir}/jax-wsCache/LatitudeLongitudeServices"/>
+        <property name="wsdl-LatitudeLongitudeServices" location="xml-resources/web-service-references/LatitudeLongitudeServices/wsdl/LatitudeLongitudeServices.wsdl"/>
+        <wsimport sourcedestdir="${build.generated.dir}/jax-wsCache/LatitudeLongitudeServices" destdir="${build.generated.dir}/jax-wsCache/LatitudeLongitudeServices" wsdl="${wsdl-LatitudeLongitudeServices}" catalog="catalog.xml" extension="true" verbose="true" wsdlLocation="file:/C:/MyProjects/Proximus-2.0/ProximusTomorrow/ProximusTomorrow-locationclient/WSDL/LatitudeLongitudeServices.wsdl" xnocompile="true" xendorsed="true">
+            <depends file="${wsdl-LatitudeLongitudeServices}"/>
+            <produces dir="${build.generated.dir}/jax-wsCache/LatitudeLongitudeServices"/>
+        </wsimport>
+        <copy todir="${build.generated.sources.dir}/jax-ws">
+            <fileset dir="${build.generated.dir}/jax-wsCache/LatitudeLongitudeServices">
+                <include name="**/*.java"/>
+            </fileset>
+        </copy>
+    </target>
+    <target name="wsimport-client-clean-LatitudeLongitudeServices" depends="-init-project">
+        <delete dir="${build.generated.dir}/jax-wsCache/LatitudeLongitudeServices"/>
+        <delete dir="${build.generated.sources.dir}/jax-ws/net/locaid/portico/webservice"/>
+    </target>
+    <target name="wsimport-client-generate" depends="wsimport-client-LatitudeLongitudeServices"/>
+</project>

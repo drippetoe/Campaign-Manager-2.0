@@ -1,0 +1,7 @@
+#
+# @author Eric Johansson <ejohansson@proximusmobility.com>
+#
+
+1. Download Aptana Sudio and import as PyDev project: http://www.aptana.com/products/studio3/download
+   *. If you cannot import as PyDev Project, import as Web then right click "PyDev" -> "Set as Pydev Project"
+

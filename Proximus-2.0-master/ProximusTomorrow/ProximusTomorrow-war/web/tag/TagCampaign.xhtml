@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+
+    <h:head>
+        <link rel="stylesheet" type="text/css" href="/ProximusTomorrow-war/faces/jsfcrud.css" />
+        <h:outputStylesheet name="css/jsfcrud.css"/>
+    </h:head>
+
+    <h:body>
+        <ui:composition template="/template.xhtml">
+            <ui:define name="pageHeader">
+                <h:outputText value="#{message.assignCampaignsToGroups}"></h:outputText>
+            </ui:define>
+
+            <h:form rendered="#{!loginController.privileges.contains(bundle.CreateCampaign)}">
+                <h:outputText value="#{bundle.InsufficientPrivileges}" 
+                              style="font-family: Arial;font-size: 16px;color: red;"/>
+            </h:form>
+
+            <h:form id="tagCampaignForm" rendered="#{loginController.privileges.contains(bundle.CreateCampaign)}">
+
+                <h1><h:outputText escape="false" value="#{message.noCampaignsFound}" rendered="#{tagController.campaignModel.rowCount == 0}"/></h1>
+                <p:commandButton id="addCampaign" rendered="#{tagController.campaignModel.rowCount == 0}" icon="ui-icon-plus" value="#{message.add}" ajax="false" action="#{campaignController.prepareCreate()}"/>
+
+
+                <p:outputPanel rendered="#{tagController.campaignModel.rowCount > 0}">
+                    <p:commandButton id="addButton" update="tagCampaignForm" value="#{message.newDeviceGroup}" oncomplete="tagDialog.show()" icon="ui-icon-tag" title="#{message.addTag}"/>
+
+                    <p:commandButton id="linkButton" update="tagCampaignForm" value="#{message.link}" action="#{tagController.linkOn()}" oncomplete="linkDialog.show()" icon="ui-icon-locked" title="#{message.addLink}"/>
+
+
+                    <p:commandButton id="unlinkButton" update="tagCampaignForm" value="#{message.unlink}" action="#{tagController.linkOff()}" oncomplete="linkDialog.show()" icon="ui-icon-unlocked" title="#{message.deleteLink}"/> 
+
+                    <p:dataTable id="tagCampaignList" var="campaign" widgetVar="campaignTable" value="#{tagController.campaignModel}"
+                                 selection="#{tagController.selectedCampaigns}" 
+                                 paginator="true" rows="10" filteredValue="#{tagController.filteredCampaigns}"
+                                 currentPageReportTemplate="{currentPage} #{message.of} {totalPages}" 
+                                 paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                 rowsPerPageTemplate="5,10,15,20,50,100">
+                        <f:facet name="header">
+                            <p:outputPanel>
+                                <h:outputText value="#{message.filter}:"/>                                
+                                <p:inputText id="globalFilter" onkeyup="campaignTable.filter()"/>
+                            </p:outputPanel>
+                        </f:facet>
+
+                        <p:column id="selections" selectionMode="multiple" style="width: 15px" >
+
+                        </p:column>
+
+                        <p:column id="name" headerText="#{message.campaign}" filterBy="#{campaign.name}" filterMatchMode="contains" filterStyle="display: none;">
+                            <h:outputText value="#{campaign.name}"/>          
+                        </p:column>
+
+
+                        <p:column  id="TagColumn" headerText="#{message.deviceGroups}" filterBy="#{campaign.tags}" filterMatchMode="contains" filterStyle="display: none;">
+                            <ui:repeat value="#{campaign.tags}" var="tag" varStatus="status">
+                                <h:outputText value="#{tag.name}"/>                                 
+                                <h:outputText value=","   rendered="#{!status.last}"/>   
+                            </ui:repeat>
+                        </p:column>
+
+                        <f:facet name="footer">
+                        </f:facet>
+                    </p:dataTable>
+
+                    <p:panel>
+                        <p:commandButton ajax="false" action="#{tagController.prepareList()}" value="#{message.manageDeviceGroups}"/>
+                        <p:commandButton ajax="false" action="#{tagController.prepareTagToDevice()}" value="#{message.groupYourDevices}"/>
+                    </p:panel>
+                </p:outputPanel>
+
+
+                <p:dialog id="groupDialog" header="#{message.campaignToDeviceGroup}" widgetVar="linkDialog" resizable="true" height="200" width="350" showEffect="clip" hideEffect="fold">
+                    <h:panelGrid id="linkdisplay" columns="1" cellpadding="4">
+                        <p:outputPanel>
+                            <p:selectOneMenu id="tagdropdown" value="#{tagController.deviceTag.name}">  
+                                <f:selectItem itemLabel="Device Group Name:" itemValue=""  />  
+                                <f:selectItems value="#{tagController.listTags}"/>  
+                            </p:selectOneMenu> 
+
+                        </p:outputPanel>
+                        <p:commandButton id="linkButtonDialog" action="#{tagController.saveToCampaigns(tagController.deviceTag)}" value="#{message.link}" icon="ui-icon-locked" ajax="false" rendered="#{tagController.link}">
+                            <f:param name="tag" value="#{tagController.deviceTag}"/>
+                        </p:commandButton>
+                        <p:commandButton id="unlinkButtonDialog" action="#{tagController.deleteFromCampaigns(tagController.deviceTag)}" value="#{message.unlink}" icon="ui-icon-unlocked" ajax="false" rendered="#{!tagController.link}">
+                            <f:param name="tag" value="#{tagController.deviceTag}"/>
+                        </p:commandButton>
+                    </h:panelGrid>
+                </p:dialog>
+
+                <p:dialog id="dialog" header="#{message.addDeviceGroup}" widgetVar="tagDialog" resizable="true" height="150" width="450" showEffect="clip" hideEffect="fold">
+                    <h:panelGrid id="display" columns="5" cellpadding="5">       
+                        <h:outputLabel value="#{message.name}:" for="tag_name"/>
+                        <p:inputText id="tag_name" value="#{tagController.newTag.name}" label="Name"/> 
+                        <p:commandButton action="#{tagController.createNewTag}" update=":tagCampaignForm,:growl" value="#{message.save}" id="iconOnly" icon="ui-icon-plus" title="Icon Only"/>              
+                    </h:panelGrid>
+                </p:dialog>
+
+            </h:form>
+        </ui:composition>
+    </h:body> 
+</html>

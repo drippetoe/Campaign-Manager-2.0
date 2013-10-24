@@ -1,0 +1,73 @@
+#!/bin/sh
+# Detect and return Platform
+
+PLATFORM_LINUX_BLUEGIGA="Bluegiga"
+PLATFORM_LINUX_DREAMPLUG="Dreamplug"
+PLATFORM_LINUX_DDWRT="DDWRT"
+PLATFORM_MAC="MacOSX"
+PLATFORM_UNKNOWN="Unknown"
+
+PLATFORM="$PLATFORM_UNKNOWN"
+
+BINDIR=/home/proximus/bin
+
+if [ -d  "/etc/bluegiga-release" ]; then
+  PLATFORM="$PLATFORM_LINUX_BLUEGIGA"
+elif [ -d  "/etc/rc.local" ]; then
+  PLATFORM="$PLATFORM_LINUX_DREAMPLUG"
+elif [ -d  "/jffs" ]; then
+  PLATFORM="$PLATFORM_LINUX_DDWRT"
+  BINDIR=/jffs/home/proximus/bin
+elif [ -d  "/Library" ]; then
+  PLATFORM="$PLATFORM_MAC"
+else
+  PLATFORM="$PLATFORM_UNKNOWN"
+fi
+
+BASHDIR=$BINDIR/bash_scripts
+
+lighttpdPath=$BASHDIR/lighttpd.s
+bluetoothPath=$BASHDIR/bluetooth.sh
+ethernetPath=$BASHDIR/ethernet_use.sh
+donglePath=$BASHDIR/bash_scripts/dongle.sh
+permitPath="$BASHDIR/bash_scripts/chmod.sh \"www-data\" \"/home/proximus/logs\""
+channelPath=$BASHDIR/channel.sh";
+ssidPath=$BASHDIR/ssid.sh";
+sshPath=$BASHDIR/reverse_ssh.sh";
+portalPath=$BINDIR/portal.py";
+wifiPath=$BASHDIR/startWifiAcessPoint.sh";
+ledPath=$BASHDIR/led.sh";
+dnsPath=$BASHDIR/dns.sh";
+
+
+if [ "$1"=="lighttpd" ]; then
+	result=`$lighttpdPath $2`
+elif ["$1"=="bluetooth"]; then
+	result=`$bluetoothPath $2`
+elif ["$1"=="ethernet"]; then
+	result=`$ethernetPath $2`
+elif ["$1"=="dongle"]; then
+	result=`$donglePath $2`
+elif ["$1"=="permit"]; then
+	result=`$permitPath`
+elif ["$1"=="channel"]; then
+	result=`$channelPath $2`
+elif ["$1"=="ledshell"]; then
+	result=`$ledPath  locate`
+elif ["$1"=="reversessh"]; then
+	result=`$sshPath $2 $3`
+elif ["$1"=="ssid"]; then
+	result=`$ssidPath $2`
+elif ["$1"=="dns"]; then
+	result=`$dnsPath $2`
+elif ["$1"=="portal"]; then
+	result=`$portalPath`
+elif ["$1"=="led"]; then
+	result=`$ledPath  
+else
+	result="Usage: <command> {params}"
+fi
+
+echo "$result"	
+
+

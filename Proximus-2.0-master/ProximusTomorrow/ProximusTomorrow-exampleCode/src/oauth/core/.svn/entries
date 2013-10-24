@@ -1,0 +1,80 @@
+10
+
+dir
+1270
+http://oauth.googlecode.com/svn/code/java/core
+http://oauth.googlecode.com/svn
+
+
+
+2010-06-01T06:52:53.156650Z
+1222
+sean@seansullivan.com
+has-props
+
+
+
+
+
+
+
+
+
+
+
+
+
+f7ae4463-c52f-0410-a7dc-93bad6e629e8
+
+provider
+dir
+
+pom.xml
+file
+
+
+
+
+2012-10-04T16:43:03.197732Z
+89efef536670a1c11ce9038ffc9b6e4b
+2010-06-01T06:52:53.156650Z
+1222
+sean@seansullivan.com
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+1552
+
+consumer
+dir
+
+commons
+dir
+
+test
+dir
+
+httpclient3
+dir
+
+httpclient4
+dir
+

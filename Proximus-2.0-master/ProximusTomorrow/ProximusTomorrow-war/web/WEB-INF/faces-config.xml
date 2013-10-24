@@ -1,0 +1,80 @@
+<?xml version='1.0' encoding='UTF-8'?>
+
+<!-- =========== FULL CONFIGURATION FILE ================================== -->
+
+<faces-config version="2.0"
+              xmlns="http://java.sun.com/xml/ns/javaee" 
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+              xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-facesconfig_2_0.xsd">
+    <application>
+        <el-resolver>com.proximus.jsf.util.JsfCrudELResolver</el-resolver>
+        <resource-bundle>
+            <base-name>/resources/Bundle</base-name>
+            <var>bundle</var>
+        </resource-bundle>
+        <resource-bundle>
+            <base-name>/resources/Messages</base-name>
+            <var>message</var>
+        </resource-bundle>
+    </application>
+    <navigation-rule>
+        <from-view-id>/login.xhtml</from-view-id>
+        <navigation-case>
+            <from-action>#{loginController.login}</from-action>
+            <from-outcome>success</from-outcome>
+            <to-view-id>/home.xhtml</to-view-id>
+        </navigation-case>
+    </navigation-rule>
+    
+    <navigation-rule>
+        <from-view-id>/home.xhtml</from-view-id>
+        <navigation-case>
+            <from-action>#{campaignController.prepareList}</from-action>
+            <to-view-id>/campaign/List.xhtml</to-view-id>
+        </navigation-case>
+        <navigation-case>
+            <from-action>#{companyController.prepareList}</from-action>
+            <to-view-id>/company/List.xhtml</to-view-id>
+        </navigation-case>
+        <navigation-case>
+            <from-action>#{deviceController.prepareList}</from-action>
+            <to-view-id>/device/List.xhtml</to-view-id>
+        </navigation-case>
+    </navigation-rule>
+    
+    <navigation-rule>
+        <from-view-id>/home.xhtml</from-view-id>
+        <navigation-case>
+            <from-action>#{loginController.logout}</from-action>
+            <from-outcome>success</from-outcome>
+            <to-view-id>/login.xhtml</to-view-id>
+        </navigation-case>
+    </navigation-rule>
+    
+    <navigation-rule>
+        <from-view-id>/campaign/List.xhtml</from-view-id>
+        <navigation-case>
+            <from-outcome>case1</from-outcome>
+            <to-view-id>/campaign/Create.xhtml</to-view-id>
+        </navigation-case>
+    </navigation-rule>
+    
+    <managed-bean>
+        <managed-bean-name>softwareRelease</managed-bean-name>
+        <managed-bean-class>com.proximus.jsf.SoftwareReleaseController</managed-bean-class>
+        <managed-bean-scope>view</managed-bean-scope>
+    </managed-bean>
+    
+    <converter>
+        <converter-for-class>com.proximus.data.SoftwareRelease</converter-for-class>
+        <converter-class>com.proximus.jsf.SoftwareReleaseConverter</converter-class>
+    </converter>
+    
+    
+    <factory>
+        <exception-handler-factory>
+            com.proximus.bean.ProximusExceptionHandlerFactory
+        </exception-handler-factory>
+    </factory>
+    
+</faces-config>

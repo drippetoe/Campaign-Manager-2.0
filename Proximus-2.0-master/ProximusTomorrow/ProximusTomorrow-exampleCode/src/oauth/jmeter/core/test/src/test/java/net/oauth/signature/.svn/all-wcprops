@@ -1,0 +1,29 @@
+K 25
+svn:wc:ra_dav:version-url
+V 79
+/svn/!svn/ver/1183/code/java/jmeter/core/test/src/test/java/net/oauth/signature
+END
+Echo.java
+K 25
+svn:wc:ra_dav:version-url
+V 89
+/svn/!svn/ver/1183/code/java/jmeter/core/test/src/test/java/net/oauth/signature/Echo.java
+END
+PkcsTest.java
+K 25
+svn:wc:ra_dav:version-url
+V 93
+/svn/!svn/ver/1183/code/java/jmeter/core/test/src/test/java/net/oauth/signature/PkcsTest.java
+END
+RSA_SHA1SignatureTest.java
+K 25
+svn:wc:ra_dav:version-url
+V 106
+/svn/!svn/ver/1183/code/java/jmeter/core/test/src/test/java/net/oauth/signature/RSA_SHA1SignatureTest.java
+END
+OAuthSignatureMethodTest.java
+K 25
+svn:wc:ra_dav:version-url
+V 109
+/svn/!svn/ver/1183/code/java/jmeter/core/test/src/test/java/net/oauth/signature/OAuthSignatureMethodTest.java
+END

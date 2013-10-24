@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+
+    <h:head>
+        <link rel="stylesheet" type="text/css" href="/ProximusTomorrow-war/faces/jsfcrud.css" />
+        <h:outputStylesheet name="css/jsfcrud.css"/>
+    </h:head>
+
+    <h:body>
+        <ui:composition template="/template.xhtml">
+            <script type="text/javascript">
+                function handleCreateRequest(args) {
+                    if(!args.validation) {
+                        jQuery('#dialog').effect("shake", { times:2 }, 100);
+                    } else {
+                        contactDlg.hide();
+                       
+                    }
+                }
+            </script>
+            <ui:define name="pageHeader">
+                <h:outputText value="#{message.linkContactMessage}"></h:outputText>
+            </ui:define>
+
+            <h:form rendered="#{!loginController.privileges.contains(bundle.ContactPrivilege)}">
+                <h:outputText value="#{bundle.InsufficientPrivileges}" 
+                              style="font-family: Arial;font-size: 16px;color: red;"/>
+            </h:form>
+
+
+            <h:form id="contactDeviceForm" rendered="#{loginController.privileges.contains(bundle.ContactPrivilege)}">
+
+
+
+                <h1><h:outputText escape="false" value="#{message.noDevicesFound}" rendered="#{contactController.deviceModel.rowCount lt 1}"/></h1>
+
+                <p:outputPanel rendered="#{contactController.deviceModel.rowCount gt 0}">
+                    
+                    
+                    <p:commandButton id="addButton" value="#{message.newContact}" update=":dialog,contactDeviceList" oncomplete="contactDlg.show()" icon="ui-icon-person" title="Add Contact" immediate="true"/>  
+                    <p:commandButton id="linkButton" immediate="true" update="contactDeviceList" value="#{message.link}" oncomplete="linkDialog.show()" icon="ui-icon-locked" title="#{message.addLink}"/> 
+                    <p:commandButton id="unlinkButton" action="#{contactController.deleteFromDevices()}" value="#{message.unlink}" icon="ui-icon-unlocked" ajax="false"/>
+                    
+                    
+                    <p:dataTable id="contactDeviceList" var="device" widgetVar="deviceTable" value="#{contactController.deviceModel}"
+                                 selection="#{contactController.selectedDevices}" 
+                                 paginator="true" rows="10" filteredValue="#{contactController.filteredDevices}"
+                                 currentPageReportTemplate="{currentPage} #{message.of} {totalPages}" 
+                                 paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                 rowsPerPageTemplate="5,10,15,20,50,100">
+                        <f:facet name="header">
+                            <p:outputPanel>
+                                <h:outputText value="#{message.search}: "/>
+                                <p:inputText id="globalFilter" onkeyup="deviceTable.filter()"/>
+                            </p:outputPanel>
+                        </f:facet>
+
+
+                        <p:column id="selections" selectionMode="multiple" style="width: 15px" >
+
+                        </p:column>
+
+                        <p:column id="name" headerText="#{message.name}" filterBy="#{device.name}" filterMatchMode="contains" filterStyle="display: none;" sortBy="#{device.name}">
+                            <h:outputText value="#{device.name}"/>          
+                        </p:column>
+                        <p:column  id="serialColumn" headerText="#{message.serialNumber}" filterBy="#{device.serialNumber}" filterMatchMode="contains" filterStyle="display: none;" sortBy="#{device.serialNumber}">
+                            <h:outputText value="#{device.serialNumber}"/>
+                        </p:column>
+
+                        <p:column  id="TagColumn" headerText="#{message.contact}" filterBy="#{device.contact}" filterMatchMode="contains" filterStyle="display: none;" sortBy="#{device.contact}">
+                            <h:outputText value="#{device.contact}"/>
+                        </p:column>
+
+                        <f:facet name="footer">
+                        </f:facet>
+                    </p:dataTable>
+                    <p:panel>
+                        <p:commandButton ajax="false" immediate="true" action="#{contactController.prepareList()}" value="#{message.manageContacts}"/>
+                    </p:panel>
+                </p:outputPanel>
+
+                <p:dialog id="contactDialog" header="#{message.linkContact}" widgetVar="linkDialog" resizable="true" height="200" width="350" showEffect="clip" hideEffect="fold">
+                    <h:panelGrid id="cdisplay" columns="1" cellpadding="4">
+                        <p:outputPanel>
+                            <h:outputLabel value="#{message.email}: " for="contactDropDown" />
+                              <p:selectOneMenu id="contactDropDown" value="#{contactController.deviceContact.email}">  
+                                  <f:selectItem itemLabel="#{message.email}:" itemValue=" "  />  
+                                <f:selectItems value="#{contactController.listContacts}"/>  
+                            </p:selectOneMenu> 
+                        </p:outputPanel>
+                        <p:commandButton action="#{contactController.saveToDevices(contactController.deviceContact)}" value="#{message.link}" icon="ui-icon-locked" update=":growl" ajax="false">
+                            <f:param name="contact" value="#{contactController.deviceContact}"/>
+                        </p:commandButton>
+                    </h:panelGrid>
+                </p:dialog>
+
+
+            </h:form>
+            
+
+            
+             <p:dialog id="dialog" header="#{message.addContact}" widgetVar="contactDlg" resizable="true" height="400" width="450" showEffect="clip" hideEffect="fold">
+                  <p:ajax event="close" update="contactDeviceForm" listener="#{contactController.prepareList()}"/>  
+                  <h:form>
+                    <h:panelGrid id="display" columns="2" cellpadding="5">   
+                        
+                        <h:outputLabel value="#{message.description}: " for="description" />
+                        <p:inputTextarea id="description" rows="3" cols="30" value="#{contactController.newContact.description}" required="true" requiredMessage="#{message.contactMustHaveDescription}"/>
+                        
+                        <h:outputLabel value="#{message.email}:" for="email" />
+                        <p:inputText id="email" value="#{contactController.newContact.email}"  required="false" requiredMessage="#{message.emailEnter}" validatorMessage="#{message.invalidEmail}">
+
+                        </p:inputText>
+                        <h:outputLabel value="#{message.phone}:" for="phone" />
+                        <p:inputMask id="phone" value="#{contactController.newContact.phone}"  required="false" mask="(999) 999-9999" requiredMessage="#{message.enterPhone}"/>
+                        <h:outputLabel value="#{message.addressLine1}: " for="address1" />
+                        <p:inputText id="address1" value="#{contactController.newContact.address1}"  required="false"/>
+                        <h:outputLabel value="#{message.addressLine2}: " for="address2" />
+                        <p:inputText id="address2" value="#{contactController.newContact.address2}"  required="false"/>
+                        <h:outputLabel value="#{message.zipcode}:" for="zipcode" />
+                        <p:inputText id="zipcode" value="#{contactController.newContact.zipcode}"  required="false"/>
+
+                        <h:outputText value="#{message.country}: " />  
+                        <p:selectOneMenu value="#{contactController.newContact.country}" effect="fade" immediate="true" style="width: 170px">  
+                            <f:selectItem itemLabel="#{message.chooseCountry}" itemValue="" />  
+                            <f:selectItems value="#{contactController.selectedCountries}"/> 
+                        </p:selectOneMenu> 
+                        
+                        <h:outputLabel value="#{message.city} " for="city" />
+                        <p:inputText id="city" value="#{contactController.newContact.city}"  required="false"/>
+
+                        <h:outputText value="#{message.state}: " />
+                        <p:selectOneMenu id="states" value="#{contactController.newContact.stateProvince}">  
+                            <f:selectItem itemLabel="#{message.chooseState}" itemValue="" />  
+                            <f:selectItems value="#{contactController.selectedStates}"/>  
+                        </p:selectOneMenu> 
+                        
+                        <p:commandButton action="#{contactController.createNewContact}" update=":contactDeviceForm,:growl" oncomplete="handleCreateRequest(args)" value="#{message.save}" id="iconOnly" icon="ui-icon-disk" title=""/>              
+                    </h:panelGrid>
+                  </h:form>
+                </p:dialog>
+        </ui:composition>
+    </h:body> 
+</html>

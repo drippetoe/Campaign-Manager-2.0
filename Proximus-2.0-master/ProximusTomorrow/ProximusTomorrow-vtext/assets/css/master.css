@@ -1,0 +1,49 @@
+@import 'reset.css';
+@import 'text.css';
+/* `Basic HTML
+----------------------------------------------------------------------------------------------------*/
+
+body {
+    background: #FFF;
+}
+
+
+a {
+   
+}
+
+a:hover {
+}
+
+small {
+    font-size: .5em;
+}
+
+/* `Misc Classes
+----------------------------------------------------------------------------------------------------*/
+
+.align_center {
+    text-align: center;
+}
+
+.align_right {
+    text-align: right;
+}
+
+
+pre,
+code {
+    font-size: 0.9em;
+    font-family: Menlo, Courier, monospace;
+}
+
+
+* html pre {
+    overflow: hidden;
+    width: 97%;
+}
+
+code {
+    background: #999;
+    padding: 0 0.2em;
+}

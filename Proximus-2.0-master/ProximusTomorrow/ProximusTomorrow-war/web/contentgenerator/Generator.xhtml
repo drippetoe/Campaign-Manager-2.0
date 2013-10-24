@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+
+    <h:head>
+        <title>#{message.contentGenerator}</title>
+
+    </h:head>
+
+
+    <ui:define name="title">
+        <h:outputText value="#{message.contentGenerator}"></h:outputText>
+    </ui:define>
+
+    <ui:define name="body">
+        <ui:composition template="/template.xhtml">
+            <style type="text/css">
+                .customPanelGrid table {
+                    border: 2px solid;
+                    border-color: lightgray;
+                }
+                .customPanelGrid td { 
+                    border-width: 1px;
+                    border-color: white;
+                }
+                .customPanelGrid tr {
+                    border-width: 0px;
+                    border-color: black;
+                }
+
+                .customPanelGridTimeChooser td {
+                    border-width: 0px;
+                }
+                .customPanelGridTimeChooser tr {
+                    border-width: 0px !important;
+                }
+
+                #selector {
+                    background: -moz-linear-gradient(center top , rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0)) repeat scroll 0% 0% rgb(196, 196, 196) !important;
+                    box-shadow: none;
+                }
+
+
+                .selectorButton .ui-button {
+                    background: -moz-linear-gradient(center top , rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0)) repeat scroll 0% 0% rgb(196, 196, 196) !important;
+                    box-shadow: none;
+                }
+                .selectorButton .ui-button.ui-state-active {
+                    background: -moz-linear-gradient(center top , rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0)) repeat scroll 0% 0% rgb(196, 196, 196) !important;
+                    box-shadow: none;
+                }
+            </style>  
+
+            <ui:define name="pageHeader">
+                <h:outputText value="#{message.contentGenerator}"></h:outputText>
+            </ui:define>
+            <h:form id="form" rendered="#{loginController.privileges.contains(bundle.CampaignWizard) and loginController.hasProximityLicense}">
+
+                <p:panel style="border-width:0px" styleClass="customPanelGrid">
+                    <p:panelGrid columns="4" style="width:70%;border:0px" >
+                        <p:panelGrid columns="1">
+                            <p:selectOneMenu id="templatelookupsuper" value="#{contentGeneratorController.selectedTemplate}" onchange="" rendered="#{loginController.privileges.contains(bundle.SuperUser)}">
+                                <f:selectItem itemLabel="#{message.threeOffersAndRegistration}" itemValue="3offers" />
+                                <f:selectItem itemLabel="#{message.accessInternetWithFacebook}" itemValue="facebook" rendered="#{5 eq 3}"/>
+                                <p:ajax listener="#{contentGeneratorController.changeTemplate()}"/>
+                            </p:selectOneMenu>
+                            
+                            <p:selectOneMenu id="templatelookup" value="#{contentGeneratorController.selectedTemplate}" onchange="" rendered="#{!loginController.privileges.contains(bundle.SuperUser)}">
+                                <f:selectItem itemLabel="#{message.threeOffersAndRegistration}" itemValue="3offers" />
+                                <p:ajax listener="#{contentGeneratorController.changeTemplate()}"/>
+                            </p:selectOneMenu>
+                            <p:commandButton id="action" action="#{campaignController.reloadContentGenerator()}" value="#{message.changeTemplate}"/>
+                        </p:panelGrid>
+                        <p:panelGrid columns="2">
+                            <p:commandButton  action="#{campaignController.prepareFromContentGenerator()}" value="#{message.generate}" actionListener="#{contentGeneratorController.createTemplate()}"/>
+                            <p:commandButton  action="#{contentGeneratorController.resetContent()}" value="#{message.resetContent}" update="form"/>
+                        </p:panelGrid>
+                    </p:panelGrid>
+                </p:panel>
+                <iframe style="border: 1px; border-color: white; margin-top: 10px;width: 100%; height: 650px;" src="index.jsp"></iframe>
+            </h:form>
+        </ui:composition>
+    </ui:define>
+
+</html>

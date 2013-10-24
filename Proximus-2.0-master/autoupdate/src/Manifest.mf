@@ -1,0 +1,6 @@
+Main-Class: com.proximus.AutoUpdate
+Manifest-Version: 1.7
+Implementation-Title: AutoUpdate
+Implementation-Version: 0.0.2
+Class-Path: libs/gson-1.7.1.jar libs/proximus-common-2.0.jar
+

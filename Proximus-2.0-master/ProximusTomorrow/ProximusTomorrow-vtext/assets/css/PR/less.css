@@ -1,0 +1,337 @@
+/*	Less Framework 4
+        http://lessframework.com
+        by Joni Korpi
+        License: http://opensource.org/licenses/mit-license.php	*/
+
+
+/*	Resets
+        ------	*/
+
+html, body, div, span, object, iframe, h1, h2, h3, h4, h5, h6, 
+p, blockquote, pre, a, abbr, address, cite, code, del, dfn, em, 
+img, ins, kbd, q, samp, small, strong, sub, sup, var, b, i, hr, 
+dl, dt, dd, ol, ul, li, fieldset, form, label, legend, 
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, figure, figcaption, hgroup, 
+menu, footer, header, nav, section, summary, time, mark, audio, video {
+    margin: 0;
+    padding: 0;
+    border: 0;
+}
+
+article, aside, canvas, figure, figure img, figcaption, hgroup,
+footer, header, nav, section, audio, video {
+    display: block;
+}
+
+a img {border: 0;}
+
+
+
+/*	Typography presets
+        ------------------	*/
+
+.huge, h1 {
+    font-size: 7.2em;
+    font-weight: bold;
+}
+
+.large, h2 {
+    font-size: 5em;
+
+}
+
+.bigger, h3 {
+    font-size: 3em;
+
+}
+
+.big, h4 {
+}
+
+@font-face{
+    font-family: MyriadPro;
+    src: url('/assets/font/MyriadPro-Bold.ttf');
+}
+body {
+    /*    font: 18px/24px "Times New Roman", Times, serif;*/
+    font-family: MyriadPro, Georgia, serif;
+    font-size: 62.5%; /* 1em = 10px */
+}
+
+p{
+    font-size: 1.6em;
+}
+
+.small, small {
+}
+
+
+/* Selection colours (easy to forget) */
+
+::selection 	 	{background: rgb(255,255,158);}
+::-moz-selection 	{background: rgb(255,255,158);}
+img::selection 		{background: transparent;}
+img::-moz-selection	{background: transparent;}
+body {-webkit-tap-highlight-color: rgb(255,255,158);}
+
+
+
+/*		Default Layout: 992px. 
+                Gutters: 24px.
+                Outer margins: 48px.
+                Leftover space for scrollbars @1024px: 32px.
+-------------------------------------------------------------------------------
+cols    1     2      3      4      5      6      7      8      9      10
+px      68    160    252    344    436    528    620    712    804    896    */
+
+body {
+    width: 100%;
+    /*    padding: 72px 48px 84px;*/
+    /*    background: rgb(137,176,85);*/
+    background: #fff;
+    /*    background: rgb(240,88,127);*/
+
+    color: rgb(255,255,255);
+    -webkit-text-size-adjust: 100%; /* Stops Mobile Safari from auto-adjusting font-sizes */
+}
+.gradient{
+    
+    background: rgb(240,88,127); /* Old browsers */
+    /* IE9 SVG, needs conditional override of 'filter' to 'none' */
+    background: url('data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/Pgo8c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgdmlld0JveD0iMCAwIDEgMSIgcHJlc2VydmVBc3BlY3RSYXRpbz0ibm9uZSI+CiAgPGxpbmVhckdyYWRpZW50IGlkPSJncmFkLXVjZ2ctZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIwJSIgeTI9IjEwMCUiPgogICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iI2YwNTg3ZiIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiNmZmZmZmYiIHN0b3Atb3BhY2l0eT0iMSIvPgogIDwvbGluZWFyR3JhZGllbnQ+CiAgPHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0idXJsKCNncmFkLXVjZ2ctZ2VuZXJhdGVkKSIgLz4KPC9zdmc+');
+    background: -moz-linear-gradient(top,  rgba(240,88,127,1) 0%, rgba(255,255,255,1) 100%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(240,88,127,1)), color-stop(100%,rgba(255,255,255,1))); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(top,  rgba(240,88,127,1) 0%,rgba(255,255,255,1) 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(top,  rgba(240,88,127,1) 0%,rgba(255,255,255,1) 100%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(top,  rgba(240,88,127,1) 0%,rgba(255,255,255,1) 100%); /* IE10+ */
+    background: linear-gradient(to bottom,  rgba(240,88,127,1) 0%,rgba(255,255,255,1) 100%); /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f0587f', endColorstr='#ffffff',GradientType=0 ); /* IE6-8 */
+}
+.pink-gradient{
+    background: rgb(240,88,127); /* Old browsers */
+    /* IE9 SVG, needs conditional override of 'filter' to 'none' */
+    background: url('data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/Pgo8c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgdmlld0JveD0iMCAwIDEgMSIgcHJlc2VydmVBc3BlY3RSYXRpbz0ibm9uZSI+CiAgPGxpbmVhckdyYWRpZW50IGlkPSJncmFkLXVjZ2ctZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIwJSIgeTI9IjEwMCUiPgogICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iI2YwNTg3ZiIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiNmZmZmZmYiIHN0b3Atb3BhY2l0eT0iMSIvPgogIDwvbGluZWFyR3JhZGllbnQ+CiAgPHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0idXJsKCNncmFkLXVjZ2ctZ2VuZXJhdGVkKSIgLz4KPC9zdmc+');
+    background: -moz-linear-gradient(top,  rgba(240,88,127,1) 0%, rgba(255,255,255,1) 100%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(240,88,127,1)), color-stop(100%,rgba(255,255,255,1))); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(top,  rgba(240,88,127,1) 0%,rgba(255,255,255,1) 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(top,  rgba(240,88,127,1) 0%,rgba(255,255,255,1) 100%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(top,  rgba(240,88,127,1) 0%,rgba(255,255,255,1) 100%); /* IE10+ */
+    background: linear-gradient(to bottom,  rgba(240,88,127,1) 0%,rgba(255,255,255,1) 100%); /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f0587f', endColorstr='#ffffff',GradientType=0 ); /* IE6-8 */
+
+}
+.rounded-corners {
+
+    -moz-border-radius: 0.5em;
+    -webkit-border-radius: 0.5em;
+    -khtml-border-radius: 0.5em;
+    border-radius: 0.5em;
+}
+
+
+.listitem{
+    padding: .5em .5em .2em .5em;
+    font-size: 2em;
+    background: rgb(255,255,255);
+    border-bottom: .1em solid #999;
+    /*    -webkit-box-shadow: inset .1em .1em .1em 0px #999;
+        -moz-box-shadow: inset .1em .1em .1em 0px #999;
+        box-shadow: inset .1em .1em .1em 0px #999;*/
+    -moz-border-radius: 0.5em;
+    -webkit-border-radius: 0.5em;
+    -khtml-border-radius: 0.5em;
+    border-radius: 0.5em;
+
+
+}
+.backitem{
+    width: 5em;
+    padding: .5em .5em .2em .5em;
+    font-size: 2em;
+    color: #fff;
+    background: rgb(240,88,127); /*Pink*/
+    border-bottom: .1em solid #fff;
+    /*    -webkit-box-shadow: inset .1em .1em .1em 0px #999;
+        -moz-box-shadow: inset .1em .1em .1em 0px #999;
+        box-shadow: inset .1em .1em .1em 0px #999;*/
+    -moz-border-radius: 0.5em;
+    -webkit-border-radius: 0.5em;
+    -khtml-border-radius: 0.5em;
+    border-radius: 0.5em;
+
+
+}
+.backitem a{
+    text-decoration: none;
+    color: #fff;
+}
+.backitem a:hover{
+    text-decoration: none;
+    color: #fff;
+}
+.backitem a:active{
+    text-decoration: none;
+    color: #fff;
+}
+.backitem a:visited{
+    text-decoration: none;
+    color: #fff;
+}
+
+.property{
+    padding: .5em .5em .2em .5em;
+    font-size: 2em;
+    background: rgb(255,255,255);
+    border-bottom: .1em solid #999;
+    /*    -webkit-box-shadow: inset .1em .1em .1em 0px #999;
+        -moz-box-shadow: inset .1em .1em .1em 0px #999;
+        box-shadow: inset .1em .1em .1em 0px #999;*/
+    -moz-border-radius: 0.5em;
+    -webkit-border-radius: 0.5em;
+    -khtml-border-radius: 0.5em;
+    border-radius: 0.5em;
+
+}
+a{
+    text-decoration: none;
+    color: rgb(0,176,266); /*Blue*/
+}
+a:hover{
+    text-decoration: none;
+    color: rgb(0,176,266); /*Blue*/
+}
+a:active{
+    text-decoration: none;
+    color: rgb(0,176,266); /*Blue*/
+}
+a:visited{
+    text-decoration: none;
+    color: rgb(0,176,266); /*Blue*/
+}
+
+.property a{
+
+}
+.arrow{
+    text-align: right;
+    float: right;
+    color: rgb(0,176,266); /*Blue*/
+    text-shadow: 0.1em 0.1em 0.1em #999;
+}
+
+
+.question{
+    color: rgb(240,88,127); /*Pink*/
+}
+.answer{
+    font-size: 1em;
+    color: rgb(0,176,266); /*Blue*/
+}
+.topLink{
+    font-size: .7em;
+}
+li{
+    margin-left: 2em;
+    color: rgb(240,88,127); /*Pink*/
+}
+#header{
+
+    background: rgb(240,88,127); /*Pink*/
+    /*#79ad36*/
+
+}
+#logo{
+
+width: 320px;
+position:relative;
+margin-left: auto;
+margin-right: auto;
+padding-top: 0em;
+padding-bottom: 0em;
+padding-left: 0em;
+padding-right: 0em;
+
+}
+#acontainer{
+    background: rgb(240,88,127); /*Pink*/
+}
+#ad1space{
+	width: 320px;
+	position:relative;
+	margin-left: auto;
+	margin-right: auto;
+        padding-top: 0em;
+        padding-bottom: 0em;
+        padding-left: 0em;
+        padding-right: 0em;
+}
+
+#content{
+    padding: 2em;
+    margin-left: auto;
+    margin-right: auto;
+    /* background: rgb(240,88,127); /*Pink*/
+
+}
+#offer{
+    color: rgb(0,176,266);
+}
+#share{
+
+}
+#footer{
+    padding: 2em;
+    background: #999;
+}
+#footer a{
+    font-size: 1em;
+    text-decoration: none;
+    color: #333;
+}
+#footer a:hover{
+    text-decoration: none;
+    color: #333;
+}
+#footer a:active{
+    text-decoration: none;
+    color: #333;
+}
+#footer a:visited{
+    text-decoration: none;
+    color: #333;
+}
+
+
+/* iPhone Portrait | 320w x 480h */
+@media screen and (min-width: 321px) {
+     #ad1space{
+	width: 320px;
+	position:relative;
+	margin-left: auto;
+	margin-right: auto;
+        padding-top: 0em;
+        padding-bottom: 0em;
+        padding-left: 2em;
+	padding-right: 2em;
+    }
+}
+@media screen and (max-width: 320px) {
+    .listitem{
+        font-size: 1.6em;
+    }
+    .backitem{
+        font-size: 1.6em;
+    }
+     #ad1space{
+	width: 320px;
+	position:relative;
+	margin-left: auto;
+	margin-right: auto;
+        padding-top: 0em;
+        padding-bottom: 0em;
+        padding-left: 0em;
+	padding-right: 0em;
+    }
+}
+

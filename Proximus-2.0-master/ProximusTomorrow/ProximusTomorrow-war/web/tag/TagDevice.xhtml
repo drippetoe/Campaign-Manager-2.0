@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+
+    <h:head>
+        <link rel="stylesheet" type="text/css" href="/ProximusTomorrow-war/faces/jsfcrud.css" />
+        <h:outputStylesheet name="css/jsfcrud.css"/>
+    </h:head>
+
+    <h:body>
+
+        <ui:composition template="/template.xhtml">
+            <ui:define name="pageHeader">
+                <h:outputText value="#{message.groupDevices}"></h:outputText>
+            </ui:define>
+
+            <h:form rendered="#{!loginController.privileges.contains(bundle.CreateCampaign)}">
+                <h:outputText value="#{bundle.InsufficientPrivileges}" 
+                              style="font-family: Arial;font-size: 16px;color: red;"/>
+            </h:form>
+
+            <h:form id="tagDeviceForm" rendered="#{loginController.privileges.contains(bundle.CreateCampaign)}">
+                <h1><h:outputText escape="false" value="#{message.noDevicesFound}" rendered="#{tagController.deviceModel.rowCount lt 1}"/></h1>
+
+                <p:outputPanel rendered="#{tagController.deviceModel.rowCount > 0}">
+                    <p:commandButton id="addButton" update="tagDeviceList" value="#{message.newDeviceGroup}" oncomplete="tagDialog.show()" icon="ui-icon-tag" title="#{message.addTag}"/>  
+                    <p:commandButton id="linkButton" update="tagDeviceList" value="#{message.link}" oncomplete="linkDialog.show()" icon="ui-icon-locked" title="#{message.addLink}"/> 
+                    <p:commandButton id="unlinkButton" action="#{tagController.deleteFromDevices()}" value="#{message.unlink}" icon="ui-icon-unlocked" ajax="false"/>
+                    <p:dataTable id="tagDeviceList" var="device" widgetVar="deviceTable" value="#{tagController.deviceModel}"
+                                 selection="#{tagController.selectedDevices}"  filteredValue="#{tagController.filteredDevices}"
+                                 paginator="true" rows="10"
+                                 currentPageReportTemplate="{currentPage} #{message.of} {totalPages}" 
+                                 paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                 rowsPerPageTemplate="5,10,15,20,50,100">
+                        <f:facet name="header">
+                            <p:outputPanel>
+                                <h:outputText value="#{message.filter}:"/>
+                                <p:inputText id="globalFilter" onkeyup="deviceTable.filter()"/>
+                            </p:outputPanel>
+                        </f:facet>
+
+
+                        <p:column id="selections" selectionMode="multiple" style="width: 15px" >
+
+                        </p:column>
+
+                        <p:column id="name" headerText="#{message.name}" filterBy="#{device.name}" filterMatchMode="contains" filterStyle="display: none;">
+                            <h:outputText value="#{device.name}"/>          
+                        </p:column>
+                        <p:column  id="serialColumn" headerText="#{message.serialNumber}" filterBy="#{device.serialNumber}" filterMatchMode="contains" filterStyle="display: none;">
+                            <h:outputText value="#{device.serialNumber}"/>
+                        </p:column>
+
+                        <p:column  id="TagColumn" headerText="#{message.deviceGroup}" filterBy="#{device.tag}" filterMatchMode="contains" filterStyle="display: none;">
+                            <h:outputText value="#{device.tag}"/>
+                        </p:column>
+
+                        <f:facet name="footer">
+                        </f:facet>
+                    </p:dataTable>
+                    <p:panel>
+                        <p:commandButton ajax="false" action="#{tagController.prepareList()}" value="#{message.manageDeviceGroups}"/>
+                        <p:commandButton ajax="false" action="#{tagController.prepareTagToCampaign()}" value="#{message.assignCampaignsToGroups}"/>
+                    </p:panel>
+                </p:outputPanel>
+
+
+                <p:dialog id="groupDialog" header="#{message.linkDevice}" widgetVar="linkDialog" resizable="true" height="200" width="350" showEffect="clip" hideEffect="fold">
+                    <h:panelGrid id="cdisplay" columns="1" cellpadding="4">
+                        <p:outputPanel>
+                            <p:selectOneMenu id="tagdropdown" value="#{tagController.deviceTag.name}">  
+                                <f:selectItem itemLabel="#{message.deviceGroupName}:" itemValue=""  />  
+                                <f:selectItems value="#{tagController.listTags}"/>  
+                            </p:selectOneMenu> 
+                        </p:outputPanel>
+                        <p:commandButton action="#{tagController.saveToDevices(tagController.deviceTag)}" value="#{message.link}" icon="ui-icon-locked" ajax="false">
+                            <f:param name="tag" value="#{tagController.deviceTag}"/>
+                        </p:commandButton>
+                    </h:panelGrid>
+                </p:dialog>
+
+
+
+
+                <p:dialog id="dialog" header="#{message.addTag}" widgetVar="tagDialog" resizable="true" height="150" width="450" showEffect="clip" hideEffect="fold">
+                    <h:panelGrid id="display" columns="5" cellpadding="5">       
+                        <h:outputLabel value="#{message.name}:" for="tag_name"/>
+                        <p:inputText id="tag_name" value="#{tagController.newTag.name}" label="Name"/> 
+                        <p:commandButton action="#{tagController.createNewTag}" update=":tagDeviceForm,:growl" value="#{message.save}" id="iconOnly" icon="ui-icon-plus" title="Icon Only"/>              
+                    </h:panelGrid>
+                </p:dialog>
+
+            </h:form>
+        </ui:composition>
+    </h:body> 
+</html>

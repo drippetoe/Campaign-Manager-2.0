@@ -1,0 +1,52 @@
+#!/bin/bash
+
+### BEGIN INIT INFO
+# Provides:			proximus
+# Required-Start:    
+# Required-Stop:
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: proximus startup script
+# Description:      Our proximus software
+### END INIT INFO
+
+PLATFORM_LINUX_BLUEGIGA="Bluegiga"
+PLATFORM_LINUX_DREAMPLUG="Dreamplug"
+PLATFORM_LINUX_DDWRT="DDWRT"
+PLATFORM_MAC="MacOSX"
+PLATFORM_UNKNOWN="Unknown"
+PROXIMUS_PLATFORM=$PLATFORM_UNKNOWN
+BASHDIR=/home/proximus/bin/bash_scripts
+if [ -d  /etc/bluegiga-release ]; then
+  PROXIMUS_PLATFORM=$PLATFORM_LINUX_BLUEGIGA
+elif [ -f  /etc/rc.local ]; then
+  echo "$PLATFORM_LINUX_DREAMPLUG"
+  PROXIMUS_PLATFORM=$PLATFORM_LINUX_DREAMPLUG
+elif [ -d  /jffs ]; then
+  PROXIMUS_PLATFORM=$PLATFORM_LINUX_DDWRT
+  BASHDIR=/jffs/home/proximus/bin/bash_scripts
+elif [ -d  /Library ]; then
+  PROXIMUS_PLATFORM=$PLATFORM_MAC
+else
+  PROXIMUS_PLATFORM=$PLATFORM_UNKNOWN
+fi
+export $PROXIMUS_PLATFORM
+
+CRONTAB="/tmp/crontab.root"
+cat <<EOF>${CRONTAB}
+PATH=/usr/sbin:/usr/bin:/sbin:/bin
+* * * * * /home/proximus/bin/setUIDWrapper client start &
+0 7 * * * /sbin/reboot >> /home/proximus/logs/reboot.log 2>&1 &
+*/5 * * * * /etc/init.d/network pppdcheck
+# remove old proximus client logs
+0 0 * * * find /home/proximus/logs/client/ -name "proximus*" -mtime +4 -exec rm
+*/2 * * * * /etc/init.d/obexsender status
+* * * * * $BASHDIR/${PROXIMUS_PLATFORM}/autoinstall.sh &
+EOF
+
+crontab ${CRONTAB}
+echo "Crontab installed"
+echo "Resetting wifi to reconnect"
+rm -f "/home/proximus/config/wificonnected"
+rm -f /home/proximus/bin/override
+$BASHDIR/${PROXIMUS_PLATFORM}/autoInterface.sh

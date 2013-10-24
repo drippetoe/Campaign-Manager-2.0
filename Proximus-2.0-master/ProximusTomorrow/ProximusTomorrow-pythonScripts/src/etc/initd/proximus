@@ -1,0 +1,16 @@
+#!/bin/bash
+
+CRONTAB="/tmp/crontab.root"
+cat <<EOF>${CRONTAB}
+* * * * * /home/proximus/bin/start_proximus_client.sh &
+0 7 * * * /sbin/reboot >> /home/proximus/logs/reboot.log 2>&1 &
+*/5 * * * * /etc/init.d/network pppdcheck
+# remove old proximus client logs
+0 0 * * * find /home/proximus/logs/client/ -name "proximus*" -mtime +4 -exec rm
+EOF
+
+crontab ${CRONTAB}
+
+echo "Crontab installed"
+echo "Resetting wifi to reconnect"
+rm -f "/home/proximus/config/wificonnected"

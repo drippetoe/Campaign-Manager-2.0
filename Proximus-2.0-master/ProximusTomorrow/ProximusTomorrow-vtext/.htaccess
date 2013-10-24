@@ -1,0 +1,85 @@
+#Options +FollowSymlinks
+
+RewriteEngine On
+
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d 
+RewriteCond %{REQUEST_URI} ^(.+[^/])/$
+RewriteRule ^(.*)/$ /$1 [R=301,L]
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d 
+RewriteCond %{REQUEST_URI} ^(.*)$
+RewriteRule ^(.*)$ index.php?q=%1 [NS,L]
+
+
+# /US/en/0001/1515
+RewriteCond %{QUERY_STRING} ^q=/([A-Z]{2})/([a-z]{2})/([0-9a-zA-Z]{4})/([0-9]*)$
+RewriteRule ^(.*)$ ?COUNTRY_id=%1&locale=%2&PROPERTY_id=%3&OFFER_id=%4 [NS,L]
+
+
+# /US/en/0001
+RewriteCond %{QUERY_STRING} ^q=/([A-Z]{2})/([a-z]{2})/([0-9a-zA-Z]{4})$
+RewriteRule ^(.*)$ ?COUNTRY_id=%1&locale=%2&PROPERTY_id=%3 [NS,L]
+
+
+# /US/en
+RewriteCond %{QUERY_STRING} ^q=/([A-Z]{2})/([a-z]{2})$
+RewriteRule ^(.*)$ ?COUNTRY_id=%1&locale=%2 [NS,L]
+
+# /US
+RewriteCond %{QUERY_STRING} ^q=/([A-Z]{2})$
+RewriteRule ^(.*)$ ?COUNTRY_id=%1 [NS,L]
+
+
+# /US/en/page
+RewriteCond %{QUERY_STRING} ^q=/([A-Z]{2})/([a-z]{2})/([a-zA-Z]*)$
+RewriteRule ^(.*)$ ?COUNTRY_id=%1&locale=%2&page=%3 [NS,L]
+
+# /US/page
+RewriteCond %{QUERY_STRING} ^q=/([A-Z]{2})/([a-zA-Z]*)$
+RewriteRule ^(.*)$ ?COUNTRY_id=%1&page=%2 [NS,L]
+
+
+##
+# PHP header("Location: /en/0001");
+# /0001en or /es0001
+RewriteCond %{QUERY_STRING} ^q=/([0-9a-zA-Z]{4})([a-z]{2})$
+RewriteRule ^(.*)$ ?PROPERTY_id=%1&locale=%2 [NS,L]
+RewriteCond %{QUERY_STRING} ^q=/([a-z]{2})([0-9a-zA-Z]{4})$
+RewriteRule ^(.*)$ ?PROPERTY_id=%2&locale=%1 [NS,L]
+
+# /0001
+RewriteCond %{QUERY_STRING} ^q=/([0-9a-zA-Z]{4})$
+RewriteRule ^(.*)$ ?PROPERTY_id=%1 [NS,L]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

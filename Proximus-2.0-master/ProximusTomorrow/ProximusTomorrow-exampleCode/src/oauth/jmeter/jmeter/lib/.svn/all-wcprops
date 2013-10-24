@@ -1,0 +1,23 @@
+K 25
+svn:wc:ra_dav:version-url
+V 46
+/svn/!svn/ver/1183/code/java/jmeter/jmeter/lib
+END
+ApacheJMeter_http.jar
+K 25
+svn:wc:ra_dav:version-url
+V 68
+/svn/!svn/ver/1183/code/java/jmeter/jmeter/lib/ApacheJMeter_http.jar
+END
+ApacheJMeter_core.jar
+K 25
+svn:wc:ra_dav:version-url
+V 68
+/svn/!svn/ver/1183/code/java/jmeter/jmeter/lib/ApacheJMeter_core.jar
+END
+jorphan.jar
+K 25
+svn:wc:ra_dav:version-url
+V 58
+/svn/!svn/ver/1183/code/java/jmeter/jmeter/lib/jorphan.jar
+END

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core" xmlns:c="http://java.sun.com/jsp/jstl/core">
+
+    <ui:define name="title">
+        <h:outputText value="#{message.testMobileOffer}"></h:outputText>
+    </ui:define>
+    <ui:define name="body">
+        <ui:composition template="/template.xhtml">
+            <ui:define name="pageHeader">
+                <h:outputText value="#{message.sendTestMobileOffer}"></h:outputText>
+            </ui:define>
+
+            <h:form id="sendOfferForm">
+                <p:panel id="offerParams" header="#{message.enterData}" toggleable="true" closable="false" toggleSpeed="500" closeSpeed="2000" widgetVar="panel" style="min-width:500px;">  
+                    <h:panelGrid columns="2" cellpadding="2">
+                        <h:outputText value="#{message.enterMobileNumber}:  " style="font-family: sans-serif"/>
+                        <p:inputText id="msisdn" label="#{message.enterMobileNumber}:" value="#{sendMobileOfferController.msisdn}"/>
+
+                        <h:outputText value="#{message.enterOfferName}:  " style="font-family: sans-serif"/>
+                        <p:inputText id="offerName" label="#{message.enterOfferName}" value="#{sendMobileOfferController.testOfferName}"/>
+
+                        <h:outputText value="#{message.enterOfferText}:  " style="font-family: sans-serif"/>
+                        <p:inputTextarea rows="3" id="offerText" label="#{message.enterOfferText}" value="#{sendMobileOfferController.testOfferText}"/>
+
+                        <p:commandButton value="#{message.sendTestOffer}" action="#{sendMobileOfferController.sendOffer}" ajax="false"/>
+                        <p:commandButton value="#{message.reset}" action="#{sendMobileOfferController.prepareSend()}" ajax="false"/>
+                    </h:panelGrid>
+                </p:panel>
+            </h:form>
+            <p:separator/>
+            <p:panelGrid columns="2" rendered="#{sendMobileOfferController.testOfferCampaign != null}">  
+                <f:facet name="header">  
+                    Offer Send Results 
+                </f:facet>  
+
+                <h:outputLabel for="campaignId" value="#{message.campaignId}:" />  
+                <h:outputText id="campaignId" value="#{sendMobileOfferController.testOfferCampaign.campaignId}"/>  
+
+                <h:outputLabel for="campaignName" value="#{message.campaignName}:" />  
+                <h:outputText id="campaignName" value="#{sendMobileOfferController.testOfferCampaign.name}"/> 
+
+                <h:outputLabel for="testCampaignMessage" value="#{message.messageSent}:" />  
+                <h:outputText id="testCampaignMessage" value="#{sendMobileOfferController.testCampaignMessage}" /> 
+            </p:panelGrid>  
+        </ui:composition>
+    </ui:define>
+</html>

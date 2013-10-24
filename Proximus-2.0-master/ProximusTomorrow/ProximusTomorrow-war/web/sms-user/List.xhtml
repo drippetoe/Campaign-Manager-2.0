@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+
+    <h:head>
+        <title>Contacts</title>
+        <link rel="stylesheet" type="text/css" href="/ProximusTomorrow-war/faces/jsfcrud.css" />
+        <h:outputStylesheet name="css/jsfcrud.css"/>
+    </h:head>
+
+    <h:body>
+        <ui:composition template="/template.xhtml">
+            <script type="text/javascript">
+                function handleEditRequest(args) {
+                    if(!args.validation) {
+                        jQuery('#editDialog').effect("shake", { times:2 }, 100);
+                    } else {
+                        editDlg.hide();
+                       
+                    }
+                }
+                function handleCreateRequest(args) {
+                    if(!args.validation) {
+                        jQuery('#dialog').effect("shake", { times:2 }, 100);
+                    } else {
+                        contactDlg.hide();
+                       
+                    }
+                }
+            </script>
+
+            <ui:define name="pageHeader">
+                <h:outputText value="SMS Users"></h:outputText>
+            </ui:define>
+            <h:form rendered="#{!loginController.privileges.contains(bundle.SMSUserImport)}">
+                <h:outputText value="#{message.InsufficientPrivileges}" 
+                              style="font-family: Arial;font-size: 16px;color: red;"/>
+            </h:form>
+
+            <h:form id="smsUserForm" rendered="#{loginController.privileges.contains(bundle.SMSUserImport)}">
+
+                <p:dataTable id="smsUserList" var="smsUser" widgetVar="smsUserTable" value="#{smsUserController.subscriberModel}" 
+                             rowKey="#{smsUser.phoneNumber}" selection="#{smsUserController.newUser}" selectionMode="single"
+                             paginator="true" rows="10"
+                             currentPageReportTemplate="{currentPage} #{message.of} {totalPages}" 
+                             paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                             rowsPerPageTemplate="5,10,15,20,50,100">
+                    <f:facet name="header">
+                        <p:outputPanel>
+                            <h:outputText value="Search SMSUsers: "/>
+                            <p:inputText id="globalFilter" onkeyup="smsUserTable.filter()"/>
+                        </p:outputPanel>
+                    </f:facet>
+                    <p:column id="phoneNumber" headerText="Phone" filterBy="#{smsUser.phoneNumber}" filterMatchMode="contains" filterStyle="display: none;" 
+                              sortBy="#{smsUser.phoneNumber}" style="width:120px">
+                        <h:outputText value="#{smsUser.phoneNumber}"/>
+                    </p:column>
+
+                    <p:column id="smsOptIn" headerText="Sms Opt In" sortBy="#{smsUser.smsOptIn}" style="width:120px">                     
+                        <h:outputText value="#{smsUser.smsOptIn}">
+                        </h:outputText>
+                    </p:column>
+
+                    <p:column id="trackingOptIn" headerText="Tracking Opt In" sortBy="#{smsUser.trackingOptIn}" style="width:120px">                     
+                        <h:outputText value="#{smsUser.trackingOptIn}">
+                        </h:outputText>
+                    </p:column>
+
+                    <p:column id="registrationDate" headerText="Registration Date" sortBy="#{smsUser.registrationDate}" style="width:165px">  
+                        <h:outputText value="#{smsUser.registrationDate}">
+                            <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                        </h:outputText>
+                    </p:column>  
+
+                    <p:column headerText="More Details" style="width:10px;">
+                        <p:commandButton id="editButton" update=":editDialog" oncomplete="editDlg.show()" icon="ui-icon-info" title="Device Details">                                
+                            <f:setPropertyActionListener value="#{smsUser}" target="#{smsUserController.selectedSubscriber}"/>
+                        </p:commandButton>
+                    </p:column>
+                    <f:facet name="footer">
+                    </f:facet>
+                </p:dataTable>
+
+            </h:form>
+
+
+            <p:dialog id="editDialog" header="Details" widgetVar="editDlg" resizable="true" height="300" width="450" showEffect="clip" hideEffect="fold">
+                <p:ajax event="close" update="smsUserForm" listener="#{smsUserController.prepareList()}"/> 
+                <h:form>
+                    <h:panelGrid id="displayEdit" columns="2" cellpadding="5">   
+
+                        <h:outputText value="Phone:"/>
+                        <h:outputText value="#{smsUserController.selectedSubscriber.phoneNumber}"/>
+
+                        <h:outputText value="Carrier:"/>
+                        <h:outputText value="#{smsUserController.selectedSubscriber.carrier}"/>
+
+                        <h:outputText value="Registration Date:"/>
+                        <h:outputText value="#{smsUserController.selectedSubscriber.registrationDate}">
+                            <f:convertDateTime pattern="MMM dd, yyyy" />
+                        </h:outputText>
+
+                        <h:outputText value="SMS OPT IN:"/>
+                        <h:panelGrid columns="2">
+                            <h:outputText value="YES " rendered="#{smsUserController.selectedSubscriber.smsOptIn}"/>
+                            <h:outputText value="#{smsUserController.selectedSubscriber.smsOptInDate}" rendered="#{smsUserController.selectedSubscriber.smsOptIn}">
+                                <f:convertDateTime pattern="(MMM dd, yyyy)" />
+                            </h:outputText>
+                            <h:outputText value="NO " rendered="#{!smsUserController.selectedSubscriber.smsOptIn}"/>
+                        </h:panelGrid>
+                        
+                          <h:outputText value="Tracking OPT IN:"/>
+                        <h:panelGrid columns="2">
+                            <h:outputText value="YES " rendered="#{smsUserController.selectedSubscriber.trackingOptIn}"/>
+                            <h:outputText value="#{smsUserController.selectedSubscriber.trackingOptInDate}" rendered="#{smsUserController.selectedSubscriber.trackingOptIn}">
+                                <f:convertDateTime pattern="(MMM dd, yyyy)" />
+                            </h:outputText>
+                            <h:outputText value="NO " rendered="#{!smsUserController.selectedSubscriber.trackingOptIn}"/>                     
+                        </h:panelGrid>
+
+                    </h:panelGrid>
+                </h:form>
+            </p:dialog>
+        </ui:composition>
+    </h:body>
+</html>

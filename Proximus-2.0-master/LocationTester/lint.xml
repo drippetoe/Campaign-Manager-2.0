@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lint>
+    <issue id="DefaultLocale">
+        <ignore path="src/com/dshaw/locationtester/SimpleLocationManager.java" />
+    </issue>
+    <issue id="SimpleDateFormat">
+        <ignore path="src/com/dshaw/locationtester/SimpleLocationManager.java" />
+    </issue>
+</lint>

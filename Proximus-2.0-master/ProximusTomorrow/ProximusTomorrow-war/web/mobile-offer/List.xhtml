@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core" xmlns:c="http://java.sun.com/jsp/jstl/core">
+
+    <ui:define name="title">
+        <h:outputText value="#{message.list}"></h:outputText>
+    </ui:define>
+    <ui:define name="body">
+        <ui:composition template="/template.xhtml">
+
+            <ui:define name="pageHeader">
+                <h:outputText value="#{message.mobileOffers}"></h:outputText>
+            </ui:define>
+            <h:form rendered="#{!loginController.privileges.contains(bundle.ViewMobileOffer)}">
+                <h:outputText value="#{message.InsufficientPrivileges}" 
+                              style="font-family: Arial;font-size: 16px;color: red;"/>
+            </h:form>
+
+            <h:form id="campaignForm" rendered="#{loginController.privileges.contains(bundle.ViewMobileOffer)}">
+                <h1><h:outputText escape="false" value="#{message.noMobileOffersFound}" rendered="#{mobileOfferAbstractController.mobileOfferModel.rowCount lt 1 and mobileOfferAbstractController.viewMode == 'Active'}"/></h1>
+                <h1><h:outputText escape="false" value="#{message.startByAddingAMobileOffer}" rendered="#{mobileOfferAbstractController.mobileOfferModel.rowCount lt 1 and loginController.privileges.contains(bundle.EditMobileOffer) and mobileOfferAbstractController.viewMode == 'Active'}"/></h1>
+                <h1><h:outputText escape="false" value="#{message.noPendingApproval}" rendered="#{mobileOfferAbstractController.mobileOfferModel.rowCount lt 1 and mobileOfferAbstractController.viewMode == 'Pending Approval'}"/></h1>
+                <h1><h:outputText escape="false" value="#{message.noExpiredOffers}" rendered="#{mobileOfferAbstractController.mobileOfferModel.rowCount lt 1 and mobileOfferAbstractController.viewMode == 'Expired'}"/></h1>
+
+
+                <br />
+
+                <p:panelGrid columns="2">
+                    <f:facet name="header">
+                        <h:outputLabel value="#{message.filter}" for="viewModeDropdown" />
+                    </f:facet>
+                    <h:outputText value="#{message.viewMode}"/>
+                    <p:selectOneMenu id="viewModeDropdown" value="#{mobileOfferAbstractController.viewMode}">
+                        <f:selectItem itemValue="Not Expired" itemLabel="#{message.notExpired}"/>
+                        <f:selectItem itemValue="Pending Approval" itemLabel="#{message.pendingApproval}"/>
+                        <f:selectItem itemValue="Active" itemLabel="#{message.active}"/>
+                        <f:selectItem itemValue="Expired" itemLabel="#{message.expired}"/>
+                        <f:selectItem itemValue="All" itemLabel="#{message.all}"/>
+                        <p:ajax update="campaignForm" listener="#{mobileOfferAbstractController.changeViewMode()}"/>
+                    </p:selectOneMenu>
+
+                    <h:outputText value="#{message.company}" rendered="#{loginController.privileges.contains(bundle.BrandMobileOffer)}"/>
+                    <p:selectOneMenu id="companydropdown" value="#{mobileOfferAbstractController.selectedCompany}" converter="#{companySelectorConverter}" rendered="#{loginController.privileges.contains(bundle.BrandMobileOffer)}">  
+                        <f:selectItem itemLabel="#{message.all}" itemValue=""/>  
+                        <f:selectItems value="#{mobileOfferAbstractController.brandCompanies}"/>  
+                        <p:ajax update="campaignForm" listener="#{mobileOfferAbstractController.changeViewMode()}"/>
+                    </p:selectOneMenu>
+
+                    <h:outputText value="#{message.property}" rendered="#{!loginController.privileges.contains(bundle.BrandMobileOffer)}"/>
+                    <p:selectOneMenu id="propertyDropDown" value="#{mobileOfferAbstractController.selectedProperty.name}" style="width: 250px" rendered="#{!loginController.privileges.contains(bundle.BrandMobileOffer)}">  
+                        <f:selectItem itemLabel="#{message.all}" itemValue=""  />  
+                        <f:selectItems value="#{mobileOfferAbstractController.propertyList}"/>  
+                        <p:ajax update="campaignForm" listener="#{mobileOfferAbstractController.changeViewModeProperty()}"/>
+                    </p:selectOneMenu> 
+
+
+
+
+                </p:panelGrid>
+                <p:commandButton id="addButton" value="#{message.newMobileOffer}" oncomplete="mobileOfferDialog.show()" icon="ui-icon-plus" title="#{message.addMobileOffer}" rendered="#{loginController.privileges.contains(bundle.EditMobileOffer)}"/>  
+
+
+                <h:panelGroup rendered="#{mobileOfferAbstractController.mobileOfferModel.rowCount > 0}">
+
+                    <br />
+                    <p:dataTable id="mobileOfferList" var="offer" widgetVar="mobileOfferTable" value="#{mobileOfferAbstractController.mobileOfferModel}" rowKey="#{offer.id}" selection="#{mobileOfferController.createdMobileOffer}" selectionMode="single"
+                                 paginator="true" rows="20" filteredValue="#{mobileOfferAbstractController.filteredMobileOffers}"
+                                 currentPageReportTemplate="{currentPage} #{message.of} {totalPages}" 
+                                 paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                 rowsPerPageTemplate="5,10,15,20,50,100">
+
+                        <f:facet name="header">
+                            <p:outputPanel>
+                                <h:outputText value="#{message.searchMobileOffers} "/>
+                                <p:inputText id="globalFilter" onkeyup="mobileOfferTable.filter()"/>
+                            </p:outputPanel>
+                        </f:facet>
+                        <p:column id="name" headerText="#{message.name}" filterBy="#{offer.name}" filterMatchMode="contains" filterStyle="display: none;" 
+                                  sortBy="#{offer.name}" style="width:120px">
+                            <h:outputText value="#{offer.name}"/>
+                        </p:column>
+
+                        <p:column id="store" headerText="#{message.retailer}" sortBy="#{offer.retailer}" style="width:130px">
+                            <h:outputText value="#{offer.retailer}"/>           
+                        </p:column>
+
+                        <p:column id="startDate" headerText="#{message.startDate}" sortBy="#{offer.startDate}" style="width:130px">
+                            <h:outputText value="#{offer.startDate}">
+                                <f:convertDateTime pattern="MM/dd/yyyy" />
+                            </h:outputText>
+                        </p:column>
+
+                        <p:column id="endDate" headerText="#{message.endDate}" sortBy="#{offer.endDate}" style="width:120px">                     
+                            <h:outputText value="#{offer.endDate}">
+                                <f:convertDateTime pattern="MM/dd/yyyy" />
+                            </h:outputText>
+                        </p:column>
+
+                        <p:column id="status" headerText="#{message.status}" sortBy="#{offer.status}" style="width:165px">  
+                            <h:outputText value="#{offer.status}"/>
+                        </p:column>
+
+                        <p:column id="property" headerText="#{message.property}" style="width:165px">  
+                            <h:commandButton id="retailImage" onclick="javascript:return false;" title="#{message.retailWideOffer}" image="/faces/images/Retail32x32.png" disabled="false" rendered="#{offer.retailOnly}">
+                                <p:tooltip for="retailImage" value="#{message.retailWideTooltipProperty}"
+                                           showEffect="clip" hideEffect="explode" />
+                            </h:commandButton>
+                            <ui:repeat value="#{offer.properties}" var="property" varStatus="status">
+                                <h:outputText value="#{property.name}"/>                                 
+                                <h:outputText value=","   rendered="#{!status.last}"/>   
+                            </ui:repeat>
+                        </p:column>
+
+                        <p:column id="company" headerText="#{message.company}" sortBy="#{offer.company.name}" style="width:165px" rendered="#{loginController.privileges.contains(bundle.BrandMobileOffer)}">  
+                            <h:commandButton id="retailImage2" onclick="javascript:return false;" title="#{message.retailWideOffer}" image="/faces/images/Retail32x32.png" disabled="false" rendered="#{offer.retailOnly}">
+                                <p:tooltip for="retailImage2" value="#{message.retailWideTooltipCompany}"
+                                           showEffect="clip" hideEffect="explode" />
+                            </h:commandButton>
+                            <h:outputText value="#{offer.company.name}"/>
+                        </p:column>
+
+                        <p:column headerText="#{message.editOptions}" rendered="#{loginController.privileges.contains(bundle.EditMobileOffer)}" style="width:200px">
+
+                            <p:commandButton id="editButton" action="#{mobileOfferAbstractController.prepareEdit}" ajax="false" icon="ui-icon-pencil" title="#{message.edit}" rendered="#{loginController.privileges.contains(bundle.BrandMobileOffer) or !offer.retailOnly}">
+                                <f:setPropertyActionListener value="#{offer}" target="#{mobileOfferAbstractController.selectedMobileOffer}" />  
+                            </p:commandButton> 
+                            <p:commandButton id="deleteButton" oncomplete="confirmation.show()" icon="ui-icon-trash" title="#{message.delete}" update=":campaignForm" rendered="#{loginController.privileges.contains(bundle.BrandMobileOffer) or !offer.retailOnly}">
+                                <f:setPropertyActionListener value="#{offer}" target="#{mobileOfferAbstractController.selectedMobileOffer}" />  
+                            </p:commandButton>
+                            <p:commandButton id="approveButton" oncomplete="approve.show()" icon="ui-icon-circle-check" title="#{message.approve}" update=":campaignForm" disabled="#{offer.status == 'Approved' or !loginController.privileges.contains(bundle.ApproveMobileOffer)}" rendered="#{loginController.privileges.contains(bundle.BrandMobileOffer) or !offer.retailOnly}">
+                                <f:setPropertyActionListener value="#{offer}" target="#{mobileOfferAbstractController.selectedMobileOffer}" />
+                            </p:commandButton> 
+                            <p:commandButton id="cloneButton" action="#{mobileOfferAbstractController.cloneMobileOffer()}" icon="ui-icon-transferthick-e-w" title="#{message.clone}" update=":campaignForm" rendered="#{loginController.privileges.contains(bundle.BrandMobileOffer) or !offer.retailOnly}">
+                                <f:setPropertyActionListener value="#{offer}" target="#{mobileOfferAbstractController.selectedMobileOffer}" />
+                            </p:commandButton>
+                            <p:commandButton id="previewButton" oncomplete="preview.show()" icon="ui-icon-zoomin" title="#{message.preview}" 
+                                             update=":campaignForm">
+                                <f:setPropertyActionListener value="#{offer}" target="#{mobileOfferAbstractController.selectedMobileOffer}" />
+                            </p:commandButton> 
+                        </p:column>
+                        <f:facet name="footer">
+                        </f:facet>
+                    </p:dataTable>
+                </h:panelGroup>
+
+
+
+
+                <p:confirmDialog id="approveDialog" message="#{message.approvingOffer} #{mobileOfferAbstractController.selectedMobileOffer.name}" 
+                                 severity="alert" widgetVar="approve" width="350" height="50">
+                    <p:panel style="border: 3px solid #cccccc;">
+                        <h:outputText value="#{mobileOfferAbstractController.cleanContentForApproval()}" style="font-family: Arial;font-size: 16px;color: red;"/>
+                        <h:outputText value="/{OFFER_ID}" rendered="#{mobileOfferAbstractController.mos.offerUrl.length() gt 1}" style="font-family: Arial;font-size: 16px;color: red;"/>
+                    </p:panel>
+                    <p:commandButton id="approveConfirm" value="#{message.yes}" onclick="approve.hide()" actionListener="#{mobileOfferAbstractController.approveMobileOffer}" update=":campaignForm" ajax="false"/>
+                    <p:commandButton id="approveDecline" value="#{message.cancel}" onclick="approve.hide()" />    
+                </p:confirmDialog>
+
+                <p:confirmDialog id="previewDialog" message="#{message.viewingOffer} #{mobileOfferAbstractController.selectedMobileOffer.name}" 
+                                 severity="alert" widgetVar="preview" width="350" height="50">
+                    <p:panel style="border: 3px solid #cccccc;">
+                        <h:outputText value="#{mobileOfferAbstractController.cleanContentForApproval()}" style="font-family: Arial;font-size: 16px;color: red;"/>
+                        <h:outputText value="/{OFFER_ID}" rendered="#{mobileOfferAbstractController.mos.offerUrl.length() gt 1}" style="font-family: Arial;font-size: 16px;color: red;"/>
+                    </p:panel>
+                    <br/>
+
+                    <p:panel id="sendOfferPanel" style="border: 0px" visible="#{loginController.privileges.contains(bundle.SuperUser)}">
+                        <h:outputText value="#{message.sendOfferTo}  " style="font-family: sans-serif"/>
+                        <p:inputText id="msisdn" label="#{message.enterMobileNumber}" value="#{mobileOfferAbstractController.msisdn}" title="#{message.msisdn}" style="width: 250px"/>
+                        <h:panelGrid columns="2">
+                            <p:commandButton id="sendConfirm" value="#{message.sendOffer}" onclick="preview.hide()" actionListener="#{mobileOfferAbstractController.sendOffer()}" 
+                                             update=":campaignForm" ajax="false"/>
+                            <p:commandButton id="sendDecline" value="#{message.cancel}" onclick="preview.hide()" />    
+                        </h:panelGrid>
+                    </p:panel>
+                </p:confirmDialog>
+
+                <p:confirmDialog id="confirmDialog" message="#{message.sureYouWantToDelete} #{mobileOfferAbstractController.selectedMobileOffer.name}?" severity="alert" widgetVar="confirmation">
+                    <p:commandButton id="confirm" value="#{message.yes}" onclick="confirmation.hide()" actionListener="#{mobileOfferAbstractController.deleteMobileOffer}" update=":campaignForm" />
+                    <p:commandButton id="decline" value="#{message.no}" onclick="confirmation.hide()"/>    
+                </p:confirmDialog>
+
+                <p:dialog id="dialog" header="#{message.contactDetail}" widgetVar="contactDialog" resizable="true" width="300" showEffect="clip" hideEffect="fold">
+                    <h:panelGrid id="display" columns="5" cellpadding="5">
+                        <h:outputText value="#{mobileOfferAbstractController.selectedMobileOffer.name}"/>
+                    </h:panelGrid>
+                </p:dialog>
+
+                <p:dialog id="mobileOfferDialog" header="#{message.chooseTypeOfMobileOffer}" widgetVar="mobileOfferDialog" resizable="true" width="300" showEffect="clip" hideEffect="fold">
+                    <h:panelGrid id="createDisplay" columns="1" cellpadding="5">
+                        <p:selectOneMenu value="#{mobileOfferAbstractController.mode}" rendered="#{loginController.privileges.contains(bundle.BrandMobileOffer)}">
+                            <f:selectItem itemLabel="#{message.retailWide}" itemValue="Retail Wide"/>
+                            <f:selectItem itemLabel="#{message.multipleStores}" itemValue="Multiple Stores"/>
+                            <f:selectItem itemLabel="#{message.singleStore}" itemValue="Single Store"/>
+                        </p:selectOneMenu>
+
+                        <p:selectOneMenu value="#{mobileOfferAbstractController.mode}" rendered="#{!loginController.privileges.contains(bundle.BrandMobileOffer)}">
+                            <f:selectItem itemLabel="#{message.multipleStores}" itemValue="Multiple Stores"/>
+                            <f:selectItem itemLabel="#{message.singleStore}" itemValue="Single Store"/>
+                        </p:selectOneMenu>
+                        <p:commandButton id="realAddButton" value="#{message.newMobileOffer}" action="#{mobileOfferAbstractController.prepareCreate()}" icon="ui-icon-plus" title="#{message.addMobileOffer}" ajax="false" rendered="#{loginController.privileges.contains(bundle.EditMobileOffer)}"/>
+                    </h:panelGrid>
+                </p:dialog>
+            </h:form>
+
+        </ui:composition>
+    </ui:define>
+</html>

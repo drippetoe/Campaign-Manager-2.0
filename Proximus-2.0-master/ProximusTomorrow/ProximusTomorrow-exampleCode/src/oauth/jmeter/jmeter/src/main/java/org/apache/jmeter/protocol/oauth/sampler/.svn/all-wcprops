@@ -1,0 +1,17 @@
+K 25
+svn:wc:ra_dav:version-url
+V 97
+/svn/!svn/ver/1183/code/java/jmeter/jmeter/src/main/java/org/apache/jmeter/protocol/oauth/sampler
+END
+OAuthSampler.java
+K 25
+svn:wc:ra_dav:version-url
+V 115
+/svn/!svn/ver/1183/code/java/jmeter/jmeter/src/main/java/org/apache/jmeter/protocol/oauth/sampler/OAuthSampler.java
+END
+PrivateKeyReader.java
+K 25
+svn:wc:ra_dav:version-url
+V 119
+/svn/!svn/ver/1183/code/java/jmeter/jmeter/src/main/java/org/apache/jmeter/protocol/oauth/sampler/PrivateKeyReader.java
+END

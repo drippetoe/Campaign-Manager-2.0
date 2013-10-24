@@ -1,0 +1,283 @@
+/*
+* jQuery Mobile Git Build: SHA1: 56a6976b89feddf34e163c3fcc7196ae0a44c1a0 <> Date: Mon Feb 4 08:28:28 2013 -0800
+* http://jquerymobile.com
+*
+* Copyright 2010, 2013 jQuery Foundation, Inc. and other contributors
+* Released under the MIT license.
+* http://jquery.org/license
+*
+*/
+
+body {
+    text-transform: none;
+}
+
+.ui-bar-a{border:1px solid #8cc63f ;background:#7CB138 ;color:#FFFFFF ;font-weight:bold;text-shadow:0  1px  0  #7CB138 ;background-image:-webkit-gradient(linear,left top,left bottom,from( #88c23d ),to( #6f9f32 )); background-image:-webkit-linear-gradient( #88c23d,#6f9f32 ); background-image:   -moz-linear-gradient( #88c23d,#6f9f32 ); background-image:    -ms-linear-gradient( #88c23d,#6f9f32 ); background-image:     -o-linear-gradient( #88c23d,#6f9f32 ); background-image:        linear-gradient( #88c23d,#6f9f32 );}.ui-bar-a .ui-link-inherit{color:#FFFFFF ;}.ui-bar-a a.ui-link{color:#7cc4e7 ;font-weight:bold;}.ui-bar-a a.ui-link:visited{   color:#2489ce ;}.ui-bar-a a.ui-link:hover{color:#2489ce ;}.ui-bar-a a.ui-link:active{color:#2489ce ;}.ui-bar-a,.ui-bar-a input,.ui-bar-a select,.ui-bar-a textarea,.ui-bar-a button{font-family:Helvetica Neue ;}.ui-body-a,.ui-overlay-a{border:1px solid #8f8f8f ;color:#000000 ;text-shadow:0  1px  0  #a9cd75 ;background:#a9cd75 ;background-image:-webkit-gradient(linear,left top,left bottom,from( #b9e180 ),to( #98b869 )); background-image:-webkit-linear-gradient( #b9e180,#98b869 ); background-image:   -moz-linear-gradient( #b9e180,#98b869 ); background-image:    -ms-linear-gradient( #b9e180,#98b869 ); background-image:     -o-linear-gradient( #b9e180,#98b869 ); background-image:        linear-gradient( #b9e180,#98b869 );}.ui-overlay-a{background-image:none;border-width:0;}.ui-body-a,.ui-body-a input,.ui-body-a select,.ui-body-a textarea,.ui-body-a button{font-family:Helvetica Neue ;}.ui-body-a .ui-link-inherit{color:#000000 ;}.ui-body-a .ui-link{color:#10729e ;font-weight:bold;}.ui-body-a .ui-link:visited{   color:#2489ce ;}.ui-body-a .ui-link:hover{color:#2489ce ;}.ui-body-a .ui-link:active{color:#2489ce ;}.ui-btn-up-a{border:1px solid #8f8f8f ;background:#FFFFFF ;font-weight:bold;color:#000000 ;text-shadow:0  1px  0  #ffffff ;background-image:-webkit-gradient(linear,left top,left bottom,from( #ffffff ),to( #ffffff )); background-image:-webkit-linear-gradient( #ffffff,#ffffff ); background-image:   -moz-linear-gradient( #ffffff,#ffffff ); background-image:    -ms-linear-gradient( #ffffff,#ffffff ); background-image:     -o-linear-gradient( #ffffff,#ffffff ); background-image:        linear-gradient( #ffffff,#ffffff );}.ui-btn-up-a:visited,.ui-btn-up-a a.ui-link-inherit{color:#000000 ;}.ui-btn-hover-a{border:1px solid #8f8f8f ;background:#FFFFFF ;font-weight:bold;color:#000000 ;text-shadow:0  1px  0  #ffffff ;background-image:-webkit-gradient(linear,left top,left bottom,from( #ffffff ),to( #ffffff )); background-image:-webkit-linear-gradient( #ffffff,#ffffff ); background-image:   -moz-linear-gradient( #ffffff,#ffffff ); background-image:    -ms-linear-gradient( #ffffff,#ffffff ); background-image:     -o-linear-gradient( #ffffff,#ffffff ); background-image:        linear-gradient( #ffffff,#ffffff );}.ui-btn-hover-a:visited,.ui-btn-hover-a:hover,.ui-btn-hover-a a.ui-link-inherit{color:#000000 ;}.ui-btn-down-a{border:1px solid #8f8f8f ;background:#01a1dd ;font-weight:bold;color:#2f3e46 ;text-shadow:0  1px  0  #8f8f8f ;background-image:-webkit-gradient(linear,left top,left bottom,from( #01a1dd ),to( #01a1dd )); background-image:-webkit-linear-gradient( #01a1dd,#01a1dd ); background-image:   -moz-linear-gradient( #01a1dd,#01a1dd ); background-image:    -ms-linear-gradient( #01a1dd,#01a1dd ); background-image:     -o-linear-gradient( #01a1dd,#01a1dd ); background-image:        linear-gradient( #01a1dd,#01a1dd );}.ui-btn-down-a:visited,.ui-btn-down-a:hover,.ui-btn-down-a a.ui-link-inherit{color:#2f3e46 ;}.ui-btn-up-a,.ui-btn-hover-a,.ui-btn-down-a{font-family:Helvetica Neue ;text-decoration:none;}.ui-bar-b{border:1px solid #b3b3b3 ;background:#7CB138 ;color:#ffffff ;font-weight:bold;text-shadow:0  1px  0  #7CB138 ;background-image:-webkit-gradient(linear,left top,left bottom,from( #7cb138 ),to( #7cb138 )); background-image:-webkit-linear-gradient( #7cb138,#7cb138 ); background-image:   -moz-linear-gradient( #7cb138,#7cb138 ); background-image:    -ms-linear-gradient( #7cb138,#7cb138 ); background-image:     -o-linear-gradient( #7cb138,#7cb138 ); background-image:        linear-gradient( #7cb138,#7cb138 );}.ui-bar-b .ui-link-inherit{color:#ffffff ;}.ui-bar-b a.ui-link{color:#7cc4e7 ;font-weight:bold;}.ui-bar-b a.ui-link:visited{   color:#2489ce ;}.ui-bar-b a.ui-link:hover{color:#2489ce ;}.ui-bar-b a.ui-link:active{color:#2489ce ;}.ui-bar-b,.ui-bar-b input,.ui-bar-b select,.ui-bar-b textarea,.ui-bar-b button{font-family:Helvetica Neue ;}.ui-body-b,.ui-overlay-b{border:1px solid #aaaaaa ;color:#333333 ;text-shadow:0  1px  0  #ffffff ;background:#f9f9f9 ;background-image:-webkit-gradient(linear,left top,left bottom,from( #f9f9f9 ),to( #eeeeee )); background-image:-webkit-linear-gradient( #f9f9f9,#eeeeee ); background-image:   -moz-linear-gradient( #f9f9f9,#eeeeee ); background-image:    -ms-linear-gradient( #f9f9f9,#eeeeee ); background-image:     -o-linear-gradient( #f9f9f9,#eeeeee ); background-image:        linear-gradient( #f9f9f9,#eeeeee );}.ui-overlay-b{background-image:none;border-width:0;}.ui-body-b,.ui-body-b input,.ui-body-b select,.ui-body-b textarea,.ui-body-b button{font-family:Helvetica Neue ;}.ui-body-b .ui-link-inherit{color:#333333 ;}.ui-body-b .ui-link{color:#2489ce ;font-weight:bold;}.ui-body-b .ui-link:visited{   color:#2489ce ;}.ui-body-b .ui-link:hover{color:#2489ce ;}.ui-body-b .ui-link:active{color:#2489ce ;}.ui-btn-up-b{border:1px solid #cccccc ;background:#eeeeee ;font-weight:bold;color:#2f3e46 ;text-shadow:0  1px  0  #ffffff ;background-image:-webkit-gradient(linear,left top,left bottom,from( #ffffff ),to( #f1f1f1 )); background-image:-webkit-linear-gradient( #ffffff,#f1f1f1 ); background-image:   -moz-linear-gradient( #ffffff,#f1f1f1 ); background-image:    -ms-linear-gradient( #ffffff,#f1f1f1 ); background-image:     -o-linear-gradient( #ffffff,#f1f1f1 ); background-image:        linear-gradient( #ffffff,#f1f1f1 );}.ui-btn-up-b:visited,.ui-btn-up-b a.ui-link-inherit{color:#2f3e46 ;}.ui-btn-hover-b{border:1px solid #bbbbbb ;background:#dfdfdf ;font-weight:bold;color:#2f3e46 ;text-shadow:0  1px  0  #ffffff ;background-image:-webkit-gradient(linear,left top,left bottom,from( #f6f6f6 ),to( #e0e0e0 )); background-image:-webkit-linear-gradient( #f6f6f6,#e0e0e0 ); background-image:   -moz-linear-gradient( #f6f6f6,#e0e0e0 ); background-image:    -ms-linear-gradient( #f6f6f6,#e0e0e0 ); background-image:     -o-linear-gradient( #f6f6f6,#e0e0e0 ); background-image:        linear-gradient( #f6f6f6,#e0e0e0 );}.ui-btn-hover-b:visited,.ui-btn-hover-b:hover,.ui-btn-hover-b a.ui-link-inherit{color:#2f3e46 ;}.ui-btn-down-b{border:1px solid #bbbbbb ;background:#d6d6d6 ;font-weight:bold;color:#2f3e46 ;text-shadow:0  1px  0  #ffffff ;background-image:-webkit-gradient(linear,left top,left bottom,from( #d0d0d0 ),to( #dfdfdf )); background-image:-webkit-linear-gradient( #d0d0d0,#dfdfdf ); background-image:   -moz-linear-gradient( #d0d0d0,#dfdfdf ); background-image:    -ms-linear-gradient( #d0d0d0,#dfdfdf ); background-image:     -o-linear-gradient( #d0d0d0,#dfdfdf ); background-image:        linear-gradient( #d0d0d0,#dfdfdf );}.ui-btn-down-b:visited,.ui-btn-down-b:hover,.ui-btn-down-b a.ui-link-inherit{color:#2f3e46 ;}.ui-btn-up-b,.ui-btn-hover-b,.ui-btn-down-b{font-family:Helvetica Neue ;text-decoration:none;}.ui-bar-c{border:1px solid #b3b3b3 ;background:#eeeeee ;color:#3e3e3e ;font-weight:bold;text-shadow:0  1px  0  #ffffff ;background-image:-webkit-gradient(linear,left top,left bottom,from( #f0f0f0 ),to( #dddddd )); background-image:-webkit-linear-gradient( #f0f0f0,#dddddd ); background-image:   -moz-linear-gradient( #f0f0f0,#dddddd ); background-image:    -ms-linear-gradient( #f0f0f0,#dddddd ); background-image:     -o-linear-gradient( #f0f0f0,#dddddd ); background-image:        linear-gradient( #f0f0f0,#dddddd );}.ui-bar-c .ui-link-inherit{color:#3e3e3e ;}.ui-bar-c a.ui-link{color:#7cc4e7 ;font-weight:bold;}.ui-bar-c a.ui-link:visited{   color:#2489ce ;}.ui-bar-c a.ui-link:hover{color:#2489ce ;}.ui-bar-c a.ui-link:active{color:#2489ce ;}.ui-bar-c,.ui-bar-c input,.ui-bar-c select,.ui-bar-c textarea,.ui-bar-c button{font-family:Helvetica Neue ;}.ui-body-c,.ui-overlay-c{border:1px solid #aaaaaa ;color:#333333 ;text-shadow:0  1px  0  #ffffff ;background:#f9f9f9 ;background-image:-webkit-gradient(linear,left top,left bottom,from( #f9f9f9 ),to( #eeeeee )); background-image:-webkit-linear-gradient( #f9f9f9,#eeeeee ); background-image:   -moz-linear-gradient( #f9f9f9,#eeeeee ); background-image:    -ms-linear-gradient( #f9f9f9,#eeeeee ); background-image:     -o-linear-gradient( #f9f9f9,#eeeeee ); background-image:        linear-gradient( #f9f9f9,#eeeeee );}.ui-overlay-c{background-image:none;border-width:0;}.ui-body-c,.ui-body-c input,.ui-body-c select,.ui-body-c textarea,.ui-body-c button{font-family:Helvetica Neue ;}.ui-body-c .ui-link-inherit{color:#333333 ;}.ui-body-c .ui-link{color:#2489ce ;font-weight:bold;}.ui-body-c .ui-link:visited{   color:#2489ce ;}.ui-body-c .ui-link:hover{color:#2489ce ;}.ui-body-c .ui-link:active{color:#2489ce ;}.ui-btn-up-c{border:1px solid #cccccc ;background:#eeeeee ;font-weight:bold;color:#2f3e46 ;text-shadow:0  1px  0  #ffffff ;background-image:-webkit-gradient(linear,left top,left bottom,from( #ffffff ),to( #f1f1f1 )); background-image:-webkit-linear-gradient( #ffffff,#f1f1f1 ); background-image:   -moz-linear-gradient( #ffffff,#f1f1f1 ); background-image:    -ms-linear-gradient( #ffffff,#f1f1f1 ); background-image:     -o-linear-gradient( #ffffff,#f1f1f1 ); background-image:        linear-gradient( #ffffff,#f1f1f1 );}.ui-btn-up-c:visited,.ui-btn-up-c a.ui-link-inherit{color:#2f3e46 ;}.ui-btn-hover-c{border:1px solid #bbbbbb ;background:#dfdfdf ;font-weight:bold;color:#2f3e46 ;text-shadow:0  1px  0  #ffffff ;background-image:-webkit-gradient(linear,left top,left bottom,from( #f6f6f6 ),to( #e0e0e0 )); background-image:-webkit-linear-gradient( #f6f6f6,#e0e0e0 ); background-image:   -moz-linear-gradient( #f6f6f6,#e0e0e0 ); background-image:    -ms-linear-gradient( #f6f6f6,#e0e0e0 ); background-image:     -o-linear-gradient( #f6f6f6,#e0e0e0 ); background-image:        linear-gradient( #f6f6f6,#e0e0e0 );}.ui-btn-hover-c:visited,.ui-btn-hover-c:hover,.ui-btn-hover-c a.ui-link-inherit{color:#2f3e46 ;}.ui-btn-down-c{border:1px solid #bbbbbb ;background:#d6d6d6 ;font-weight:bold;color:#2f3e46 ;text-shadow:0  1px  0  #ffffff ;background-image:-webkit-gradient(linear,left top,left bottom,from( #d0d0d0 ),to( #dfdfdf )); background-image:-webkit-linear-gradient( #d0d0d0,#dfdfdf ); background-image:   -moz-linear-gradient( #d0d0d0,#dfdfdf ); background-image:    -ms-linear-gradient( #d0d0d0,#dfdfdf ); background-image:     -o-linear-gradient( #d0d0d0,#dfdfdf ); background-image:        linear-gradient( #d0d0d0,#dfdfdf );}.ui-btn-down-c:visited,.ui-btn-down-c:hover,.ui-btn-down-c a.ui-link-inherit{color:#2f3e46 ;}.ui-btn-up-c,.ui-btn-hover-c,.ui-btn-down-c{font-family:Helvetica Neue ;text-decoration:none;}a.ui-link-inherit{text-decoration:none !important;}.ui-btn-active{border:1px solid #8f8f8f ;background:#01a1dd ;font-weight:bold;color:#ffffff ;cursor:pointer;text-shadow:0  1px  0  #000000 ;text-decoration:none;background-image:-webkit-gradient(linear,left top,left bottom,from( #0090c6 ),to( #01b1f3 )); background-image:-webkit-linear-gradient( #0090c6,#01b1f3 ); background-image:   -moz-linear-gradient( #0090c6,#01b1f3 ); background-image:    -ms-linear-gradient( #0090c6,#01b1f3 ); background-image:     -o-linear-gradient( #0090c6,#01b1f3 ); background-image:        linear-gradient( #0090c6,#01b1f3 ); font-family:Helvetica Neue ;}.ui-btn-active:visited,.ui-btn-active:hover,.ui-btn-active a.ui-link-inherit{color:#ffffff ;}.ui-btn-inner{border-top:1px solid #fff;border-color:rgba(255,255,255,.3);}.ui-corner-all{-webkit-border-radius:.6em ;border-radius:.6em ;}.ui-br{border-color:rgb(130,130,130);border-color:rgba(130,130,130,.3);border-style:solid;}.ui-disabled{filter:Alpha(Opacity=30);opacity:.3;zoom:1;}.ui-disabled,.ui-disabled a{cursor:default !important;pointer-events:none;}.ui-icon,.ui-icon-searchfield:after{background-color:#666666 ;background-color:rgba(0,0,0,.4) ;background-image:url(images/icons-18-white.png) ;background-repeat:no-repeat;-webkit-border-radius:9px;border-radius:9px;}.ui-icon-alt .ui-icon,.ui-icon-alt .ui-icon-searchfield:after{background-color:#fff;background-color:rgba(255,255,255,.3);background-image:url(images/icons-18-black.png);background-repeat:no-repeat;}.ui-icon-nodisc .ui-icon,.ui-icon-nodisc .ui-icon-searchfield:after,.ui-icon-nodisc .ui-icon-alt .ui-icon,.ui-icon-nodisc .ui-icon-alt .ui-icon-searchfield:after{background-color:transparent;}
+
+.ui-icon-plus{background-position:-1px -1px;}
+.ui-icon-minus{background-position:-37px -1px;}
+.ui-icon-delete{background-position:-73px -1px;}
+.ui-icon-arrow-r{background-position:-108px -1px;}
+.ui-icon-arrow-l{background-position:-144px -1px;}
+.ui-icon-arrow-u{background-position:-180px -1px;}
+.ui-icon-arrow-d{background-position:-216px -1px;}
+.ui-icon-check{background-position:-252px -1px;}
+.ui-icon-gear{background-position:-288px -1px;}
+.ui-icon-refresh{background-position:-323px -1px;}
+.ui-icon-forward{background-position:-360px -1px;}
+.ui-icon-back{background-position:-396px -1px;}
+.ui-icon-grid{background-position:-432px -1px;}
+.ui-icon-star{background-position:-467px -1px;}
+.ui-icon-alert{background-position:-503px -1px;}
+.ui-icon-info{background-position:-539px -1px;}
+.ui-icon-home{background-position:-575px -1px;}
+.ui-icon-search,.ui-icon-searchfield:after{background-position:-611px -1px;}
+.ui-icon-checkbox-on{background-position:-647px -1px;}
+.ui-icon-checkbox-off{background-position:-683px -1px;}
+.ui-icon-radio-on{background-position:-718px -1px;}
+.ui-icon-radio-off{background-position:-754px -1px;}
+.ui-icon-bars{background-position:-788px -1px;}
+.ui-icon-edit{background-position:-824px -1px;}
+
+@media only screen and (-webkit-min-device-pixel-ratio:1.3),      only screen and (min--moz-device-pixel-ratio:1.3),      only screen and (min-resolution:200dpi){
+.ui-icon-plus,.ui-icon-minus,.ui-icon-delete,.ui-icon-arrow-r,.ui-icon-arrow-l,.ui-icon-arrow-u,.ui-icon-arrow-d,.ui-icon-check,.ui-icon-gear,.ui-icon-refresh,.ui-icon-forward,.ui-icon-back,.ui-icon-grid,.ui-icon-star,.ui-icon-alert,.ui-icon-info,.ui-icon-home,.ui-icon-bars,.ui-icon-edit,.ui-icon-search,.ui-icon-searchfield:after,.ui-icon-checkbox-off,.ui-icon-checkbox-on,.ui-icon-radio-off,.ui-icon-radio-on
+    {
+background-image:url(images/icons-36-white.png);
+-moz-background-size:864px 18px;-o-background-size:864px 18px;
+-webkit-background-size:864px 18px;
+background-size:864px 18px;
+    }
+/*  Edited Retina Styles */
+.ui-icon-alt .ui-icon{background-image:url(images/icons-36-black.png);}
+.ui-icon-plus{background-position:0px 50%;}
+.ui-icon-minus{background-position:-36px 50%;}
+.ui-icon-delete{background-position:-81px 50%;}
+.ui-icon-arrow-r{background-position:-121px 50%;}
+.ui-icon-arrow-l{background-position:-144px 50%;}
+.ui-icon-arrow-u{background-position:-179px 50%;}
+.ui-icon-arrow-d{background-position:-215px 50%;}
+.ui-icon-check{background-position:-282px 50%;}
+.ui-icon-gear{background-position:-322px 50%;}
+.ui-icon-refresh{background-position:-323px 50%;}
+.ui-icon-forward{background-position:-401px 50%;}
+.ui-icon-back{background-position:-442px 50%;}
+.ui-icon-grid{background-position:-431px 50%;}
+.ui-icon-star{background-position:-467px 50%;}
+.ui-icon-alert{background-position:-503px 50%;}
+.ui-icon-info{background-position:-538px 50%;}
+.ui-icon-home{background-position:-643px 50%;}
+.ui-icon-search,.ui-icon-searchfield:after{background-position:-647px 50%;}
+.ui-icon-checkbox-on{background-position:-723px 50%;}
+.ui-icon-checkbox-off{background-position:-761px 50%;}
+.ui-icon-radio-on{background-position:-718px 50%;}
+.ui-icon-radio-off{background-position:-754px 50%;}
+.ui-icon-bars{background-position:-788px 50%;}
+.ui-icon-edit{background-position:-824px 50%;}
+
+/* Original Styles
+.ui-icon-alt .ui-icon{background-image:url(images/icons-36-black.png);}
+.ui-icon-plus{background-position:0px 50%;}
+.ui-icon-minus{background-position:-36px 50%;}
+.ui-icon-delete{background-position:-72px 50%;}
+.ui-icon-arrow-r{background-position:-108px 50%;}
+.ui-icon-arrow-l{background-position:-144px 50%;}
+.ui-icon-arrow-u{background-position:-179px 50%;}
+.ui-icon-arrow-d{background-position:-215px 50%;}
+.ui-icon-check{background-position:-252px 50%;}
+.ui-icon-gear{background-position:-287px 50%;}
+.ui-icon-refresh{background-position:-323px 50%;}
+.ui-icon-forward{background-position:-360px 50%;}
+.ui-icon-back{background-position:-395px 50%;}
+.ui-icon-grid{background-position:-431px 50%;}
+.ui-icon-star{background-position:-467px 50%;}
+.ui-icon-alert{background-position:-503px 50%;}
+.ui-icon-info{background-position:-538px 50%;}
+.ui-icon-home{background-position:-575px 50%;}
+.ui-icon-search,.ui-icon-searchfield:after{background-position:-611px 50%;}
+.ui-icon-checkbox-on{background-position:-647px 50%;}
+.ui-icon-checkbox-off{background-position:-683px 50%;}
+.ui-icon-radio-on{background-position:-718px 50%;}
+.ui-icon-radio-off{background-position:-754px 50%;}
+.ui-icon-bars{background-position:-788px 50%;}
+.ui-icon-edit{background-position:-824px 50%;}
+*/
+}
+
+.ui-checkbox .ui-icon,.ui-selectmenu-list .ui-icon{-webkit-border-radius:3px;border-radius:3px;}.ui-icon-checkbox-off,.ui-icon-radio-off{background-color:transparent;}.ui-checkbox-on .ui-icon,.ui-radio-on .ui-icon{background-color:#01a1dd ; }.ui-icon-loading{background:url(images/ajax-loader.gif);background-size:46px 46px;}.ui-btn-corner-all{-webkit-border-radius:1em ;border-radius:1em ;}.ui-corner-all,.ui-btn-corner-all{-webkit-background-clip:padding;background-clip:padding-box;}.ui-overlay{background:#666;filter:Alpha(Opacity=50);opacity:.5;position:absolute;width:100%;height:100%;}.ui-overlay-shadow{-moz-box-shadow:0px 0px 12px rgba(0,0,0,.6);-webkit-box-shadow:0px 0px 12px rgba(0,0,0,.6);box-shadow:0px 0px 12px rgba(0,0,0,.6);}.ui-shadow{-moz-box-shadow:0px 1px 3px  rgba(0,0,0,.2) ;-webkit-box-shadow:0px 1px 3px  rgba(0,0,0,.2) ;box-shadow:0px 1px 3px  rgba(0,0,0,.2) ;}.ui-bar-a .ui-shadow,.ui-bar-b .ui-shadow,.ui-bar-c .ui-shadow {-moz-box-shadow:0px 1px 0 rgba(255,255,255,.3);-webkit-box-shadow:0px 1px 0 rgba(255,255,255,.3);box-shadow:0px 1px 0 rgba(255,255,255,.3);}.ui-shadow-inset{-moz-box-shadow:inset 0px 1px 4px rgba(0,0,0,.2);-webkit-box-shadow:inset 0px 1px 4px rgba(0,0,0,.2);box-shadow:inset 0px 1px 4px rgba(0,0,0,.2);}.ui-icon-shadow{-moz-box-shadow:0px 1px 0 rgba(255,255,255,.4) ;-webkit-box-shadow:0px 1px 0 rgba(255,255,255,.4) ;box-shadow:0px 1px 0 rgba(255,255,255,.4) ;}.ui-btn:focus,.ui-link-inherit:focus{outline:0;}.ui-btn.ui-focus{z-index:1;}.ui-focus,.ui-btn:focus{-moz-box-shadow:inset 0px 0px 3px #01a1dd,0px 0px 9px #01a1dd ;-webkit-box-shadow:inset 0px 0px 3px #01a1dd,0px 0px 9px #01a1dd ;box-shadow:inset 0px 0px 3px #01a1dd,0px 0px 9px #01a1dd ;}.ui-input-text.ui-focus,.ui-input-search.ui-focus{-moz-box-shadow:0px 0px 12px #01a1dd ;-webkit-box-shadow:0px 0px 12px #01a1dd ;box-shadow:0px 0px 12px #01a1dd ;}.ui-mobile-nosupport-boxshadow *{-moz-box-shadow:none !important;-webkit-box-shadow:none !important;box-shadow:none !important;}.ui-mobile-nosupport-boxshadow .ui-focus,.ui-mobile-nosupport-boxshadow .ui-btn:focus,.ui-mobile-nosupport-boxshadow .ui-link-inherit:focus{outline-width:1px;outline-style:auto;}
+
+#categoryTable {
+    width: 230px;
+    margin: 0 auto 0 auto;
+}
+
+
+/* First breakpoint is 768px. 3 column layout. Tiles 250x250 pixels at the breakpoint. */
+@media all and (min-width: 768px){
+    .ui-content {
+        padding: 9px;
+    }
+    .ui-listview .ui-li.ui-btn {
+        float: left;
+        width: 30.9333%; /* 33.3333% incl. 2 x 1.2% margin */
+        height: 232px;
+        margin: 9px 1.2%;
+        border-width: 0; /* The 1px border would break the layout so we set it on .ui-btn-inner instead. */
+    }
+    /* If you don't want a border at all, just set "border: none;" here to negate the semi white top border */
+    .ui-listview .ui-li.ui-btn-inner {
+        border: inherit;
+        border-width: 1px;
+        margin: -1px;
+    }
+    .ui-listview .ui-btn-inner,
+    .ui-listview .ui-btn-text,
+    .ui-listview .ui-link-inherit,
+    .ui-listview .ui-li-thumb {
+        width: 100%;
+        height: 100%;
+        display: block;
+        overflow: none;
+    }
+    .ui-listview .ui-link-inherit {
+        padding: 0 !important;
+        position: relative;
+    }
+    /* Inherit the border-radius from the UL that has class .ui-corner-all in case of an inset listview. */
+    .ui-listview .ui-li,
+    .ui-listview .ui-btn-text,
+    .ui-listview .ui-link-inherit,
+    .ui-listview .ui-li-thumb {
+        -webkit-border-radius: inherit;
+        border-radius: inherit;
+    }
+    .ui-listview .ui-li-thumb {
+        height: auto; /* To keep aspect ratio. */
+        max-width: 100%;
+        max-height: none;
+        margin: 0;
+        left: 0;
+        z-index: -1;
+    }
+    /* Hide the icon */
+    .ui-listview .ui-icon {
+        display: none;
+    }
+    /* Make text wrap. */
+    .ui-listview .ui-li-heading,
+    .ui-listview .ui-li-desc {
+        white-space: no-wrap;
+        overflow: none;
+        position: absolute;
+        left: 0;
+        right: 0;
+        color: #FFFFFF;
+    }
+    /* Text position */
+    .ui-listview .ui-li-heading {
+        margin: 0;
+        padding: 20px;
+        bottom: 50%;
+        color: #FFFFFF;
+    }
+    .ui-listview .ui-li-desc {
+        margin: 0;
+        padding: 0 20px;
+        min-height: 50%;
+        bottom: 0;
+        line-height: 1.5;
+        color: #FFFFFF;
+    }
+    /* Semi transparent background and different position if there is a thumb */
+    .ui-listview .ui-li-has-thumb .ui-li-heading,
+    .ui-listview .ui-li-has-thumb .ui-li-desc {
+        background: #111;
+        background: rgba(0,0,0,.8);
+        -webkit-background-clip: padding;
+        background-clip: padding-box;
+        }
+    .ui-listview .ui-li-has-thumb .ui-li-heading {
+        padding: 10px;
+        bottom: 20%;
+    }
+    .ui-listview .ui-li-has-thumb .ui-li-desc {
+        padding: 0 10px;
+        min-height: 20%;
+        -webkit-border-bottom-left-radius: inherit;
+        border-bottom-left-radius: inherit;
+        -webkit-border-bottom-right-radius: inherit;
+        border-bottom-right-radius: inherit;
+        }
+    /* ui-li-aside has class .ui-li-desc as well so we have to override some things. */
+    .ui-listview .ui-li-desc.ui-li-aside {
+        padding: 2px 10px;
+        width: auto;
+        min-height: 0;
+        top: 0;
+        left: auto;
+        bottom: auto;
+        /* Custom styling. */
+        color: #FFFFFF;
+        font-weight: bold;
+        /* background: #7CB138; */
+        /* background: rgba(124,177,56,.85); */
+        background: #01a1dd;
+        background: rgba(1, 161, 221, .85);
+        -webkit-border-top-right-radius: inherit;
+        border-top-right-radius: inherit;
+        -webkit-border-bottom-left-radius: inherit;
+        border-bottom-left-radius: inherit;
+        -webkit-border-bottom-right-radius: 0;
+        border-bottom-right-radius: 0;
+        }
+    /* If you want to add shadow, don't kill the focus style.  */
+    .ui-listview .ui-btn:not(.ui-focus) {
+     /*    -moz-box-shadow: 0px 0px 9px #111; */
+     /*    -webkit-box-shadow: 0px 0px 9px #111; */
+     /*    box-shadow: 0px 0px 9px #111; */
+     -moz-box-shadow: none;
+     -webkit-box-shadow: none;
+     box-shadow: none;
+     text-shadow: none;
+     color: #FFFFFF;
+    }
+    /* Images mask the hover bg color so we give desktop users feedback by applying the focus style on hover as well.  */
+    .ui-listview .ui-btn:hover {
+     /*    -moz-box-shadow: 0px 0px 12px #387bbe; */
+     /*    -webkit-box-shadow: 0px 0px 12px #387bbe; */
+     /*    box-shadow: 0px 0px 12px #387bbe; */
+     -moz-box-shadow: none;
+     -webkit-box-shadow: none;
+     box-shadow: none;
+     text-shadow: none;
+     color: #FFFFFF;
+    }
+    /* Animate focus and hover style, and resizing. */
+    .ui-listview .ui-btn {
+        -webkit-transition: all 500ms ease;
+        -moz-transition: all 500ms ease;
+        -o-transition: all 500ms ease;
+        -ms-transition: all 500ms ease;
+        transition: all 500ms ease; 
+    }
+}
+/* Second breakpoint. 4 column layout. Tiles will be 250x250 pixels again at the breakpoint. */
+@media all and (min-width: 1020px){
+    .ui-content {
+        padding: 10px;
+    }
+    /* Set a max-width for the last breakpoint to prevent too much stretching on large screens.
+    By setting the max-width equal to the breakpoint width minus padding we keep square tiles. */
+    .ui-listview {
+        max-width: 1000px;
+        margin: 0 auto;
+    }
+    /* Because of the 1000px max-width the width will always be 230px (and margin left/right 10px),
+    but we stick to percentage values for demo purposes. */
+    .ui-listview .ui-li.ui-btn {
+        width: 23%;
+        height: 230px;
+        margin: 10px 1%;
+    }
+}
+/* For this demo we used images with a size of 310x310 pixels. Just before the second breakpoint the images reach their max width: 1019px - 2 x 9px padding = 1001px x 30.9333% = ~310px */
+

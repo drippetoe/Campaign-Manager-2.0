@@ -1,0 +1,5 @@
+IdentityFile ~/.ssh/id_rsa
+
+Host proxdev
+   HostName campaigns.proximusmobility.net
+   user remoteplug

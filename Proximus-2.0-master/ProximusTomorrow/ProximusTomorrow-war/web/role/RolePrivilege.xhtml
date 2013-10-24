@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+
+    <h:head>
+        <link rel="stylesheet" type="text/css" href="/ProximusTomorrow-war/faces/jsfcrud.css" />
+        <h:outputStylesheet name="css/jsfcrud.css"/>
+    </h:head>
+
+    <h:body>
+
+        <ui:composition template="/template.xhtml">
+            <style>
+                .ui-picklist .ui-picklist-list {
+                    width: 100%;
+                }
+            </style>
+            <ui:define name="pageHeader">
+                <h:outputText value="#{message.assignPrivilegesToRoles}"></h:outputText>
+            </ui:define>
+
+            <br />
+            <h:form rendered="#{!loginController.privileges.contains(bundle.UserPrivilege)}">
+                <h:outputText value="#{message.InsufficientPrivileges}" 
+                              style="font-family: Arial;font-size: 16px;color: red;"/>
+            </h:form>
+
+            <h:form id="rolePrivilegeForm" rendered="#{loginController.privileges.contains(bundle.UserPrivilege)}">
+                <p:panelGrid columns="1" style="width:100%">
+                    <f:facet name="header">
+                        <h:outputText value="#{message.assignPrivilegeToRole}"/>
+                    </f:facet> 
+                    <p:column>
+                        <h:outputLabel value="#{message.privilege}" for="privilegeDropdown" />
+                        <br />
+                        <p:selectOneMenu id="privilegeDropdown" value="#{roleController.selectedPrivilegeName}" style="width: 250px">  
+                            <f:selectItem itemLabel="#{message.selectPrivilege}" itemValue=""  />  
+                            <f:selectItems value="#{roleController.listPrivileges}"/>  
+                            <p:ajax update="rolePrivilegeForm" listener="#{roleController.recreatePickList()}"/>
+                        </p:selectOneMenu>
+                    </p:column>
+                </p:panelGrid>
+                <br />
+
+                <p:panelGrid columns="1" style="width:100%" rendered="#{roleController.selectedPrivilegeName.length() gt 1}">
+
+                    <p:column >
+                        <p:pickList id="pickList" value="#{roleController.picklistModel}"  
+                                    var="roles"  
+                                    itemLabel="#{roles}"  
+                                    itemValue="#{roles}" style="width:100%;"
+                                    onTransfer="modifyTable();" >
+
+                            <f:facet name="sourceCaption">#{message.roles}</f:facet>  
+                            <f:facet name="targetCaption">#{message.assignedToPrivilege}</f:facet> 
+
+                        </p:pickList>  
+                        <p:remoteCommand name="modifyTable">
+                            <f:setPropertyActionListener value="#{roleController.picklistModel.target}"
+                                                         target="#{roleController.picklistTarget}" />
+                        </p:remoteCommand>
+                    </p:column>
+
+                </p:panelGrid>
+                <br />
+                <p:commandButton value="#{message.save}" action="#{roleController.saveRolesToPrivilege()}" update="rolePrivilegeForm"/>
+            </h:form>
+        </ui:composition>
+    </h:body> 
+</html>

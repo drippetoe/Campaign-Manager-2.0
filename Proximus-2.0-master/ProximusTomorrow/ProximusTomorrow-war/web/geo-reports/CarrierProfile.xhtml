@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+
+
+    <h:head>
+        <title>Carrier Profile</title>
+        <link rel="stylesheet" type="text/css" href="/ProximusTomorrow-war/faces/jsfcrud.css" />
+        <h:outputStylesheet name="css/jsfcrud.css"/>
+    </h:head>
+
+    <h:body>
+        <ui:composition template="/template.xhtml">
+            <ui:define name="pageHeader">
+            </ui:define>
+            <h:form rendered="#{!loginController.privileges.contains(bundle.ViewCarrierProfileReport)}">
+                <h:outputText value="#{bundle.InsufficientPrivileges}" 
+                              style="font-family: Arial;font-size: 16px;color: red;"/>
+            </h:form>
+
+            <h:form id="carrierProfileForm" rendered="#{loginController.privileges.contains(bundle.ViewCarrierProfileReport)}">
+                <p:panelGrid id="companyGrid" columns="1">       
+                    <p:column>
+                        <h:outputText value="Carrier Profile for #{message.company}: " />
+                        <br />
+                        <p:selectOneMenu id="companySelector"  value="#{carrierProfileController.selectedCompany}" converter="#{companyConverter}">   
+                            <p:ajax  update=":carrierProfileForm" listener="#{carrierProfileController.createPieModel()}" />
+                            <f:selectItems value="#{carrierProfileController.companyList}"/> 
+                        </p:selectOneMenu> 
+                    </p:column>
+                </p:panelGrid>
+                <center>
+                    <h:outputText value="Unrecognized MSISDNs will result in carriers listed in both supported and unsupported categories." style="color: darkblue"/>
+                    <br/>
+                </center>
+                <h:panelGrid columns="3" style="border: 0px" cellspacing="10" cellpadding="0">
+                    <p:pieChart id="supportedCarrierChart" value="#{carrierProfileController.supportedCarrierModel}" legendPosition="w"  
+                                title="Supported Carrier Chart" style="width:400px;height:300px" rendered="#{carrierProfileController.supportedCarrierModel.data.size()>0}">  
+                    </p:pieChart>  
+                    <p:pieChart id="unsupportedCarrierChart" value="#{carrierProfileController.unSupportedCarrierModel}" legendPosition="w"  
+                                title="UnSupported Carrier Chart" style="width:400px;height:300px" rendered="#{carrierProfileController.unSupportedCarrierModel.data.size()>0}">  
+                    </p:pieChart>  
+
+                    <p:pieChart id="subscriberStatusChart" value="#{carrierProfileController.subscriberStatusModel}" legendPosition="w"  
+                                title="Subscriber Status Chart" style="width:400px;height:300px" rendered="#{carrierProfileController.subscriberStatusModel.data.size()>0}">  
+                    </p:pieChart>  
+
+                    <h:panelGroup >
+                        <p:dataTable id="supportedCarrierProfile" var="supportedCarrier" value="#{carrierProfileController.supportedCarrierProfile}" 
+                                     paginator="true" rows="5" rendered="#{carrierProfileController.supportedCarrierProfile.size()>0}"
+                                     currentPageReportTemplate="{currentPage} #{message.of} {totalPages}" 
+                                     paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                     rowsPerPageTemplate="5,10,15,20,50,100"
+                                     style="width: 500px; height: 500px" >
+                            <f:facet name="header">
+                                <p:column colspan="2">Supported Carriers</p:column> 
+                            </f:facet>
+
+                            <p:column id="supportedCarrier" headerText="Carrier" sortBy="#{supportedCarrier.carrier}">
+                                <h:outputText value="#{supportedCarrier.carrier}"/>
+                            </p:column>
+
+                            <p:column id="supportedSubscriber" headerText="Number of Subscribers" sortBy="#{supportedCarrier.uniqueSubscribers}">
+                                <h:outputText value="#{supportedCarrier.uniqueSubscribers}"/>
+                            </p:column>
+
+                            <p:columnGroup type="footer">  
+                                <p:row>  
+                                    <p:column colspan="1" footerText="#{message.total}"  
+                                              style="text-align:right"  />  
+                                    <p:column footerText="#{carrierProfileController.totalSupportedCarriers}" />  
+                                </p:row>  
+                            </p:columnGroup>  
+                        </p:dataTable>
+                    </h:panelGroup>
+
+                    <h:panelGroup >
+                        <p:dataTable id="unSupportedCarrierProfile" var="unSupportedCarrier" value="#{carrierProfileController.unSupportedCarrierProfile}" 
+                                     paginator="true" rows="5" rendered="#{carrierProfileController.unSupportedCarrierProfile.size()>0}"
+                                     currentPageReportTemplate="{currentPage} #{message.of} {totalPages}" 
+                                     paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                     rowsPerPageTemplate="5,10,15,20,50,100"
+                                     style="width: 500px; height: 500px">
+                            <f:facet name="header">
+                                <p:column colspan="2">Unsupported Carriers</p:column> 
+                            </f:facet>
+
+                            <p:column id="unsupportedCarrier" headerText="Carrier" sortBy="#{unSupportedCarrier.carrier}">
+                                <h:outputText value="#{unSupportedCarrier.carrier}"/>
+                            </p:column>
+
+                            <p:column id="unsupportedSubscriber" headerText="Number of Subscribers" sortBy="#{unSupportedCarrier.uniqueSubscribers}">
+                                <h:outputText value="#{unSupportedCarrier.uniqueSubscribers}"/>
+                            </p:column>
+
+                            <p:columnGroup type="footer">  
+                                <p:row>  
+                                    <p:column colspan="1" footerText="#{message.total}"  
+                                              style="text-align:right"  />  
+                                    <p:column footerText="#{carrierProfileController.totalUnSupportedCarriers}" />  
+                                </p:row>  
+                            </p:columnGroup>  
+                        </p:dataTable>
+                    </h:panelGroup>
+
+                    <h:panelGroup >
+                        <p:dataTable id="subscriberStatusProfile" var="subscriberStatus" value="#{carrierProfileController.subscriberStatusProfile}" 
+                                     paginator="true" rows="5" rendered="#{carrierProfileController.subscriberStatusProfile.size()>0}"
+                                     currentPageReportTemplate="{currentPage} #{message.of} {totalPages}" 
+                                     paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                     rowsPerPageTemplate="5,10,15,20,50,100"
+                                     style="width: 500px; height: 500px">
+                            <f:facet name="header">
+                                <p:column colspan="2">Subscriber Statuses</p:column> 
+                            </f:facet>
+
+                            <p:column id="status" headerText="Status" sortBy="#{subscriberStatus.carrier}">
+                                <h:outputText value="#{subscriberStatus.carrier}"/>
+                            </p:column>
+
+                            <p:column id="nrOfSubscribers" headerText="Number of Subscribers" sortBy="#{subscriberStatus.uniqueSubscribers}">
+                                <h:outputText value="#{subscriberStatus.uniqueSubscribers}"/>
+                            </p:column>
+
+                            <p:columnGroup type="footer">  
+                                <p:row>  
+                                    <p:column colspan="1" footerText="#{message.total}"  
+                                              style="text-align:right"  />  
+                                    <p:column footerText="#{carrierProfileController.totalSubscribers}" />  
+                                </p:row>  
+                            </p:columnGroup>  
+                        </p:dataTable>
+                    </h:panelGroup>
+                </h:panelGrid>
+            </h:form>
+        </ui:composition>
+    </h:body>
+</html>

@@ -1,0 +1,282 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+
+
+    <h:body id="mainBody"> 
+
+        <ui:composition template="/template.xhtml">
+
+
+            <ui:define name="title">
+                <h:outputText value="#{message.sentOffers}"></h:outputText>
+            </ui:define>
+            <ui:define name="pageHeader">
+                <h:outputText value="#{message.sentOffers}"></h:outputText>
+            </ui:define>
+
+            <h:form rendered="#{!loginController.privileges.contains(bundle.ViewGeoMessageSummary)}">
+                <h:outputText value="#{bundle.InsufficientPrivileges}" 
+                              style="font-family: Arial;font-size: 16px;color: red;"/>
+            </h:form>
+
+            <p:ajaxStatus onstart="statusDialog.show();" onsuccess="statusDialog.hide();"/>
+            <p:dialog modal="true" widgetVar="statusDialog"
+                      draggable="false" closable="false" resizable="false">  
+                <p:graphicImage value="/images/loading.gif" />  
+            </p:dialog>  
+
+            <h:form  id="formId" prependId="false" enctype="multipart/form-data" rendered="#{loginController.privileges.contains(bundle.ViewGeoMessageSummary)}">
+                <ui:insert name="body">
+                    <ui:include src="/reports/ReportTemplate.xhtml"/>
+                </ui:insert>
+                <br />
+                <p:panelGrid id="countryGrid" columns="1" >       
+                    <p:column>
+                        <h:outputText value="#{message.country}: " />
+                        <br />
+                        <p:selectOneMenu id="countrySelector" value="#{propertyStatisticsController.selectedCountry.name}">   
+                            <f:selectItem itemLabel="#{message.all}" value="#{null}" />  
+                            <f:selectItems value="#{propertyStatisticsController.countryList}"/> 
+                            <p:ajax  update=":formId" listener="#{propertyStatisticsController.populateSummaryStats()}" />
+                        </p:selectOneMenu> 
+                    </p:column>
+                </p:panelGrid>
+
+                <p:commandButton id="youAreMyOnlyHopeObiWanKenobi" type="button" value="Retrieve Data" onclick="myRemoteCommand()" 
+                                 rendered="#{!propertyStatisticsController.showContent}" ajax="true"/>
+
+                <p:remoteCommand name="myRemoteCommand" process="@this" actionListener="#{propertyStatisticsController.populateSummaryStats()}" update=":formId"/>
+
+                <p:tabView id="tabView" activeIndex="#{propertyStatisticsController.activeTab}" rendered="#{propertyStatisticsController.showContent}">
+                    <p:tab id="tab0" title="1. #{message.generalSummaryOfProperties}">  
+                        <p:panel>
+                            <h:outputText value="#{message.clickOnAnyProperty}"/>
+                        </p:panel>
+
+
+
+                        <p:dataTable id="propertyTable" var="stats" value="#{propertyStatisticsController.propertyStatsDataModel}"
+                                     selection="#{propertyStatisticsController.selectedStat}"
+                                     selectionMode="single"
+                                     widgetVar="propertyWidget"
+                                     paginator="true" rows="20"
+                                     filteredValue="#{propertyStatisticsController.filteredAgreggators}"
+                                     currentPageReportTemplate="{currentPage} #{message.of} {totalPages}" 
+                                     paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                     rowsPerPageTemplate="5,10,15,20,50,100">  
+                            <p:ajax event="filter" global="false" update="@this"/>
+                            <p:ajax event="rowSelect" listener="#{propertyStatisticsController.onPropertyRowSelect}" update=":formId:tabView" global="false"/>
+                            <f:facet name="header">
+                                <p:outputPanel>
+                                    <h:outputText value="#{message.search} "/>
+                                    <p:inputText id="globalFilter" onkeyup="propertyWidget.filter()"/>
+                                </p:outputPanel>
+                            </f:facet>
+                            <p:columnGroup type="header">
+                                <p:row>
+                                    <p:column  rowspan="2" headerText="#{message.property}" sortBy="#{stats.property.name}" filterBy="#{stats.property.name}" filterMatchMode="contains" filterStyle="display: none;"/>
+                                    <p:column  colspan="3" headerText="Messages Sent"/>
+                                    <p:column  colspan="3" headerText=""/>
+                                    <p:column  colspan="3" headerText="Opt Ins"/>
+
+                                </p:row>
+
+                                <p:row>
+                                    <p:column  headerText="Overall" sortBy="#{stats.messagesSent}" filterBy="#{stats.messagesSent}" filterMatchMode="contains" filterStyle="display: none;"/>
+                                    <p:column  headerText="Curr Month" sortBy="#{stats.messagesSentCurrMonth}" filterBy="#{stats.messagesSentCurrMonth}" filterMatchMode="contains" filterStyle="display: none;"/>
+                                    <p:column  headerText="Prev Month" sortBy="#{stats.messagesSentPrevMonth}" filterBy="#{stats.messagesSentPrevMonth}" filterMatchMode="contains" filterStyle="display: none;"/>
+
+                                    <p:column  headerText="#{message.retailers}" sortBy="#{stats.retailers}" filterBy="#{stats.retailers}" filterMatchMode="contains" filterStyle="display: none;"/>
+                                    <p:column  headerText="#{message.activeOffers}" sortBy="#{stats.activeOffers}" filterBy="#{stats.activeOffers}" filterMatchMode="contains" filterStyle="display: none;"/>
+                                    <p:column  headerText="Retailers with Offers" sortBy="#{stats.retailersWithOffers}" filterBy="#{stats.retailersWithOffers}" filterMatchMode="contains" filterStyle="display: none;"/>
+
+                                    <p:column  headerText="Overall" sortBy="#{stats.optIns}" filterBy="#{stats.optIns}" filterMatchMode="contains" filterStyle="display: none;"/>
+                                    <p:column  headerText="Curr Month" sortBy="#{stats.optInsCurrMonth}" filterBy="#{stats.optInsCurrMonth}" filterMatchMode="contains" filterStyle="display: none;"/>
+                                    <p:column  headerText="Prev Month" sortBy="#{stats.optInsPrevMonth}" filterBy="#{stats.optInsPrevMonth}" filterMatchMode="contains" filterStyle="display: none;"/>
+                                </p:row>
+
+                            </p:columnGroup>
+
+                            <p:column>
+                                <h:outputText value="#{stats.property.name}" />
+                            </p:column>
+                            <p:column>
+                                <h:outputText value="#{stats.messagesSent}" />   
+                            </p:column>
+                            <p:column>
+                                <h:outputText value="#{stats.messagesSentCurrMonth}" />
+                            </p:column>
+                            <p:column>
+                                <h:outputText value="#{stats.messagesSentPrevMonth}" />
+
+                            </p:column>
+
+
+
+                            <p:column>
+                                <h:outputText value="#{stats.retailers}" />
+                            </p:column>
+
+                            <p:column>
+
+                                <h:outputText value="#{stats.activeOffers}" />
+                            </p:column>
+
+                            <p:column>
+                                <h:outputText value="#{stats.retailersWithOffers}" />
+                            </p:column>
+
+
+                            <p:column>
+                                <h:outputText value="#{stats.optIns}" />   
+                            </p:column>
+                            <p:column>
+                                <h:outputText value="#{stats.optInsCurrMonth}" />
+                            </p:column>
+                            <p:column>
+                                <h:outputText value="#{stats.optInsPrevMonth}" />
+
+                            </p:column>
+
+                            <p:columnGroup type="footer">  
+                                <p:row>  
+                                    <p:column colspan="1" footerText="#{message.total}"/>  
+                                    <p:column footerText="#{propertyStatisticsController.totalMessagesSent}" style="text-align: left;"/>  
+                                    <p:column footerText="#{propertyStatisticsController.totalCurrMonthMessagesSent}" style="text-align: left;"/>  
+                                    <p:column footerText="#{propertyStatisticsController.totalPrevMonthMessagesSent}" style="text-align: left;"/>  
+
+
+
+                                    <p:column footerText="#{propertyStatisticsController.totalRetailers}" style="text-align: left;"/> 
+                                    <p:column footerText="#{propertyStatisticsController.totalActiveOffers}" style="text-align: left;"/>
+                                    <p:column footerText="#{propertyStatisticsController.totalRetailersWithOffers}" style="text-align: left;"/> 
+
+                                    <p:column footerText="#{propertyStatisticsController.totalOptIns}" style="text-align: left;"/>  
+                                    <p:column footerText="#{propertyStatisticsController.totalCurrMonthOptIns}" style="text-align: left;"/>  
+                                    <p:column footerText="#{propertyStatisticsController.totalPrevMonthOptIns}" style="text-align: left;"/>  
+
+                                </p:row>  
+                            </p:columnGroup>  
+
+
+                        </p:dataTable>
+                    </p:tab>
+
+
+                    <p:tab id="tab1" title="2. #{message.detailedInformationOnProperty}" disabled="#{propertyStatisticsController.activeTab != 1}">  
+                        <p:panel >
+                            <h:outputText value="#{propertyStatisticsController.selectedStat.propStats}" rendered="#{propertyStatisticsController.activeOffers.size() gt 0}"/>
+                            <h:outputText value="#{propertyStatisticsController.selectedStat.propStats} #{message.doesNotHaveAnyActiveOffers}" rendered="#{propertyStatisticsController.activeOffers.size() lt 1}"/>
+                        </p:panel>
+
+                        <p:panel id="categoryChartPanel"  header="#{message.offersPerCategory}" toggleable="true" closable="false" toggleSpeed="500" closeSpeed="2000" widgetVar="categoryChartPanel" style="min-width:500px;" rendered="#{propertyStatisticsController.categoryList.size() gt 0 and propertyStatisticsController.activeOffers.size() gt 0}">
+                            <div id="inner_center_table" align="center">
+                                <p:barChart id="categoryChart" value="#{propertyStatisticsController.categoryChart}" legendPosition="ne" 
+                                            min="0" max="#{propertyStatisticsController.maxChartValue}" xaxisLabel="#{message.categories}" yaxisLabel="#{message.numberOfOffers}" 
+                                            style="height:300px; width:50%"/>
+                            </div>
+                        </p:panel>
+                        <br />
+                        <p:panel rendered="#{propertyStatisticsController.activeOffers.size() gt 0}">
+                            <h:outputText value="Current Active Offers"/>
+                        </p:panel>
+                        <p:dataTable id="activeOffersTable" var="offer" value="#{propertyStatisticsController.activeOffers}"
+                                     widgetVar="activeOffersWidget"
+                                     paginator="true" rows="20"
+                                     filteredValue="#{propertyStatisticsController.filteredActiveOffers}"
+                                     currentPageReportTemplate="{currentPage} #{message.of} {totalPages}" 
+                                     paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                     rowsPerPageTemplate="5,10,15,20,50,100" rendered="#{propertyStatisticsController.activeOffers.size() gt 0}">  
+
+                            <p:ajax event="filter" global="false"/>
+                            <f:facet name="header">
+                                <p:outputPanel>
+                                    <h:outputText value="#{message.search}:"/>
+                                    <p:inputText id="globalFilter" onkeyup="activeOffersWidget.filter()"/>
+                                </p:outputPanel>
+                            </f:facet>
+
+
+                            <p:columnGroup type="header">
+
+
+                                <p:row>
+                                    <p:column  rowspan="2" headerText="#{message.offerName}" sortBy="#{offer.name}" filterBy="#{offer.name}" filterMatchMode="contains" filterStyle="display: none;"/>
+                                    <p:column  colspan="3" headerText="Messages Sent"/>
+                                    <p:column colspan="4" headerText=""/>
+                                </p:row>
+
+                                <p:row>
+                                    <p:column  headerText="Overall" sortBy="#{offer.messagesSent}" filterBy="#{offer.messagesSent}" filterMatchMode="contains" filterStyle="display: none;"/>
+                                    <p:column  headerText="Curr Month" sortBy="#{offer.currMonthMessagesSent}" filterBy="#{offer.currMonthMessagesSent}" filterMatchMode="contains" filterStyle="display: none;"/>
+                                    <p:column  headerText="Prev Month" sortBy="#{offer.prevMonthMessagesSent}" filterBy="#{offer.prevMonthMessagesSent}" filterMatchMode="contains" filterStyle="display: none;"/>
+                                    <p:column  headerText="#{message.categories}" sortBy="#{offer.webOffer.categories}" filterBy="#{offer.webOffer.categories}" filterMatchMode="contains" filterStyle="display: none;"/>
+                                    <p:column  headerText="#{message.startDate}" sortBy="#{offer.startDate}" style="width:130px"/>
+                                    <p:column  headerText="#{message.endDate}" sortBy="#{offer.endDate}" style="width:120px"/>                     
+                                    <p:column  headerText="#{message.languageSelector}" sortBy="#{offer.locale}" filterBy="#{offer.locale}" filterMatchMode="contains" filterStyle="display: none;"/>
+                                </p:row>
+                            </p:columnGroup>
+
+                            <p:column>
+                                <h:outputText value="#{offer.name}" />
+                            </p:column>
+
+                            <p:column>
+                                <h:outputText value="#{offer.messagesSent}" />
+                            </p:column>
+
+                            <p:column>
+                                <h:outputText value="#{offer.currMonthMessagesSent}" />
+                            </p:column>
+
+                            <p:column >
+                                <h:outputText value="#{offer.prevMonthMessagesSent}" />
+                            </p:column>
+
+                            <p:column>
+                                <ui:repeat value="#{offer.webOffer.categories}" var="category" varStatus="status">
+                                    <h:outputText value="#{category.name}"/>                                 
+                                    <h:outputText value=","   rendered="#{!status.last}"/>   
+                                </ui:repeat>
+                            </p:column>
+
+                            <p:column>
+
+                                <h:outputText value="#{offer.startDate}">
+                                    <f:convertDateTime pattern="MM/dd/yyyy" />
+                                </h:outputText>
+                            </p:column>
+
+                            <p:column>
+                                <h:outputText value="#{offer.endDate}">
+                                    <f:convertDateTime pattern="MM/dd/yyyy" />
+                                </h:outputText>
+                            </p:column>
+
+                            <p:column>
+
+                                <h:outputText value="#{offer.locale}" />
+                            </p:column>
+
+
+                            <p:columnGroup type="footer">  
+                                <p:row>  
+                                    <p:column colspan="1" footerText="#{message.total}"  
+                                              style="text-align:right"  />  
+                                    <p:column footerText="#{propertyStatisticsController.totalMessagesSentInProperty}" style="text-align: left;" />  
+                                    <p:column footerText="#{propertyStatisticsController.totalCurrMonthMessagesSentInProperty}" style="text-align: left;" />  
+                                    <p:column footerText="#{propertyStatisticsController.totalPrevMonthMessagesSentInProperty}" style="text-align: left;" />  
+                                </p:row>  
+                            </p:columnGroup>  
+
+                        </p:dataTable>
+                    </p:tab>
+                </p:tabView>
+            </h:form>
+        </ui:composition>
+    </h:body>
+</html>

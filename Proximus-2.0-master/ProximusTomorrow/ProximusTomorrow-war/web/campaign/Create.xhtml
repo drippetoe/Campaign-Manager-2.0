@@ -1,0 +1,289 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+    <ui:define name="title">
+        <h:outputText value="#{message.createNewCampaign}"></h:outputText>
+    </ui:define>
+
+
+    <ui:define name="body">
+        <ui:composition template="/template.xhtml">
+            <ui:define name="pageHeader">
+                <h:outputText value="#{message.createCampaign}"/>
+            </ui:define>
+
+            <br />
+            <br />
+            <h:form rendered="#{!loginController.privileges.contains(bundle.CreateCampaign)}">
+                <h:outputText value="#{message.InsufficientPrivileges}" 
+                              style="font-family: Arial;font-size: 16px;color: red;"/>
+            </h:form>
+
+            <h:form id="formId" enctype="multipart/form-data" rendered="#{loginController.privileges.contains(bundle.CreateCampaign)}">
+                <p:panelGrid columns="2" style="width:100%">
+                    <f:facet name="header">
+                        <h:outputLabel value="#{message.createNewCampaign}"/>
+                    </f:facet>
+
+
+                    <h:outputLabel value="#{message.campaignName}" for="name" />
+                    <p:column>
+                        <p:tooltip for="name" value="#{message.campaignNameTooltip}" />
+                        <p:inputText id="name" value="#{campaignController.createdCampaign.name}" alt="#{message.campaignNameInputTooltip}" required="false" requiredMessage="#{message.campaignNameRequired}">
+                            <p:ajax update="formId"/>
+                        </p:inputText>
+                    </p:column>
+                    <h:outputLabel value="#{message.startDate}" for="startDate" />
+                    <p:column>
+                        <p:tooltip for="startDate" value="#{message.campaignStartDateTooltip}" />
+                        <p:calendar id="startDate" value="#{campaignController.createdCampaign.startDate}" 
+                                    navigator="true"
+                                    pattern="yyyy-MM-dd" 
+                                    showOn="button"/>
+                    </p:column>
+                    <h:outputLabel value="#{message.endDate}" for="endDate" />
+                    <p:column>
+                        <p:tooltip for="endDate" value="#{message.campaignEndDateTooltip}" />
+                        <p:calendar id="endDate" value="#{campaignController.createdCampaign.endDate}" 
+                                    navigator="true"
+                                    pattern="yyyy-MM-dd"  
+                                    showOn="button"/>
+
+                    </p:column>
+                    <h:outputLabel id="activeDays" value="#{message.activeDays}"/>
+                    <p:column>
+                        <p:tooltip for="activeDays" value="#{message.campaignActiveDaysTooltip}" />
+                        <p:panelGrid columns="4">
+                            <p:selectBooleanCheckbox itemLabel="#{message.monday}" value="#{campaignController.monday}"/>
+                            <p:selectBooleanCheckbox itemLabel="#{message.tuesday}" value="#{campaignController.tuesday}"/>
+                            <p:selectBooleanCheckbox itemLabel="#{message.wednesday}" value="#{campaignController.wednesday}"/>
+                            <p:selectBooleanCheckbox itemLabel="#{message.thursday}" value="#{campaignController.thursday}"/>
+                            <p:selectBooleanCheckbox itemLabel="#{message.friday}" value="#{campaignController.friday}"/>
+                            <p:selectBooleanCheckbox itemLabel="#{message.saturday}" value="#{campaignController.saturday}"/>
+                            <p:selectBooleanCheckbox itemLabel="#{message.sunday}" value="#{campaignController.sunday}"/>
+                        </p:panelGrid>
+                    </p:column>
+                    <h:outputLabel value="#{message.startTime}" />
+                    <p:calendar value="#{campaignController.createdCampaign.startTimeDate}" pattern="HH:mm" timeOnly="true" readOnlyInputText="true" /> 
+                    <h:outputLabel value="#{message.endTime}"/>
+                    <p:calendar value="#{campaignController.createdCampaign.endTimeDate}" pattern="HH:mm" timeOnly="true" readOnlyInputText="true" /> 
+                    <h:outputLabel value="#{message.pubNubKey}" rendered="#{loginController.privileges.contains(bundle.SuperUser)}"/>  
+                    <p:selectOneMenu id="pubnubdropdown" value="#{campaignController.selectedPubNubKey.channel}" style="width: 250px" rendered="#{loginController.privileges.contains(bundle.SuperUser)}">  
+                        <f:selectItem itemLabel="#{message.selectPubNubKey}" itemValue=""  />  
+                        <f:selectItems value="#{campaignController.pubNubList}"/>  
+                    </p:selectOneMenu>    
+                    <p:selectBooleanCheckbox value="#{campaignController.createdCampaign.active}" itemLabel="#{message.activateCampaign}"/>
+                </p:panelGrid>
+
+
+                <br/>
+                <p:panelGrid columns="2" style="width:100%" rendered="#{tagController.listTags.size() gt 0}">
+                    <f:facet name="header">
+                        <h:outputLabel value="#{message.campaignSelectGroupsMessage}"/>
+                    </f:facet>
+                    <p:outputPanel>
+                        <p:commandButton value="#{message.selectAll}" action="#{campaignController.selectAllTags}" update="formId,userDataGrid"/>
+                        <p:commandButton value="#{message.unselectAll}" action="#{campaignController.unselectAllTags}" update="formId,userDataGrid"/>
+                        <p:dataGrid id="userDataGrid" value="#{campaignController.listTags}" var="tagName" width="100%"
+                                    columns="3" rows="12" paginator="true" effect="true" 
+                                    paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" 
+                                    rowsPerPageTemplate="12,24,36">
+                            <f:facet name="header">
+                                <h:outputLabel value="#{message.linkDeviceMessage}"/>
+                            </f:facet>
+                            <p:column>
+                                <h:selectBooleanCheckbox value="#{tagName.chosen}" immediate="true">
+                                    <f:ajax execute="@this" event="click" immediate="true"></f:ajax>
+                                </h:selectBooleanCheckbox>
+                                <p:column> 
+                                    <h:outputText value="#{tagName.name}" />  
+                                </p:column>  
+                            </p:column> 
+                        </p:dataGrid>
+                    </p:outputPanel>
+                </p:panelGrid>
+                <br />
+
+
+                <p:panelGrid columns="2" style="width:100%">
+                    <f:facet name="header">  
+                        <h:outputLabel value="#{message.campaignType}"/>
+                    </f:facet>  
+                    <p:selectBooleanCheckbox value="#{campaignController.bluetoothCondition}" itemLabel="#{message.bluetooth}">
+                        <p:ajax update="bluetoothPanel"/>
+                    </p:selectBooleanCheckbox>
+
+                    <p:selectBooleanCheckbox value="#{campaignController.wifiCondition}" itemLabel="#{message.wifi}">
+                        <p:ajax update="wifiPanel,downloadWifi"/>
+                    </p:selectBooleanCheckbox>
+
+                    <p:panelGrid columns="2" id="bluetoothPanel">
+                        <h:outputLabel value="#{message.bluetoothName}" for="friendlyName" rendered="#{campaignController.bluetoothCondition}"/>
+                        <p:column rendered="#{campaignController.bluetoothCondition}">
+                            <p:tooltip for="friendlyName" value="#{message.bluetoothNameTooltip}" rendered="#{campaignController.bluetoothCondition}"/>
+                            <p:inputText id ="friendlyName" value="#{campaignController.selectedBluetooth.friendlyName}" rendered="#{campaignController.bluetoothCondition}" required="false" requiredMessage="#{message.bluetoothNameRequired}"/>
+                        </p:column>
+                    </p:panelGrid>
+
+
+                    <p:panelGrid columns="2" id="wifiPanel">
+                        <h:outputLabel value="#{message.networkName}" for="networkName" rendered="#{campaignController.wifiCondition}"/>
+                        <p:column rendered="#{campaignController.wifiCondition}">
+                            <p:tooltip for="networkName" value="#{message.networkNameTooltip}" rendered="#{campaignController.wifiCondition}"/>
+                            <p:inputText id ="networkName" maxlength="31" value="#{campaignController.selectedWifi.networkName}" rendered="#{campaignController.wifiCondition}" required="false" requiredMessage="#{message.networkNameRequired}">
+                                <f:ajax execute="@this"/>
+                            </p:inputText>
+                        </p:column>
+                        
+                        <h:outputLabel value="#{message.wifiMode}" for="hotSpotMode" rendered="#{campaignController.wifiCondition and !campaignController.hasFacebookContent}" />
+                        <p:column rendered="#{campaignController.wifiCondition and !campaignController.hasFacebookContent}">
+                            <p:tooltip for="hotSpotMode" value="#{message.wifiModeTooltip}" rendered="#{campaignController.wifiCondition}"/>
+                            <p:selectOneMenu id="hotSpotMode" value="#{campaignController.selectedWifi.hotSpotMode}" rendered="#{campaignController.wifiCondition and !campaignController.hasFacebookContent}">
+                                <f:selectItem itemLabel="#{message.noInternetAccess}" itemValue="1"/>
+                                <f:selectItem itemLabel="#{message.limitedInternetAccess}" itemValue="2"/> 
+                                <f:selectItem itemLabel="#{message.wifiHotspot}" itemValue="3"/>
+                                <p:ajax update="wifiPanel"/>
+                            </p:selectOneMenu>                                       
+                        </p:column>
+                        <h:outputLabel id="domainName" value="#{message.websites}" for="domainNames" 
+                                       rendered="#{campaignController.selectedWifi.hotSpotMode==2 or campaignController.selectedWifi.hotSpotMode==4}"/>
+                        <p:column id="domainColumn" 
+                                  rendered="#{campaignController.selectedWifi.hotSpotMode==2 or campaignController.selectedWifi.hotSpotMode==4}">
+                            <p:tooltip for="domainNames" value="#{message.websitesTooltip}"/>
+                            <p:inputText id="domainNames" value="#{campaignController.hotspotDomain.domainName}"/>
+                        </p:column>
+                        <p:commandButton id="addDomain" ajax="false" value="#{message.add}" update="domains" 
+                                         rendered="#{campaignController.selectedWifi.hotSpotMode==2 or campaignController.selectedWifi.hotSpotMode==4}"
+                                         action="#{campaignController.addToDomainList()}" process="domainNames"> 
+                        </p:commandButton>
+
+                    </p:panelGrid>
+
+                </p:panelGrid>
+
+                <br/>
+                <br/>
+                <p:outputPanel id="domains" rendered="#{(campaignController.selectedWifi.hotSpotMode==2 or campaignController.selectedWifi.hotSpotMode==4) and campaignController.domainModel.rowCount > 0}">
+                    <p:dataTable id="domainsTable" value="#{campaignController.domainModel}" var="websites"
+                                 rowKey="#{websites.domainName}"  selection="#{campaignController.selectedDomain}" selectionMode="single">
+
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{message.websites}" />
+                            </f:facet>
+                            <h:outputText value="#{websites.domainName}" />
+                        </p:column>
+                        <p:column>
+                            <p:commandButton update=":formId:domains" process="@this,domainsTable" ajax="false" 
+                                             action="#{campaignController.removeFromDomainList()}"  icon="ui-icon-trash">
+                                <f:setPropertyActionListener value="#{websites}" target="#{campaignController.selectedDomain}"/>
+                            </p:commandButton>
+                        </p:column>
+                    </p:dataTable>
+                </p:outputPanel>
+
+                <p:panelGrid columns="1" style="width: 100%" id="fileUploaderGrid">
+                    <f:facet name="header">  
+                        <h:outputLabel value="#{message.fileUploader}"/>
+                    </f:facet>  
+                    <p:outputPanel id="filesPanel">
+                        <p:dialog id="fileDialogId" header="#{message.fileDetails}" widgetVar="fileDialog" resizable="false"  
+                                  showEffect="slide" hideEffect="slide">
+                            <p:ajax event="close" listener="#{campaignController.closeSelectedFileContent()}"/>
+                            <p:panelGrid id="previewData" columns="4">
+                                <f:facet name="header">  
+                                    <h:outputText value="#{message.fileDetails}: #{campaignController.selectedFile.getName()}" />
+                                </f:facet> 
+                                <p:graphicImage  height="100" width="100" value="/images/bluetooth-logo.jpg" rendered="#{!campaignController.selectedFile.name.contains('zip')}">
+                                </p:graphicImage>
+                                <p:graphicImage  height="100" width="150" value="/images/wifi-logo.png" rendered="#{campaignController.selectedFile.name.contains('zip')}">
+                                </p:graphicImage>
+                                <p:graphicImage width="200" value="#{campaignController.selectedFile.previewImage()}" cache="false" rendered="#{campaignController.selectedFile.name.contains('.png') or campaignController.selectedFile.name.contains('.jpg') or campaignController.selectedFile.name.contains('.jpeg') or campaignController.selectedFile.name.contains('.gif')}"/>
+                                <h:outputText value="Size: #{campaignController.selectedFile.friendlySize}" />      
+                                <p:commandButton value="#{message.previewContent}" icon="ui-icon-play" onclick="dialog.show()" rendered="#{campaignController.selectedFile.name.contains('zip')}"/>
+                            </p:panelGrid>
+                        </p:dialog>
+                        <p:column>
+                            <p:fileUpload id="campaignUpload" fileUploadListener="#{campaignController.handleFileUpload}"
+                                          mode="advanced"
+                                          auto="true"
+                                          update=":formId:fileUploaderGrid,:formId:uploadPanel"
+                                          required="#{campaignController.wifiCondition or campaignController.bluetoothCondition}"
+                                          requiredMessage="#{message.fileUploaderRequired}"
+                                          multiple="true" 
+                                          label="#{message.choose}"
+                                          allowTypes="/(\.|\/)(txt|jpe?g|png|zip|gif|html|3gp|avi|mp4|mp3|jad|jar|apk|ics|vcf)$/"/>
+
+                        </p:column>
+
+                        <p:dataTable id="fileList" var="file" widgetVar="fileTable" value="#{campaignController.fileModel}"
+                                     rowKey="#{file.name}" selection="#{campaignController.selectedFile}" selectionMode="single" rowIndexVar="indexVar" >
+
+                            <p:column style="text-align: center" headerText="#{message.orderFiles}">
+                                <p:commandButton id="upButton" update=":formId:fileUploaderGrid,:formId:uploadPanel" process="@this,fileList" action="#{campaignController.moveUp(file)}" icon="ui-icon-triangle-1-n" title="#{message.moveUp}">
+                                    <f:setPropertyActionListener value="#{file}" target="#{campaignController.selectedFile}"/>
+                                </p:commandButton>
+                                <p:commandButton id="downButton" update=":formId:fileUploaderGrid,:formId:uploadPanel" process="@this,fileList" action="#{campaignController.moveDown(file)}" icon="ui-icon-triangle-1-s" title="#{message.moveDown}">
+                                    <f:setPropertyActionListener value="#{file}" target="#{campaignController.selectedFile}"/>
+                                </p:commandButton>
+                            </p:column>
+                            <p:column id="name" headerText="#{message.campaignFiles}" >
+                                <h:outputText value="#{file.name}"/>          
+                            </p:column>
+
+
+                            <p:column id="size" headerText="#{message.size}" >
+                                <h:outputText value="#{file.friendlySize}"/>          
+                            </p:column>
+
+                            <p:column style="text-align: center">
+                                <p:commandButton id="viewButton" update=":formId:previewData,:modalDialog" process="@this,fileList" oncomplete="fileDialog.show()" icon="ui-icon-search" title="#{message.preview}" disabled="#{campaignController.generatedContent and file.name.contains('.zip')}">                                
+                                    <f:setPropertyActionListener value="#{file}" target="#{campaignController.selectedFile}"/>
+                                </p:commandButton>
+                                <p:commandButton update=":formId:fileUploaderGrid,:formId:uploadPanel,:formId:downloadWifi" process="@this,fileList"  action="#{campaignController.removeImageFile}" onclick="fileDialog.hide()" icon="ui-icon-trash" disabled="#{campaignController.generatedContent and file.name.contains('.zip')}">
+                                    <f:setPropertyActionListener value="#{file}" target="#{campaignController.selectedFile}"/>
+                                </p:commandButton>
+                            </p:column>
+                        </p:dataTable>
+                        <p:commandButton id="downloadWifi" value="#{message.downloadWifi}" ajax="false" icon="ui-icon-circle-triangle-s" disabled="#{(!campaignController.wifiCondition or !campaignController.canDownloadWifi()) or campaignController.generatedContent}" rendered="#{loginController.privileges.contains(bundle.CreateCampaign) and !campaignController.generatedContent}">
+                            <p:fileDownload value="#{campaignController.downloadWifi()}"/>
+                        </p:commandButton>
+
+                    </p:outputPanel>
+                </p:panelGrid>
+                <h:panelGrid columns="2" id="uploadPanel">
+                    <h:panelGrid columns="2">
+                        <p:column>
+                            <p:commandButton action="#{campaignController.save(campaignController.createdCampaign)}" value="#{message.save}" icon="ui-icon-disk" ajax="false" disabled="#{campaignController.fileModel.rowCount lt 1}">
+                                <f:param name="device" value="#{campaignController.createdCampaign}"/>
+                            </p:commandButton>
+                        </p:column>
+
+                    </h:panelGrid>
+                </h:panelGrid>
+
+            </h:form>
+            <p:column>
+                <h:form rendered="#{loginController.privileges.contains(bundle.CreateCampaign)}">
+                    <p:commandButton action="#{campaignController.cancelToList()}" value="#{message.cancel}" icon="ui-icon-cancel" ajax="false"/>
+
+                </h:form>
+
+            </p:column>
+            <br/>
+
+            <p:dialog id="modalDialog" header="#{message.contentPreview}" widgetVar="dialog" modal="true" draggable="true" resizable="false" width="380" height="744" style="border:0px; background-color: black; padding: 0px; overflow: hidden"  >  
+                <iframe src="../tmp/#{loginController.userUUIDTmp}/create/wifi/_ignore/embed/phone.html" width="380" height="744" style="border-width:0px; position: absolute; left: 0px; top:0px">
+                    <h:outputText value="#{message.contentPreviewError}"/>
+                </iframe> 
+            </p:dialog>
+        </ui:composition>
+
+
+    </ui:define> 
+</html>

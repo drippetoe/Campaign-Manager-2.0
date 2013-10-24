@@ -1,0 +1,265 @@
+/*	Less Framework 4
+        http://lessframework.com
+        by Joni Korpi
+        License: http://opensource.org/licenses/mit-license.php	*/
+
+
+/*	Resets
+        ------	*/
+
+html, body, div, span, object, iframe, h1, h2, h3, h4, h5, h6, 
+p, blockquote, pre, a, abbr, address, cite, code, del, dfn, em, 
+img, ins, kbd, q, samp, small, strong, sub, sup, var, b, i, hr, 
+dl, dt, dd, ol, ul, li, fieldset, form, label, legend, 
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, figure, figcaption, hgroup, 
+menu, footer, header, nav, section, summary, time, mark, audio, video {
+    margin: 0;
+    padding: 0;
+    border: 0;
+}
+
+article, aside, canvas, figure, figure img, figcaption, hgroup,
+footer, header, nav, section, audio, video {
+    display: block;
+}
+
+a img {border: 0;}
+
+
+
+/*	Typography presets
+        ------------------	*/
+
+.huge, h1 {
+    font-size: 7.2em;
+    font-weight: bold;
+}
+
+.large, h2 {
+
+}
+
+.bigger, h3 {
+}
+
+.big, h4 {
+}
+
+@font-face{
+    font-family: myriad;
+    src: url('/assets/font/MyriadPro-Light.ttf');
+}
+body {
+    /*    font: 18px/24px "Times New Roman", Times, serif;*/
+    font-family: myriad, Georgia, serif;
+    font-size: 62.5%; /* 1em = 10px */
+}
+
+p{
+    font-size: 1.6em;
+}
+
+.small, small {
+}
+
+/* Selection colours (easy to forget) */
+
+::selection 	 	{background: rgb(255,255,158);}
+::-moz-selection 	{background: rgb(255,255,158);}
+img::selection 		{background: transparent;}
+img::-moz-selection	{background: transparent;}
+body {-webkit-tap-highlight-color: rgb(255,255,158);}
+
+
+
+/*		Default Layout: 992px. 
+                Gutters: 24px.
+                Outer margins: 48px.
+                Leftover space for scrollbars @1024px: 32px.
+-------------------------------------------------------------------------------
+cols    1     2      3      4      5      6      7      8      9      10
+px      68    160    252    344    436    528    620    712    804    896    */
+
+body {
+    width: 100%;
+    /*    padding: 72px 48px 84px;*/
+    /*    background: rgb(137,176,85);*/
+    background: #fff;
+    /*    background: rgb(240,88,127);*/
+
+    color: rgb(255,255,255);
+    -webkit-text-size-adjust: 100%; /* Stops Mobile Safari from auto-adjusting font-sizes */
+}
+.rounded-corners {
+    padding: .5em;
+    -moz-border-radius: 0.5em;
+    -webkit-border-radius: 0.5em;
+    -khtml-border-radius: 0.5em;
+    border-radius: 0.5em;
+}
+.property{
+    padding: .5em;
+    font-size: 2em;
+    background: rgb(255,255,255);
+    border-bottom: .1em solid #999;
+    -webkit-box-shadow: inset .1em .1em .1em 0px #999;
+    -moz-box-shadow: inset .1em .1em .1em 0px #999;
+    box-shadow: inset .1em .1em .1em 0px #999;
+    -moz-border-radius: 0.5em;
+    -webkit-border-radius: 0.5em;
+    -khtml-border-radius: 0.5em;
+    border-radius: 0.5em;
+
+}
+.property a{
+    text-decoration: none;
+    color: rgb(0,176,266);
+}
+.property a:hover{
+    text-decoration: none;
+    color: rgb(0,176,266);
+}
+.property a:hover arrow{
+    text-decoration: none;
+    color: rgb(0,176,266);
+}
+.property a:active{
+    text-decoration: none;
+    color: rgb(0,176,266);
+}
+.property a:visited{
+    text-decoration: none;
+    color: rgb(0,176,266);
+}
+.arrow{
+    text-align: right;
+    float: right;
+    color: #999;
+    text-shadow: 0.1em 0.1em 0.1em #999;
+}
+
+.backbutton{
+    border: 1px solid #000;
+
+    width: 3em;
+    height: 1em;
+
+}
+#header{
+
+    padding: 2em;
+    background: rgb(121,173,54);
+    /*#79ad36*/
+
+}
+#logo{
+    width: 100%;
+    height: 100px;
+    background: url('/assets/images/en/logo.png') no-repeat;
+    z-index: 100
+        /*#79ad36*/
+
+}
+#content{
+    padding: 40em;
+    margin-left: auto;
+    margin-right: auto;
+    background: rgb(121,173,54);
+
+}
+#footer{
+    padding: 2em;
+    background: #999;
+    bottom: 0px;
+}
+/*#container{
+
+    background: rgb(42,97,159);
+    color: rgb(255,255,255);
+
+}*/
+
+
+
+/*		Tablet Layout: 768px.
+                Gutters: 24px.
+                Outer margins: 28px.
+                Inherits styles from: Default Layout.
+-----------------------------------------------------------------
+cols    1     2      3      4      5      6      7      8
+px      68    160    252    344    436    528    620    712    */
+
+@media only screen and (min-width: 768px) and (max-width: 991px) {
+
+    body {
+        /*        width: 712px;
+                padding: 48px 28px 60px;*/
+        background: red;
+    }
+    #content{
+        padding: 2em;
+        margin-left: auto;
+        margin-right: auto;
+        background: rgb(121,173,54);
+
+    }
+}
+
+
+
+/*		Mobile Layout: 320px.
+                Gutters: 24px.
+                Outer margins: 34px.
+                Inherits styles from: Default Layout.
+---------------------------------------------
+cols    1     2      3
+px      68    160    252    */
+
+@media only screen and (max-width: 767px) {
+
+    body {
+        /*        width: 252px;
+                padding: 48px 34px 60px;*/
+        background: yellow;
+    }
+
+
+}
+
+
+
+/*		Wide Mobile Layout: 480px.
+                Gutters: 24px.
+                Outer margins: 22px.
+                Inherits styles from: Default Layout, Mobile Layout.
+------------------------------------------------------------
+cols    1     2      3      4      5
+px      68    160    252    344    436    */
+
+@media only screen and (min-width: 480px) and (max-width: 767px) {
+
+    body {
+        /*        width: 436px;
+                padding: 36px 22px 48px;*/
+        background: green;
+    }
+
+
+}
+
+
+/*	Retina media query.
+        Overrides styles for devices with a 
+        device-pixel-ratio of 2+, such as iPhone 4.
+-----------------------------------------------    */
+
+@media 
+only screen and (-webkit-min-device-pixel-ratio: 2),
+only screen and (min-device-pixel-ratio: 2) {
+
+    body {
+        background: blue;
+    }
+
+}

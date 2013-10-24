@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html> 
+    <head> 
+        <title>Register For Personalized Offers</title>
+        <meta charset="utf-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1"/>				
+        <script type="text/javascript" src="http://files.proximusmobility.net/js/jquery-1.7.2.min.js"></script>
+        <script type="text/javascript" src="http://files.proximusmobility.net/js/jquery.mobile-1.1.0.min.js"></script>
+        <script type="text/javascript" src="http://files.proximusmobility.net/js/jquery.validate.min.js"></script>
+        <script type="text/javascript" src="http://files.proximusmobility.net/js/additional-methods.min.js"></script>
+        <script type="text/javascript" src="http://files.proximusmobility.net/js/proximus_register.js"></script>
+        <link rel="stylesheet" type="text/css" href="http://files.proximusmobility.net/css/jquery.mobile-1.0.min.css"/>
+        <link rel="stylesheet" type="text/css" href="http://files.proximusmobility.net/css/jquery.mobile.structure-1.0.1.min.css"/>
+        <link rel="stylesheet" type="text/css" href="http://files.proximusmobility.net/css/proximus_register.css"/>
+    </head>
+    <body> 
+
+        <div data-role="page" id="menu_page" data-theme="a" >
+            <div data-role="header">
+                <h1>Register For Personalized Offers</h1>
+            </div><!-- /header -->
+            
+        <noscript>
+            JavaScript is required to register.  Please enable JavaScript.
+        </noscript>
+
+            <div data-role="content" data-theme="a" >
+                <form class="cmxform" id="regForm" action="gateway" data-ajax="false" method="POST">
+                    <fieldset>
+                        <div data-role="fieldcontain">
+                            <input type="hidden" name="register" value="true"/>
+                            <input type="hidden" name="device_macaddress" value="device_macaddress_here"/>
+                            <input type="hidden" name="campaign_id" value="campaign_id_here"/>
+                            <input type="hidden" name="user_macaddress" value="user_macaddress_here"/>
+
+                            <label for="firstname_input">First Name:</label>
+                            <input type="text" class="required" minlength="2" id="firstname_input" name="firstname" value=""/><br/>
+                            <label for="lastname_input">Last Name:</label>
+                            <input type="text" id="lastname_input" class="required" minlength="2" name="lastname" value=""/><br/>
+                            <label for="email_input">Email Address:</label>
+                            <input type="text" id="email_input" name="email" class="required email" value=""/><br/>
+                            <label for="mobile_input">Mobile #:</label>
+                            <input type="text" id="mobile_input" class="required number" maxlength="11" name="mobile" value=""/><br/>
+                        </div>
+                        <input type="submit" value="Register" />
+                    </fieldset>
+                </form>
+            </div><!-- /content -->
+
+        </div>
+
+    </body>
+</html>

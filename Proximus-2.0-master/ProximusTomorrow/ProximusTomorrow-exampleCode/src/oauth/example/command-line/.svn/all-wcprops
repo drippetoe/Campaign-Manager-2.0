@@ -1,0 +1,35 @@
+K 25
+svn:wc:ra_dav:version-url
+V 48
+/svn/!svn/ver/822/code/java/example/command-line
+END
+build.xml
+K 25
+svn:wc:ra_dav:version-url
+V 58
+/svn/!svn/ver/822/code/java/example/command-line/build.xml
+END
+cmdline.properties.template
+K 25
+svn:wc:ra_dav:version-url
+V 76
+/svn/!svn/ver/822/code/java/example/command-line/cmdline.properties.template
+END
+manpage.txt
+K 25
+svn:wc:ra_dav:version-url
+V 60
+/svn/!svn/ver/822/code/java/example/command-line/manpage.txt
+END
+build.properties
+K 25
+svn:wc:ra_dav:version-url
+V 65
+/svn/!svn/ver/822/code/java/example/command-line/build.properties
+END
+readme.txt
+K 25
+svn:wc:ra_dav:version-url
+V 59
+/svn/!svn/ver/822/code/java/example/command-line/readme.txt
+END

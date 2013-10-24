@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+
+
+    <h:head>
+        <title>#{message.property}</title>
+        <link rel="stylesheet" type="text/css" href="/ProximusTomorrow-war/faces/jsfcrud.css" />
+        <h:outputStylesheet name="css/jsfcrud.css"/>
+    </h:head>
+
+    <h:body>
+        <ui:composition template="/template.xhtml">
+            <ui:define name="pageHeader">
+                <h:outputText value="#{message.manageProperties}"></h:outputText>
+            </ui:define>
+
+            <h:form rendered="#{!loginController.privileges.contains(bundle.GeoFenceSettings)}">
+                <h:outputText value="#{message.InsufficientPrivileges}" 
+                              style="font-family: Arial;font-size: 16px;color: red;"/>
+            </h:form>
+
+            <h:form id="propertyForm" rendered="#{loginController.privileges.contains(bundle.GeoFenceSettings)}">
+
+                <p:commandButton id="addButton" value="#{message.newProperty}" oncomplete="propertyDialog.show()" icon="ui-icon-plus" title="#{message.addProperty}"/>  
+                <p:commandButton icon="ui-icon-document" value="#{message.assignRetailersToProperties}" ajax="false" action="#{propertyController.preparePropertyRetailer()}"/>
+                <h:outputText escape="false" value="#{message.noPropertiesFound}" rendered="#{propertyController.propertyModel.rowCount == 0}"/>
+                <h:panelGroup rendered="#{propertyController.propertyModel.rowCount > 0}">
+
+                    <p:dataTable id="propertyList" var="property" widgetVar="propertyTable" value="#{propertyController.propertyModel}" 
+                                 rowKey="#{property.name}" selection="#{propertyController.selectedProperty}" selectionMode="single"
+                                 paginator="true" rows="20" filteredValue="#{propertyController.filteredProperties}"
+                                 currentPageReportTemplate="{currentPage} #{message.of} {totalPages}" 
+                                 paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                 rowsPerPageTemplate="5,10,15,20,50,100">
+
+                        <f:facet name="header">
+                            <p:outputPanel>
+                                <h:outputText value="#{message.search}: "/>
+                                <p:inputText id="globalFilter" onkeyup="propertyTable.filter()"/>
+                            </p:outputPanel>
+                        </f:facet>
+
+                        <p:column id="name" headerText="#{message.name}" filterBy="#{property.name}" filterMatchMode="contains" filterStyle="display: none;" sortBy="#{property.name}">
+                            <h:outputText value="#{property.name}"/>
+                        </p:column>
+
+
+                        <p:column id="address" headerText="#{message.address}" sortBy="#{property.address}" filterMatchMode="contains" filterStyle="display: none;">
+                            <h:outputText value="#{property.address}"/>
+                        </p:column>
+
+                        <p:column id="zip" headerText="#{message.zipcode}" filterBy="#{property.zipcode}" filterMatchMode="contains" filterStyle="display: none;"  sortBy="#{property.zipcode}"> 
+                            <h:outputText value="#{property.zipcode}"/>
+                        </p:column>
+
+                        <p:column id="propertyCountry" headerText="#{message.country}" filterMatchMode="contains" filterStyle="display: none;" sortBy="#{property.country.name}">
+                            <h:outputText value="#{property.country.name}"/>
+                        </p:column>
+
+                        <p:column id="propertyCity" headerText="#{message.city}" filterMatchMode="contains" filterStyle="display: none;" sortBy="#{property.city}">
+                            <h:outputText value="#{property.city}"/>
+                        </p:column>
+
+                        <p:column id="propertyState" headerText="#{message.state}" filterMatchMode="contains" filterStyle="display: none;" sortBy="#{property.stateProvince}">
+                            <h:outputText value="#{property.stateProvince}"/>
+                        </p:column>
+
+                        <p:column headerText="#{message.editOptions}" style="width:10px;">
+                            <p:commandButton id="editButton" update=":propertyForm" oncomplete="editDialog.show()" icon="ui-icon-pencil" title="#{message.edit}">                                
+                                <f:setPropertyActionListener value="#{property}" target="#{propertyController.selectedProperty}"/>
+                            </p:commandButton>
+                            <p:commandButton id="deleteButton" update=":propertyForm" oncomplete="confirmation.show()" icon="ui-icon-trash" title="#{message.delete}">                                
+                                <f:setPropertyActionListener value="#{property}" target="#{propertyController.selectedProperty}"/>
+                            </p:commandButton>
+                        </p:column>
+                        <f:facet name="footer">
+                        </f:facet>
+                    </p:dataTable>
+                </h:panelGroup>
+
+
+                <p:confirmDialog id="confirmDialog" message="#{message.sureYouWantToDelete} #{propertyController.selectedProperty.name} ?" 
+                                 severity="alert" widgetVar="confirmation">
+                    <p:commandButton id="confirm" value="#{message.yes}" onclick="confirmation.hide()" actionListener="#{propertyController.deleteProperty()}"
+                                     update=":propertyForm, :propertyForm:propertyList" />
+                    <p:commandButton id="decline" value="#{message.no}" onclick="confirmation.hide()"/>    
+                </p:confirmDialog>
+
+
+
+                <p:dialog id="dialog" header="#{message.addProperty}" widgetVar="propertyDialog" resizable="true" height="430" width="400" showEffect="clip" hideEffect="fold">
+                    <h:panelGrid id="display" columns="2" cellpadding="5">       
+
+                        <h:outputLabel value="#{message.chooseDma}" for="dmaDropDown" />
+                        <p:selectOneMenu id="dmaDropDown" value="#{propertyController.selectedDma.name}" style="width: 150px">  
+                            <f:selectItem itemLabel="#{message.chooseDma}" itemValue=""  />  
+                            <f:selectItems value="#{propertyController.listDmas}"/>  
+                        </p:selectOneMenu>
+
+                        <h:outputLabel value="#{message.name}:" for="name" />
+                        <p:inputText id="name" value="#{propertyController.newProperty.name}">          
+                        </p:inputText>    
+
+                        <h:outputLabel value="#{message.address}: " for="address" />
+                        <p:inputText id="address" value="#{propertyController.newProperty.address}"  required="false"/>
+                       
+                        <h:outputText value="#{message.country}: " />  
+                        <p:selectOneMenu value="#{propertyController.newProperty.country.name}" effect="fade" immediate="true" style="width: 170px">  
+                            <f:selectItem itemLabel="#{message.chooseCountry}" itemValue="" />  
+                            <f:selectItems value="#{propertyController.selectedCountries}"/> 
+                        </p:selectOneMenu> 
+
+                        <h:outputLabel value="#{message.city}: " for="city" />
+                        <p:inputText id="city" value="#{propertyController.newProperty.city}"  required="false"/>
+
+                        <h:outputText value="#{message.state}: " />
+                        <p:selectOneMenu id="states" value="#{propertyController.newProperty.stateProvince}">  
+                            <f:selectItem itemLabel="#{message.chooseState}" itemValue="" />  
+                            <f:selectItems value="#{propertyController.selectedStates}"/>  
+                        </p:selectOneMenu> 
+                        <h:outputLabel value="#{message.zipcode}:" for="zipcode" />
+                        <p:inputText id="zipcode" value="#{propertyController.newProperty.zipcode}" mask="*****" required="false"/>
+                        
+                        <p:commandButton action="#{propertyController.createNewProperty(propertyController.newProperty)}" ajax="false" value="#{message.save}" id="iconOnly" icon="ui-icon-disk">
+                            <f:param name="property" value="#{propertyController.newProperty}"/>
+                        </p:commandButton>            
+                    </h:panelGrid>
+                </p:dialog>
+
+                <p:dialog id="editDialog" header="#{message.editProperty}" widgetVar="editDialog" resizable="true" height="350" width="400" showEffect="clip" hideEffect="fold">
+                    <h:panelGrid id="displayEdit" columns="2" cellpadding="5">       
+
+                        
+                        <h:outputLabel value="#{message.name}: " for="ename" />
+                        <p:inputText id="ename" value="#{propertyController.selectedProperty.name}"/> 
+
+                        <h:outputLabel value="#{message.address}: "/>
+                        <p:inputText id="edaddress" value="#{propertyController.selectedProperty.address}"/>
+
+                        <h:outputLabel value="#{message.city}: " for="edcity" />
+                        <p:inputText id="edcity" value="#{propertyController.selectedProperty.city}"/>
+
+                        <h:outputLabel value="#{message.zipcode}: "/>
+                        <p:inputText id="ezip" value="#{propertyController.selectedProperty.zipcode}"/>
+
+                        <h:outputText value="#{message.state}: " />
+                        <p:selectOneMenu id="estates" value="#{propertyController.selectedProperty.stateProvince}">  
+                            <f:selectItem itemLabel="#{message.chooseState}" itemValue="" />  
+                            <f:selectItems value="#{propertyController.selectedStates}"/>  
+                        </p:selectOneMenu>
+                        
+                        <h:outputLabel value="#{message.mobileSite}: " />
+                        <h:outputLink target="_new" value="javascript:void()" onclick="javascript:window.open('#{propertyController.getSelectedPropertyMobileSite()}','vtext.me','menubar=1,resizable=1,width=340,height=500,scroll=vertical');">
+                            <h:outputText value="#{propertyController.getSelectedPropertyMobileSite()}" />
+                        </h:outputLink>                        
+                        <p:commandButton actionListener="#{propertyController.editProperty()}" update=":propertyForm" value="#{message.save}" id="eiconOnly" icon="ui-icon-disk"/>  
+                    </h:panelGrid>
+                </p:dialog>
+            </h:form>
+        </ui:composition>
+    </h:body>
+</html>

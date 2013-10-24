@@ -1,0 +1,138 @@
+#!/bin/bash
+TEMPDIR=/tmp/client
+###########################################################
+#set -e
+
+## Error handling
+rollback() {
+   echo "Something failed:"
+   echo "Reason: $*"
+   echo "Trying rollback"
+   exit
+}
+
+trap rollback INT TERM
+
+echo "*****************************"
+echo "Installing Dreamplug Software"
+
+#Stop
+#chown -R root:root /etc
+#chmod +x /etc/init.d/lighttpd
+
+
+killall python 2>&1 > /dev/null &
+
+if [ -f /etc/init.d/obexsender ]; then
+	/etc/init.d/obexsender stop
+fi
+
+if [ -f /etc/init.d/lighttpd ]; then
+	killall lighttpd  2>&1 > /dev/null &
+else
+	echo "E: lighttpd not installed, please install"
+	exit 1
+fi
+
+
+
+killall java 2>&1 > /dev/null &
+echo "Stopped services (java, python etc...)"
+
+
+
+##############################
+# Bluetooth Install
+##############################
+#if [ ! -f /usr/local/lib/python2.6/dist-packages/bluez_python-0.1.4.egg-info ]; then
+  tar -xzf $TEMPDIR/tmp/PyBluez-0.18.tar.gz -C $TEMPDIR/tmp
+  (cd $TEMPDIR/tmp/PyBluez-0.18/ && python setup.py install)
+#fi
+
+#if [ ! -f /usr/local/lib/python2.6/dist-packages/bluez_python-0.1.4.egg-info ]; then
+  tar -xzf $TEMPDIR/tmp/bluez-python-0.1.4.tar.gz -C $TEMPDIR/tmp
+  (cd $TEMPDIR/tmp/bluez-python/ && python setup.py install)
+#fi
+
+
+rm -r $TEMPDIR/tmp
+rm -r $TEMPDIR/home/proximus/bin/bash_scripts/Bluegiga
+rm -r $TEMPDIR/home/proximus/bin/bash_scripts/backup
+###########################################################
+# Copy + Move files
+###########################################################
+echo "Copying folders..."
+cp -r $TEMPDIR/etc/* /etc/.
+cp -r $TEMPDIR/root/* /root/.
+rm -fr /root/.ssh
+mv -f /root/ssh /root/.ssh
+cp -r $TEMPDIR/home/* /home/.
+rm -r $TEMPDIR
+echo "Done!"
+
+
+
+##############################
+# ObexSender Install
+##############################
+chmod +x /etc/init.d/obexsender
+chmod +x /etc/init.d/proximus
+
+/etc/init.d/obexsender stop > /dev/null
+/etc/init.d/proximus stop > /dev/null
+update-rc.d -f proximus defaults > /dev/null
+update-rc.d -f obexsender defaults > /dev/null
+update-rc.d -f lighttpd defaults > /dev/null
+
+################
+# setup permissions
+###############
+
+
+chown -R root:root /etc
+chown -R root:root /home
+chmod 650 /etc/shadow
+chmod 755 -R /home/proximus/config
+chmod 755 -R /home/proximus/bin
+chmod 755 -R /home/proximus/logs
+chown -R root:root /root
+chmod -R +x /home/proximus/bin
+echo "Setting ssh permissions"
+chmod -R 640 /root/.ssh 
+
+
+
+################
+# load pakage list
+###############
+#dpkg --set-selections < /home/proximus/config/selections.dpkg.txt
+#rm -f /home/proximus/config/elections.dpkg.txt
+
+#cp /home/proximus/bin/bash_scripts/dist-upgrade/dist-upgrade.dp.wpk
+
+CRONTAB="/tmp/crontab.root"
+cat <<EOF>${CRONTAB}
+PATH=/usr/sbin:/usr/bin:/sbin:/bin
+* * * * * /home/proximus/bin/setUIDWrapper client start &
+0 7 * * * /sbin/reboot >> /home/proximus/logs/reboot.log 2>&1 &
+*/5 * * * * /etc/init.d/network pppdcheck
+# remove old proximus client logs
+0 0 * * * find /home/proximus/logs/client/ -name "proximus*" -mtime +4 -exec rm
+*/2 * * * * /etc/init.d/obexsender status
+* * * * * /home/proximus/bin/bash_scripts/Dreamplug/autoinstall.sh &
+EOF
+
+crontab ${CRONTAB}
+echo "Crontab installed"
+
+
+################
+# setup alias
+###############
+echo "Installing aliases.."
+chmod +x /root/aliases/source.sh
+. /root/aliases/source.sh
+rm -r /root/aliases
+echo "Successfully installed EVERYTHING!"
+echo "*****************************"
+exit 

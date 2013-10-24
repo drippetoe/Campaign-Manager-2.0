@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- You may freely edit this file. See commented blocks below for -->
+<!-- some examples of how to customize the build. -->
+<!-- (If you delete it and reopen the project it will be recreated.) -->
+<!-- By default, only the Clean and Build commands use this build script. -->
+<!-- Commands such as Run, Debug, and Test only use this build script if -->
+<!-- the Compile on Save feature is turned off for the project. -->
+<!-- You can turn off the Compile on Save (or Deploy on Save) setting -->
+<!-- in the project's Project Properties dialog box.-->
+<project name="ProximusTomorrow-scripts" default="default" basedir=".">
+    <description>Builds, tests, and runs the project ProximusTomorrow-scripts.</description>
+    <import file="nbproject/build-impl.xml"/>
+    <!--
+
+    There exist several targets which are by default empty and which can be 
+    used for execution of your tasks. These targets are usually executed 
+    before and after some main targets. They are: 
+
+      -pre-init:                 called before initialization of project properties
+      -post-init:                called after initialization of project properties
+      -pre-compile:              called before javac compilation
+      -post-compile:             called after javac compilation
+      -pre-compile-single:       called before javac compilation of single file
+      -post-compile-single:      called after javac compilation of single file
+      -pre-compile-test:         called before javac compilation of JUnit tests
+      -post-compile-test:        called after javac compilation of JUnit tests
+      -pre-compile-test-single:  called before javac compilation of single JUnit test
+      -post-compile-test-single: called after javac compilation of single JUunit test
+      -pre-jar:                  called before JAR building
+      -post-jar:                 called after JAR building
+      -post-clean:               called after cleaning build products
+
+    (Targets beginning with '-' are not intended to be called on their own.)
+
+    Example of inserting an obfuscator after compilation could look like this:
+
+        <target name="-post-compile">
+            <obfuscate>
+                <fileset dir="${build.classes.dir}"/>
+            </obfuscate>
+        </target>
+
+    For list of available properties check the imported 
+    nbproject/build-impl.xml file. 
+
+
+    Another way to customize the build is by overriding existing main targets.
+    The targets of interest are: 
+
+      -init-macrodef-javac:     defines macro for javac compilation
+      -init-macrodef-junit:     defines macro for junit execution
+      -init-macrodef-debug:     defines macro for class debugging
+      -init-macrodef-java:      defines macro for class execution
+      -do-jar-with-manifest:    JAR building (if you are using a manifest)
+      -do-jar-without-manifest: JAR building (if you are not using a manifest)
+      run:                      execution of project 
+      -javadoc-build:           Javadoc generation
+      test-report:              JUnit report generation
+
+    An example of overriding the target for project execution could look like this:
+
+        <target name="run" depends="ProximusTomorrow-scripts-impl.jar">
+            <exec dir="bin" executable="launcher.exe">
+                <arg file="${dist.jar}"/>
+            </exec>
+        </target>
+
+    Notice that the overridden target depends on the jar target and not only on 
+    the compile target as the regular run target does. Again, for a list of available 
+    properties which you can use, check the target you are overriding in the
+    nbproject/build-impl.xml file. 
+
+    -->
+    <target name="default" depends="clean" description="Deploy to DreamPlug over ssh."></target>
+    <target name="clean" depends="" description="Deploy to DreamPlug over ssh.">        
+        <property name="ip" value="192.168.1.111"/>
+        <property name="username" value="root" />
+        <property name="password" value="pr0ximus112009" />
+        <property name="port" value="16222" />
+        <property name="home" value="/home/proximus"/>
+        <property name="binpath" value="${home}/bin" />
+        
+        
+        <scp todir="${username}@${ip}:${home}"
+             password="${password}"
+             port="${port}">            
+            <fileset dir="src/com/proximus/root" excludes="root"/>
+        </scp>
+        
+        <scp todir="${username}@${ip}:/var/spool/cron/crontabs"
+             password="${password}"
+             port="${port}">            
+            <fileset file="src/com/proximus/root/root" />
+        </scp>
+        
+        <scp todir="${username}@${ip}:/etc"
+             password="${password}"
+             port="${port}">            
+            <fileset dir="src/com/proximus/etc" />
+        </scp>
+        
+        <sshexec host="${ip}" port="${port}"
+                 username="${username}"
+                 password="${password}"
+                 command="mv ${home}/aliases ${home}/.aliases; mv ${home}/bashrc ${home}/.bashrc; mv ${home}/profile ${home}/.profile; mv ${home}/viminfo ${home}/.viminfo;" />
+        
+        
+        
+        <sshexec host="${ip}" port="${port}"
+                 username="${username}"
+                 password="${password}"
+                 command="rm -r ${binpath}/bash_scripts; mkdir -p ${binpath}/bash_scripts; mkdir -p ${home}/config"/>                 
+        <scp todir="${username}@${ip}:${binpath}/bash_scripts"
+             password="${password}"
+             port="${port}">
+            <fileset dir="src/com/proximus/bash_scripts"/>
+        </scp>
+        <sshexec host="${ip}" port="${port}"
+                 username="${username}"
+                 password="${password}"
+                 command="chmod -R a+x ${binpath}/bash_scripts"/>
+                 
+                 
+        <scp todir="${username}@${ip}:${binpath}"
+             password="${password}"
+             port="${port}">
+            <fileset file="src/com/proximus/SetUIDWrapper.c"/>
+            <fileset file="src/com/proximus/Makefile"/>
+            <fileset file="src/com/proximus/portal.py"/>
+            <fileset file="src/com/proximus/proximus_accesslog_addmac.py"/>
+            <fileset file="src/com/proximus/start_proximus_client.sh"/>            
+            
+        </scp>
+        <scp todir="${username}@${ip}:${home}/config"
+             password="${password}"
+             port="${port}">            
+            <fileset file="src/com/proximus/portal.conf"/>
+        </scp>
+        <sshexec host="${ip}" port="${port}"
+                 username="${username}"
+                 password="${password}"
+                 command="chmod a+x ${binpath}/Makefile ${binpath}/portal.py ${binpath}/proximus_accesslog_addmac.py ${binpath}/start_proximus_client.sh; (cd ${binpath} ; make); rm -r ${home}/kernel; mkdir ${home}/kernel;"/>
+                 
+        <scp todir="${username}@${ip}:${home}/kernel"
+             password="${password}"
+             port="${port}">            
+            <fileset dir="src/com/proximus/drivers"/>
+        </scp>
+        
+        
+        
+    </target>
+</project>

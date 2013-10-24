@@ -1,0 +1,34 @@
+<project
+    name="proximusmobility"
+    basedir="."
+    default="jar" >
+
+    <description>
+This is my Android lib
+    </description>
+    <!-- set global properties for this build -->
+
+    <property
+        name="src"
+        location="src" />
+
+    <property
+        name="bin"
+        location="bin" />
+
+    <target name="jar" >
+
+        <jar
+            basedir="bin/classes/"
+            destfile="ValuTextService.jar" >
+
+            <!-- replace 'com' by what ever you are using -->
+            <!-- as first part of the package name -->
+            <!-- e.g. de, org, ... -->
+            <!-- the ** is important to include the directory recursively -->
+
+            <include name="com/**" />
+        </jar>
+    </target>
+
+</project>

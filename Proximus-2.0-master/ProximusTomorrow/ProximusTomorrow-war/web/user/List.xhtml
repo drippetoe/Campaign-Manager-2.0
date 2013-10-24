@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+
+    <h:head>
+        <title></title>
+        <link rel="stylesheet" type="text/css" href="/ProximusTomorrow-war/faces/jsfcrud.css" />
+        <h:outputStylesheet name="css/jsfcrud.css"/>
+    </h:head>
+
+    <h:body>
+        <ui:composition template="/template.xhtml">
+            <script type="text/javascript">
+                function handleEditRequest(args) {
+                    if(!args.validation) {
+                        jQuery('#editDialog').effect("shake", { times:2 }, 100);
+                    } else {
+                        editDlg.hide();
+                       
+                    }
+                }
+                function handleCreateRequest(args) {
+                    if(!args.validation) {
+                        jQuery('#dialog').effect("shake", { times:2 }, 100);
+                    } else {
+                        userDlg.hide();
+                       
+                    }
+                }
+            </script>
+            <ui:define name="pageHeader">
+                <h:outputText value="#{message.manageUsers}"></h:outputText>
+            </ui:define>
+            <h:form rendered="#{!loginController.privileges.contains(bundle.UserPrivilege)}">
+                <h:outputText value="#{bundle.InsufficientPrivileges}" 
+                              style="font-family: Arial;font-size: 16px;color: red;"/>
+            </h:form>
+
+            <h:form  id="userForm" rendered="#{loginController.privileges.contains(bundle.UserPrivilege)}">
+
+                <h1><h:outputText escape="false" value="#{message.startByAddingAUser}." rendered="#{userController.userModel.rowCount lt 1}"/></h1>
+                <p:commandButton id="addUser" value="#{message.newUser}" update=":dialog" oncomplete="userDlg.show()" icon="ui-icon-person" title="#{message.addUser}"
+                                 rendered="#{loginController.privileges.contains(bundle.UserPrivilege)}"/>  
+
+
+                <h:outputText escape="false" value="(#{message.noUsersFound})" rendered="#{userController.userModel.rowCount == 0}"/>
+                <h:panelGroup rendered="#{userController.userModel.rowCount > 0}">
+                    <p:dataTable id="userList" var="user" widgetVar="userTable" value="#{userController.userModel}"
+                                 rowKey="#{user.userName}" selection="#{userController.selectedUser}" selectionMode="single"
+                                 paginator="true" rows="10" filteredValue="#{userController.filteredUsers}"
+                                 currentPageReportTemplate="{currentPage} #{message.of} {totalPages}" 
+                                 paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                 rowsPerPageTemplate="5,10,15,20,50,100">
+                        <p:ajax event="rowEdit" update="@this" listener="#{userController.save(user)}">
+                            <f:param name="#{message.user}" value="#{user}"/>
+                        </p:ajax>
+
+                        <f:facet name="header">
+                            <p:outputPanel>
+                                <h:outputText value="#{message.filterUsers}:"/>
+                                <p:inputText id="globalFilter" onkeyup="userTable.filter()"/>
+                                <p:tooltip for="globalFilter" showEffect="fade" hideEffect="explode" value="#{message.filterUsersLabel}"/>
+                            </p:outputPanel>
+                        </f:facet>
+
+                        <p:column id="firstName" headerText="#{message.name}" filterBy="#{user.firstName}" filterMatchMode="contains" filterStyle="display: none;">
+                            <h:outputText value="#{user.firstName}"/>          
+                        </p:column>
+                        <p:column  id="lastName" headerText="#{message.lastName}" filterBy="#{user.lastName}" filterMatchMode="contains" filterStyle="display: none;">
+                            <h:outputText value="#{user.lastName}"/>
+                        </p:column>
+
+                        <p:column  id="userName" headerText="#{message.username}" filterBy="#{user.userName}" filterMatchMode="contains" filterStyle="display: none;">
+                            <h:outputText value="#{user.userName}"/>
+                        </p:column>
+
+
+                        <p:column headerText="#{message.editOptions}" style="width:10px;">
+                            <p:outputPanel rendered="#{user.role.priority gt loginController.currUser.role.priority}">
+                            <p:commandButton id="editButton" update=":editDialog" oncomplete="editDlg.show()" icon="ui-icon-pencil" title="#{message.edit}">                                
+                                <f:setPropertyActionListener value="#{user}" target="#{userController.selectedUser}"/>
+                            </p:commandButton>
+                                <p:commandButton id="deleteButton" update=":userForm" oncomplete="confirmation.show()" icon="ui-icon-trash" title="#{message.delete}">                                
+                                <f:setPropertyActionListener value="#{user}" target="#{userController.selectedUser}"/>
+                            </p:commandButton>
+                            </p:outputPanel>
+                        </p:column>
+
+                        <f:facet name="footer">
+                        </f:facet>
+                    </p:dataTable>
+                </h:panelGroup>
+
+                <p:confirmDialog id="confirmDialog" message="#{message.sureYouWantToDelete} #{userController.selectedUser.userName} ?" severity="alert" widgetVar="confirmation">
+                    <p:commandButton id="confirm" value="#{message.yes}" onclick="confirmation.hide()" actionListener="#{userController.deleteUser}" update="userForm" />
+                    <p:commandButton id="decline" value="#{message.no}" onclick="confirmation.hide()"/>    
+                </p:confirmDialog>
+
+
+
+
+            </h:form>
+
+            <p:dialog id="dialog" header="#{message.addUser}" widgetVar="userDlg" resizable="true" height="300" width="455" showEffect="clip" hideEffect="fold">
+                <p:ajax event="close" update="userForm" listener="#{userController.prepareList()}"/>  
+                <h:form>
+                    <p:panelGrid columns="2">
+                        <h:outputLabel for="email" value="#{message.userName} (#{message.email}): *"/>
+                        <p:column>
+                            <p:inputText id="email" value="#{userController.newUser.userName}" label="#{message.email}"/>
+                        </p:column>
+                        <h:outputLabel value="#{message.name}:" for="firstName" />
+                        <p:inputText id="firstName" value="#{userController.newUser.firstName}" title="#{message.name}"/>
+                        <h:outputLabel value="#{message.lastName}:" for="lastName" />
+                        <p:inputText id="lastName" value="#{userController.newUser.lastName}" title="#{message.lastName}"/>
+                        <h:outputLabel value="#{message.password}: *" for="newPassword"/>
+                        <p:password id="newPassword"  value="#{userController.newPassword}" feedback="true" promptLabel="#{message.passwordPromptLabel}" weakLabel="#{message.weak}" goodLabel="#{message.good}" strongLabel="#{message.strong}"/>
+                        <h:outputLabel value="#{message.verifyPassword}: *" for="verifyPassword"/>
+                        <p:password id="verifyPassword" value="#{userController.verifyPassword}" label="#{message.verifyPassword}" feedback="false"/>
+
+                        <f:facet name="footer">
+                            <p:commandButton action="#{userController.createNewUser}" update=":userForm" oncomplete="handleCreateRequest(args)" value="#{message.save}" icon="ui-icon-disk"/>
+                        </f:facet>
+                    </p:panelGrid>
+                </h:form>
+            </p:dialog>
+
+            <p:dialog id="editDialog" header="#{message.edit}" widgetVar="editDlg" resizable="true" height="180" width="400" showEffect="clip" hideEffect="fold">
+                <p:ajax event="close" update="userForm" listener="#{userController.prepareList()}"/> 
+                <h:form>
+                    <p:panelGrid columns="2">
+
+                        <h:outputLabel value="#{message.name}:" for="efirstName" />
+                        <p:inputText id="efirstName" value="#{userController.selectedUser.firstName}" title="#{message.name}"/>
+                        <h:outputLabel value="#{message.lastName}:" for="elastName" />
+                        <p:inputText id="elastName" value="#{userController.selectedUser.lastName}" title="#{message.lastName}"/>
+                        <f:facet name="footer">
+                            <p:commandButton actionListener="#{userController.editUser}" update=":userForm" oncomplete="handleEditRequest(args)" value="#{message.save}" id="eiconOnly" icon="ui-icon-disk"/>  
+                        </f:facet>
+                    </p:panelGrid>
+                </h:form>
+            </p:dialog>
+        </ui:composition>
+    </h:body>
+</html>

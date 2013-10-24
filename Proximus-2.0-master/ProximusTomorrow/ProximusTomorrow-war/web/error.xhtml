@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+    <h:head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <title><ui:insert name="title">Proximus Mobility</ui:insert></title>
+        <link rel="stylesheet" type="text/css" href="/ProximusTomorrow-war/faces/jsfcrud.css" />
+        <h:outputStylesheet name="css/jsfcrud.css"/>
+
+        <style type="text/css">
+            #box {
+                position: absolute;
+                top:10%;
+                bottom:25%;
+                left:25%;
+                right:25%;
+                padding:2%;
+                margin:50px;
+            }
+            #insidebox {
+                position: absolute;
+                top:25%;
+                bottom:25%;
+                left:25%;
+                right:25%;
+            }
+
+            #footerbox {
+                position: absolute;
+                /*            top:25%;
+                            bottom:25%;*/
+                left:25%;
+                right:25%;
+            }
+        </style>
+
+        <style type="text/css">
+            .signin-box h2 {
+                font-size: 16px;
+                line-height: 17px;
+                height: 16px;
+                margin: 0 0 1.2em;
+                position: relative;
+            }
+            .signin-box h2 strong {
+                display: inline-block;
+                position: absolute;
+                right: 0;
+                top: 1px;
+                height: 190px;
+                width: 52px;
+                background: transparent url(images/Proximus-logo.png) no-repeat;
+
+            }
+            .signin-box div {
+                margin: 0 0 1.5em;
+            }
+            .signin-box label {
+                display: block;
+            }
+            .signin-box input[type=text],
+            .signin-box input[type=password] {
+                width: 100%;
+                height: 32px;
+                font-size: 15px;
+            }
+            .signin-box .email-label,
+            .signin-box .passwd-label {
+                font-weight: bold;
+                margin: 0 0 .5em;
+                display: block;
+                -webkit-user-select: none;
+                -moz-user-select: none;
+            }
+            .signin-box .reauth {
+                display: inline-block;
+                font-size: 15px;
+                height: 29px;
+                line-height: 29px;
+                margin: 0;
+            }
+            .signin-box label.remember {
+                display: inline-block;
+                vertical-align: top;
+                margin: 9px 0 0;
+            }
+            .signin-box .remember-label {
+                font-weight: normal;
+                color: #666;
+                line-height: 0;
+                padding: 0 0 0 .4em;
+                -webkit-user-select: none;
+                -moz-user-select: none;
+            }
+            .signin-box input[type=submit] {
+                margin: 0 1.5em 1.2em 0;
+                height: 32px;
+                font-size: 13px;
+            }
+            .signin-box ul {
+                margin: 0;
+            }
+            .signin-box .training-msg {
+                padding: .5em 8px;
+                background: #f9edbe;
+            }
+            .signin-box .training-msg p {
+                margin: 0 0 .5em;
+            }
+
+            .g-button-red {
+                border: 1px solid transparent;
+                color: #fff;
+                text-shadow: 0 1px rgba(0,0,0,0.1);
+                background-color: #d14836;
+            }
+            .g-button-red:hover {
+                border: 1px solid #b0281a;
+                color: #fff;
+                text-shadow: 0 1px rgba(0,0,0,0.3);
+                background-color: #c53727;
+                -webkit-box-shadow: 0 1px 1px rgba(0,0,0,0.2);
+                -moz-box-shadow: 0 1px 1px rgba(0,0,0,0.2);
+                -ms-box-shadow: 0 1px 1px rgba(0,0,0,0.2);
+                -o-box-shadow: 0 1px 1px rgba(0,0,0,0.2);
+            }
+            .g-button-red:active {
+                border: 1px solid #992a1b;
+                background-color: #b0281a;
+                -webkit-box-shadow: inset 0 1px 2px rgba(0,0,0,0.3);
+                -moz-box-shadow: inset 0 1px 2px rgba(0,0,0,0.3);
+            }
+
+            .g-button-red:focus:hover {
+                -webkit-box-shadow: inset 0 0 0 1px #fff, 0 1px 1px rgba(0,0,0,0.1);
+                -moz-box-shadow: inset 0 0 0 1px #fff, 0 1px 1px rgba(0,0,0,0.1);
+            }
+
+        </style>
+
+    </h:head>  
+    <h:body>
+        <f:view locale="#{loginController.locale}">
+            <div id="box">
+
+                <p:growl id="growl" showDetail="true" life="3000" /> 
+                <div class="imagelogin">
+                    <img src="/ProximusTomorrow-war/faces/images/Proximus-logo-original.png"></img>
+                </div>
+                <div class="signin-box">
+                    <h:outputText value="#{message.errormessage}"/>
+                    <br />
+                    <a href="/ProximusTomorrow-war/faces/home.xhtml"><h:outputText value="#{message.errorclicktoReturn}"/></a>.
+                </div>
+
+            </div>
+        </f:view>
+    </h:body>
+</html>

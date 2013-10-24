@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"  
+    android:orientation="vertical"  
+    android:layout_width="fill_parent"  
+    android:layout_height="fill_parent"  
+    android:gravity="center">
+
+    <ImageView
+        android:id="@+id/Photo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:adjustViewBounds="true"
+        android:maxHeight="250dp"
+        android:maxWidth="250dp"
+        android:scaleType="fitXY"
+        android:src="@drawable/android" />
+
+    <TextView
+        android:id="@+id/PhotoLabel"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:text="@string/label"
+        android:textSize="20sp" />
+
+    <Button
+        android:id="@+id/goToFb"
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Go to Fb"
+        android:onClick="onFacebookClick" />
+    
+        <Button
+        android:id="@+id/goToWebView"
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Go to WebView"
+        android:onClick="onWebViewClick" />
+  
+</LinearLayout>  

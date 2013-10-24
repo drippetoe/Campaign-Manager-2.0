@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core" xmlns:c="http://java.sun.com/jsp/jstl/core">
+
+
+    <h:head>
+        <link rel="stylesheet" type="text/css" href="/ProximusTomorrow-war/faces/jsfcrud.css" />
+        <h:outputStylesheet name="css/jsfcrud.css"/>
+    </h:head>
+
+
+    <h:body id="deviceBody">
+        <ui:composition id="main"  template="/template.xhtml">
+            <script type="text/javascript">
+                function handleEditRequest(args) {
+                    if(!args.validation) {
+                        jQuery('#editDialog').effect("shake", { times:2 }, 100);
+                    } else {
+                        editDlg.hide();
+                       
+                    }
+                }
+                function handleEditLightRequest(args) {
+                    if(!args.validation) {
+                        jQuery('#editLightDialog').effect("shake", { times:2 }, 100);
+                    } else {
+                        editLightDlg.hide();
+                       
+                    }
+                }
+                function handleDeviceUtilRequest(args) {
+                    if(!args.validation) {
+                        jQuery('#deviceUtilsDialog').effect("shake", { times:2 }, 100);
+                    } else {
+                        deviceUtilsDlg.hide();
+                    }
+                }
+            </script>
+            <ui:define name="pageHeader">
+                <h:outputText value="#{message.devicesInLimbo}"></h:outputText>
+            </ui:define>
+            <h:form rendered="#{!loginController.privileges.contains(bundle.SuperUser)}">
+                <h:outputText value="#{bundle.InsufficientPrivileges}" 
+                              style="font-family: Arial;font-size: 16px;color: red;"/>
+            </h:form>
+
+            <h:form id="deviceForm" rendered="#{loginController.privileges.contains(bundle.SuperUser)}" >
+
+
+                <h1><h:outputText value="#{message.noDevicesInLimbo}" rendered="#{deviceInLimboController.deviceModel.rowCount lt 1}"/></h1>
+                <p:commandButton action="#{deviceInLimboController.prepareList()}" icon="ui-icon-refresh" value="#{message.refreshPage}" immediate="true" ajax="false"/>
+                <p:commandButton action="#{deviceInLimboController.clearAll()}" icon="ui-icon-trash" value="#{message.clearList}" immediate="true" ajax="false"/>
+
+
+                <h:panelGroup rendered="#{deviceInLimboController.deviceModel.rowCount > 0}">
+                    <p:dataTable id="deviceList" var="deviceInLimbo" widgetVar="deviceTable" value="#{deviceInLimboController.deviceModel}" rowKey="#{deviceInLimbo.macAddress}"
+                                 selection="#{deviceInLimboController.selectedDevice}" selectionMode="single"
+                                 paginator="true" rows="10" filteredValue="#{deviceInLimboController.filteredDevices}"
+                                 currentPageReportTemplate="{currentPage} #{message.of} {totalPages}" 
+                                 paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                 rowsPerPageTemplate="5,10,15,20,50,100">
+                        <f:facet name="header">
+                            <p:outputPanel>
+                                <h:outputText value="#{message.search}: "/>
+                                <p:inputText id="globalFilter" onkeyup="deviceTable.filter()"/>
+                            </p:outputPanel>
+                        </f:facet>
+
+                        <p:column  id="serialColumn" headerText="#{message.serialNumber}" filterBy="#{deviceInLimbo.serialNumber}" filterMatchMode="contains" filterStyle="display: none;"
+                                   sortBy="#{deviceInLimbo.serialNumber}" style="width:155px">
+                            <h:outputText value="#{deviceInLimbo.serialNumber}"/>
+                        </p:column>
+
+                        <p:column  id="macAddress" headerText="#{message.macAddress}" filterBy="#{deviceInLimbo.macAddress}" filterMatchMode="contains" filterStyle="display: none;"
+                                   sortBy="#{deviceInLimbo.macAddress}" style="width:155px">
+                            <h:outputText value="#{deviceInLimbo.macAddress}"/>
+                        </p:column>
+
+                        <p:column  id="token" headerText="Token " filterBy="#{deviceInLimbo.token}" filterMatchMode="contains" filterStyle="display: none;"
+                                   sortBy="#{deviceInLimbo.token}" style="width:155px">
+                            <h:outputText value="#{deviceInLimbo.token}"/>
+                        </p:column>
+
+                        <p:column  id="last_seen" headerText="#{message.lastSeen}" filterBy="#{deviceInLimbo.lastSeen}" filterMatchMode="contains" filterStyle="display: none;"
+                                   sortBy="#{deviceInLimbo.lastSeen}" style="width:155px">
+                            <h:outputText value="#{deviceInLimbo.lastSeen}"/>
+                        </p:column>
+
+
+                        <p:column headerText="#{message.options}" rendered="#{loginController.privileges.contains(bundle.SuperUser)}">
+
+
+
+
+                            <p:commandButton id="deleteButton" update=":deviceForm" oncomplete="confirmation.show()" icon="ui-icon-trash" title="#{message.delete}">                                
+                                <f:setPropertyActionListener value="#{deviceInLimbo}" target="#{deviceInLimboController.selectedDevice}"/>
+                            </p:commandButton> 
+
+
+                            <p:commandButton id="syncButton" update=":deviceForm" oncomplete="confirmationCreate.show()" icon="ui-icon-refresh" title="#{message.synchronize}">                                
+                                <f:setPropertyActionListener value="#{deviceInLimbo}" target="#{deviceInLimboController.selectedDevice}"/>
+                                <f:actionListener binding="#{deviceInLimboController.updateName()}"/>
+                            </p:commandButton>
+                        </p:column>
+                        <f:facet name="footer">
+                        </f:facet>
+                    </p:dataTable>
+                </h:panelGroup>
+
+
+                <p:confirmDialog id="confirmDialog" message="#{message.sureYouWantToDelete} #{deviceInLimboController.selectedDevice.macAddress} ?" severity="alert" widgetVar="confirmation">
+
+                    <p:commandButton id="confirm" value="#{message.yes}" onclick="confirmation.hide()" actionListener="#{deviceInLimboController.deleteDevice}" update=":deviceForm" />
+                    <p:commandButton id="decline" value="#{message.no}" onclick="confirmation.hide()"/>    
+                </p:confirmDialog>
+
+                <p:dialog id="confirmCreate" header="#{message.synchronize} #{deviceInLimboController.selectedDevice.macAddress} ?" widgetVar="confirmationCreate">
+
+                    <p:panelGrid id="createGrid" columns="2" rendered="#{!deviceInLimboController.deviceExists()}">
+                        <f:facet name="header">
+                            <h:outputLabel value="#{message.create}" />
+                        </f:facet>
+                        <h:outputLabel value="Company"/>
+                        <p:selectOneMenu id="companydropdown" value="#{deviceInLimboController.selectedCompany.name}" valueChangeListener="#{deviceInLimboController.updateCompany}">  
+                            <p:ajax update="createGrid, newNameInput" />
+                            <f:selectItem itemLabel="#{message.selectCompany}" itemValue=""  />  
+                            <f:selectItems value="#{userController.listCompanies}"/>  
+                        </p:selectOneMenu> 
+                        <h:outputLabel value="#{message.newDeviceName}:"/>
+                        <p:inputText id="newNameInput" value="#{deviceInLimboController.newName}" />
+                        <p:commandButton id="createButton" value="#{message.save}" onclick="confirmationCreate.hide()" action="#{deviceInLimboController.syncDevice}" update=":deviceForm"  icon="ui-icon-disk" ajax="false"/>
+                        <p:commandButton id="cancelButton" value="#{message.cancel}" onclick="confirmationCreate.hide()"/>    
+                    </p:panelGrid>
+
+                    <h:outputLabel value="#{message.updateToken}?" rendered="#{deviceInLimboController.deviceExists()}" />
+                    <br/>
+                    <p:commandButton id="createButtonY" value="#{message.yes}" onclick="confirmationCreate.hide()" action="#{deviceInLimboController.syncDevice}" update=":deviceForm"  icon="ui-icon-check" ajax="false" rendered="#{deviceInLimboController.deviceExists()}"/>
+                    <p:commandButton id="cancelButtonN" value="#{message.no}" onclick="confirmationCreate.hide()" icon="ui-icon-close" rendered="#{deviceInLimboController.deviceExists()}"/>    
+                </p:dialog>
+            </h:form>
+
+        </ui:composition>
+    </h:body>
+</html>

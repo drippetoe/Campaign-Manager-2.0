@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="ProximusTomorrow-monitoring" default="monitor" basedir=".">
+    <description>Builds, tests, and runs the project ProximusTomorrow-monitoring.</description>
+    <import file="nbproject/build-impl.xml"/>
+    
+    <property name="warfile" value="javamelody-1.37.0.war" />
+    <property name="port" value="8000" />
+    <property name="ajp13Port" value="8009" />
+    <property name="logfile" value="javamelody.log" />        
+        
+    <target name="monitor">
+        <echo message="Starting monitoring..."/>
+        <exec command="java -server -Xmx128m -jar bin/${warfile} --httpPort=${port} --ajp13Port=${ajp13Port}" spawn="true"/>
+        <echo message="Opening browser..."/>
+        <nbbrowse url="http://localhost:${port}"/>  
+    </target>
+    <target name="run" depends="monitor">
+    </target>
+    <target name="build" depends="monitor">
+    </target>
+    <target name="default" depends="monitor">
+    </target>
+    <target name="clean" depends="monitor"> 
+    </target>
+</project>

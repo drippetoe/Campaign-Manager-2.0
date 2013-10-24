@@ -1,0 +1,95 @@
+K 25
+svn:wc:ra_dav:version-url
+V 98
+/svn/!svn/ver/1183/code/java/jmeter/example/webapp/src/main/java/net/oauth/example/consumer/webapp
+END
+CookieConsumer.java
+K 25
+svn:wc:ra_dav:version-url
+V 118
+/svn/!svn/ver/1183/code/java/jmeter/example/webapp/src/main/java/net/oauth/example/consumer/webapp/CookieConsumer.java
+END
+GoogleContactsConsumer.java
+K 25
+svn:wc:ra_dav:version-url
+V 126
+/svn/!svn/ver/1183/code/java/jmeter/example/webapp/src/main/java/net/oauth/example/consumer/webapp/GoogleContactsConsumer.java
+END
+YahooConsumer.java
+K 25
+svn:wc:ra_dav:version-url
+V 117
+/svn/!svn/ver/1183/code/java/jmeter/example/webapp/src/main/java/net/oauth/example/consumer/webapp/YahooConsumer.java
+END
+Callback.java
+K 25
+svn:wc:ra_dav:version-url
+V 112
+/svn/!svn/ver/1183/code/java/jmeter/example/webapp/src/main/java/net/oauth/example/consumer/webapp/Callback.java
+END
+UserAuthorizationStub.java
+K 25
+svn:wc:ra_dav:version-url
+V 125
+/svn/!svn/ver/1183/code/java/jmeter/example/webapp/src/main/java/net/oauth/example/consumer/webapp/UserAuthorizationStub.java
+END
+TermieConsumer.java
+K 25
+svn:wc:ra_dav:version-url
+V 118
+/svn/!svn/ver/1183/code/java/jmeter/example/webapp/src/main/java/net/oauth/example/consumer/webapp/TermieConsumer.java
+END
+MagnoliaConsumer.java
+K 25
+svn:wc:ra_dav:version-url
+V 120
+/svn/!svn/ver/1183/code/java/jmeter/example/webapp/src/main/java/net/oauth/example/consumer/webapp/MagnoliaConsumer.java
+END
+consumer.properties
+K 25
+svn:wc:ra_dav:version-url
+V 118
+/svn/!svn/ver/1183/code/java/jmeter/example/webapp/src/main/java/net/oauth/example/consumer/webapp/consumer.properties
+END
+CookieMap.java
+K 25
+svn:wc:ra_dav:version-url
+V 113
+/svn/!svn/ver/1183/code/java/jmeter/example/webapp/src/main/java/net/oauth/example/consumer/webapp/CookieMap.java
+END
+SampleProviderConsumer.java
+K 25
+svn:wc:ra_dav:version-url
+V 126
+/svn/!svn/ver/1183/code/java/jmeter/example/webapp/src/main/java/net/oauth/example/consumer/webapp/SampleProviderConsumer.java
+END
+MediamaticConsumer.java
+K 25
+svn:wc:ra_dav:version-url
+V 122
+/svn/!svn/ver/1183/code/java/jmeter/example/webapp/src/main/java/net/oauth/example/consumer/webapp/MediamaticConsumer.java
+END
+TwitterConsumer.java
+K 25
+svn:wc:ra_dav:version-url
+V 119
+/svn/!svn/ver/1183/code/java/jmeter/example/webapp/src/main/java/net/oauth/example/consumer/webapp/TwitterConsumer.java
+END
+RedirectException.java
+K 25
+svn:wc:ra_dav:version-url
+V 121
+/svn/!svn/ver/1183/code/java/jmeter/example/webapp/src/main/java/net/oauth/example/consumer/webapp/RedirectException.java
+END
+consumer.properties.template
+K 25
+svn:wc:ra_dav:version-url
+V 127
+/svn/!svn/ver/1183/code/java/jmeter/example/webapp/src/main/java/net/oauth/example/consumer/webapp/consumer.properties.template
+END
+Reset.java
+K 25
+svn:wc:ra_dav:version-url
+V 109
+/svn/!svn/ver/1183/code/java/jmeter/example/webapp/src/main/java/net/oauth/example/consumer/webapp/Reset.java
+END

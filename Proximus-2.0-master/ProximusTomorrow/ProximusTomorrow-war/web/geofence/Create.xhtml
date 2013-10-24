@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core" xmlns:c="http://java.sun.com/jsp/jstl/core">
+
+    <ui:define name="title">
+        <h:outputText value="#{message.manageGeofences}"></h:outputText>
+    </ui:define>
+    <ui:define name="body">
+        <ui:composition template="/template.xhtml">
+            <ui:define name="pageHeader">
+                <h:outputText value="#{message.manageGeofences}"></h:outputText>
+            </ui:define>
+
+            <h:form rendered="#{!loginController.privileges.contains(bundle.GeoFencePrivilege)}">
+
+                <h:outputText value="#{message.InsufficientPrivileges}" 
+                              style="font-family: Arial;font-size: 16px;color: red;"/>
+            </h:form>
+
+            <script type="text/javascript">                
+                $(document).ready(function() {
+                    
+                });
+            </script>
+
+            <h:form id="mapForm" >
+                <h1><h:outputText escape="false" value="#{message.pleaseAddAPropertyFirst}" rendered="#{geoFenceController.dmaDataModel.rowCount lt 1}"/></h1>
+
+                <p:tabView id="tabView" widgetVar="tabWidget" activeIndex="#{geoFenceController.activeTab}" dynamic="true" cache="false" rendered="#{geoFenceController.dmaDataModel.rowCount > 0}">  
+
+                    <p:tab title="1. #{message.selectDma}">  
+                        <p:panelGrid columns="1" style="width: 100%;">  
+
+                            <p:dataTable id="dmaList" var="dma" widgetVar="dmaFilter" value="#{geoFenceController.dmaDataModel}" 
+                                         rowKey="#{dma.name}" selection="#{geoFenceController.selectedDma}" selectionMode="single"
+                                         paginator="true" rows="20" filteredValue="#{geoFenceController.filteredDMAs}"
+                                         currentPageReportTemplate="{currentPage} #{message.of} {totalPages}" 
+                                         paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                         rowsPerPageTemplate="10,20,50,100,210" >
+
+                                <p:ajax event="rowSelect" listener="#{geoFenceController.onDMARowSelect}" update=":mapForm" />
+                                <f:facet name="header">
+                                    <p:outputPanel>
+                                        <h:outputText value="#{message.search}: "/>
+                                        <p:inputText id="globalFilter" onkeyup="dmaFilter.filter()"/>
+                                    </p:outputPanel>
+                                </f:facet>
+
+                                <p:column id="name" headerText="DMA Name" filterBy="#{dma.name}" filterMatchMode="contains" filterStyle="display: none;">
+                                    <h:outputText value="#{dma.name}"/>
+                                </p:column>
+                                <p:column id="stateProvince" headerText="#{message.stateProvince}" filterBy="#{dma.stateProvince}" filterMatchMode="contains" filterStyle="display: none;">
+                                    <h:outputText value="#{dma.stateProvince}"/>
+                                </p:column>
+                            </p:dataTable>
+                        </p:panelGrid>  
+                    </p:tab>  
+
+                    <p:tab title="2. #{message.selectProperty}" disabled="#{geoFenceController.selectedDma.name == null}" >  
+                        <p:panelGrid columns="1" style="width: 100%">  
+
+                            <h:outputText escape="false" value="#{message.pleaseAddAPropertyFirst}" rendered="#{geoFenceController.propertyDataModel.rowCount == 0}"/>
+                            <p:dataTable id="propertyList" var="property" widgetVar="propertyTable" value="#{geoFenceController.propertyDataModel}"
+                                         rowKey="#{property.name}" selection="#{geoFenceController.selectedProperty}" selectionMode="single"
+                                         paginator="true" rows="10"   rendered="#{geoFenceController.propertyDataModel.rowCount > 0}"
+                                         currentPageReportTemplate="{currentPage} #{message.of} {totalPages}" 
+                                         paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                         rowsPerPageTemplate="5,10,15,20,50,100" filteredValue="#{geoFenceController.filteredProperties}">
+
+                                <p:ajax event="rowSelect" listener="#{geoFenceController.onPropertyRowSelect}" update=":mapForm" />
+
+                                <f:facet name="header">
+                                    <p:outputPanel>
+                                        <h:outputText value="#{message.search}: "/>
+                                        <p:inputText id="globalFilter" onkeyup="propertyTable.filter()"/>
+                                    </p:outputPanel>
+                                </f:facet>
+
+                                <p:column id="name" headerText="#{message.name}" filterBy="#{property.name}" filterMatchMode="contains" filterStyle="display: none;">
+                                    <h:outputText value="#{property.name}"/>
+                                </p:column>
+
+
+                                <p:column id="address" headerText="#{message.address}">
+                                    <h:outputText value="#{property.address}"/>
+                                </p:column>
+
+                                <p:column id="zip" headerText="#{message.zipcode}"  sortBy="#{property.zipcode}">
+                                    <h:outputText value="#{property.zipcode}"/>
+                                </p:column>
+
+                                <p:column id="propertyCountry" headerText="#{message.country}">
+                                    <h:outputText value="#{property.country.name}"/>
+                                </p:column>
+
+                                <p:column id="propertyCity" headerText="#{message.city}" >
+                                    <h:outputText value="#{property.city}"/>
+                                </p:column>
+
+                                <p:column id="propertyState" headerText="#{message.state}" >
+                                    <h:outputText value="#{property.stateProvince}"/>
+                                </p:column>
+
+                            </p:dataTable>
+
+                        </p:panelGrid>  
+                    </p:tab>  
+
+                    <p:tab id="defineGeofence" title="3. #{message.defineGeofence}" closable="false" disabled="true" >  
+
+                        <p:panelGrid columns="1" style="width: 100%;">
+                            <p:commandButton id="addButton" value="#{message.createGeofenceByAddress}" oncomplete="geoFenceDialog.show()" icon="ui-icon-plus"
+                                             title="Add GeoFence"/>  
+                            <p:column>
+                                <p:gmap id="map"
+                                        center="#{geoFenceController.center}"
+                                        zoom="20"
+                                        type="roadmap"
+                                        model="#{geoFenceController.fenceModel}"
+                                        widgetVar="fenceMap"
+                                        mapTypeControl="false"
+                                        streetView="false"
+                                        fitBounds="true"
+                                        style="margin-left: .5em; float: left; width:100%; height: 600px;" >
+
+                                    <p:ajax event="stateChange" listener="#{geoFenceController.onStateChange}"/>  
+                                    <p:ajax event="overlaySelect" listener="#{geoFenceController.onMarkerSelect}"/>  
+                                    <p:ajax event="markerDrag" listener="#{geoFenceController.onMarkerDrag}" update=":mapForm"/>  
+
+                                    <p:gmapInfoWindow>  
+                                        <p:panelGrid columns="2">  
+
+                                            <f:facet name="header">
+                                                <h:outputText value="#{geoFenceController.selectedProperty.name}"/>
+                                            </f:facet>
+                                            <h:outputText value="#{message.geofenceName}"/>
+                                            <p:inputText value="#{geoFenceController.selectedGeoPointMarker.name}">
+                                                <p:ajax event="keyup" process="@this"/>
+                                            </p:inputText>
+                                            <h:outputText value="#{message.radius}" />                                            
+                                            <p:inputText id="radius" value="#{geoFenceController.selectedGeoPointMarker.radius}" >  
+                                                <p:ajax event="blur" process="@this"/>
+                                            </p:inputText>
+                                            <h:outputText value="#{message.lat}:"/><h:outputText value="#{geoFenceController.selectedGeoPointMarker.marker.latlng.lat}"/>
+                                            <h:outputText value="#{message.lng}:"/><h:outputText value="#{geoFenceController.selectedGeoPointMarker.marker.latlng.lng}"/>
+                                        </p:panelGrid>
+
+                                        <p:commandButton actionListener="#{geoFenceController.updateGeoFence(geoFenceController.selectedProperty)}"  value="#{message.save}"  
+                                                         update=":mapForm" id="update" icon="ui-icon-disk" immediate="true">
+                                            <f:param name="property" value="#{geoFenceController.selectedProperty}" />
+                                        </p:commandButton>    
+                                        <p:commandButton id="deleteButton" value="#{message.delete}" oncomplete="confirmation.show()" icon="ui-icon-trash" title="#{message.delete}"
+                                                         rendered="#{geoFenceController.numberOfGeofencesInProperty() gt 1}">                                
+                                        </p:commandButton>
+                                    </p:gmapInfoWindow>
+                                </p:gmap> 
+                            </p:column>
+                        </p:panelGrid>  
+                    </p:tab>  
+                </p:tabView> 
+                <p:confirmDialog id="confirmDialog" message="#{message.sureYouWantToDelete} #{message.geofence}?" 
+                                 severity="alert" widgetVar="confirmation">
+                    <p:commandButton id="confirm" value="#{message.yes}" onclick="confirmation.hide()" actionListener="#{geoFenceController.deleteGeoFence()}"
+                                     update=":mapForm" immediate="true">
+                    </p:commandButton>
+                    <p:commandButton id="decline" value="#{message.no}" onclick="confirmation.hide()"/>    
+                </p:confirmDialog>
+                <p:dialog id="geoFenceDialog" header="#{message.createGeofence}" widgetVar="geoFenceDialog" resizable="true" height="250" width="500" showEffect="clip" hideEffect="fold">
+                    <h:panelGrid id="displayGeoFence" columns="2" cellpadding="5">       
+                        <h:outputLabel value="#{message.addressSearch}: " for="addressSearch" />
+                        <p:inputText id="addressSearch" value="#{geoFenceController.address}"/>
+                        <h:outputLabel value="#{message.geofenceName}: " for="newGeofenceName" />
+                        <p:inputText id="newGeofenceName" value="#{geoFenceController.name}"/>
+                        <h:outputLabel value="#{message.radius}: " for="enteredRadius" />
+                        <p:inputText id="enteredRadius" value="#{geoFenceController.enteredRadius}"/>
+                        <h:outputLabel value="#{message.chooseGeofenceType}" for="typeDropDown" />
+                        <p:selectOneMenu id="typeDropDown" value="#{geoFenceController.selectedShape}" style="width: 150px">  
+                            <f:selectItem itemLabel="#{message.circle}" itemValue="CIRCLE"  />  
+                            <f:selectItem itemLabel="#{message.rectangle}" itemValue="RECTANGLE" rendered="#{loginController.privileges.contains(bundle.SuperUser)}"/>  
+                        </p:selectOneMenu>
+                        <p:commandButton actionListener="#{geoFenceController.createGeoFence(geoFenceController.address)}"  value="#{message.save}"
+                                         update=":mapForm">
+                            <f:param name="address" value="#{geoFenceController.address}"/>
+                        </p:commandButton>    
+                    </h:panelGrid>
+                </p:dialog>
+            </h:form>
+        </ui:composition>
+    </ui:define> 
+</html>

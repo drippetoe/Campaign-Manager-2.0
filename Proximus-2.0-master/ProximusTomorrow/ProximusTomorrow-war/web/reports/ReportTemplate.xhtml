@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <h:head>
+        <title>#{message.reports}</title>
+        <link rel="stylesheet" type="text/css" href="/ProximusTomorrow-war/faces/jsfcrud.css" />
+        <h:outputStylesheet name="css/jsfcrud.css"/>
+    </h:head>
+    <h:body>
+
+        <ui:composition>
+
+            <br/>
+            <br/>
+            <center>
+                <p:menubar>
+                    <p:menuitem icon="ui-icon-document" value="#{message.wifiSummaryReport}" rendered="#{loginController.privileges.contains(bundle.ViewWifiSummaryReport) and loginController.hasProximityLicense}"              ajax="false" action="#{wifiSummaryReportController.prepareList()}"/>
+                    <p:menuitem icon="ui-icon-document" value="#{message.bluetoothSummaryReport}" rendered="#{loginController.privileges.contains(bundle.ViewBluetoothSummaryReport) and loginController.hasProximityLicense}"              ajax="false" action="#{bluetoothSummaryReportController.prepareList()}"/>
+                    <p:menuitem id="userProfileReport" icon="ui-icon-document" value="#{message.userProfile}"            rendered="#{loginController.privileges.contains(bundle.ViewUserProfileReport) and loginController.hasProximityLicense}"         ajax="false" action="#{userProfileReportController.prepareList()}"/>
+                    <p:tooltip for="userProfileReport" value="#{message.userProfile}" showEffect="clip" hideEffect="explode" />
+                    <p:menuitem id="mostPopularServers" icon="ui-icon-document" value="#{message.mostPopularServers}"    rendered="#{loginController.privileges.contains(bundle.ViewMostPopularServersReport) and loginController.hasProximityLicense}"  ajax="false" action="#{mostPopularServersReportController.renderMostPopularServers()}"/>
+                    <p:tooltip for="mostPopularServers" value="#{message.mostPopularServers}" showEffect="clip" hideEffect="explode" />
+<!--                    <p:menuitem id="sentOffers" icon="ui-icon-document" value="# {message.sentOffers}"    rendered="# {loginController.privileges.contains(bundle.ViewGeoMessageSummary) and loginController.hasGeoFenceLicense}"  ajax="false" action="# {propertyStatisticsController.prepareMessagesSentAndActiveUsers()}"/>
+                    <p:tooltip for="sentOffers" value="# {message.sentOffers}" showEffect="clip" hideEffect="explode" />-->
+                    <p:menuitem id="keywordregistrations" icon="ui-icon-document" value="#{message.registrations}"    rendered="#{loginController.privileges.contains(bundle.ViewGeoRegistration) and loginController.hasGeoFenceLicense}"  ajax="false" action="#{keywordRegistrationReportController.prepareKeywordRegistrationReport()}"/>
+                    <p:tooltip for="keywordregistrations" value="#{message.registrations}" showEffect="clip" hideEffect="explode" /> 
+                    <p:menuitem id="propStats" icon="ui-icon-document" value="Property Stats" rendered="#{loginController.privileges.contains(bundle.ViewGeoMessageSummary) and loginController.hasGeoFenceLicense}"  ajax="false" action="#{propertyStatisticsController.prepareList()}"/>
+                    <p:tooltip for="propStats" value="Property Stats Overall, Current Month and Previous Month" showEffect="clip" hideEffect="explode" />
+                    
+                </p:menubar>
+            </center>
+
+        </ui:composition>
+    </h:body>
+</html>
+
+

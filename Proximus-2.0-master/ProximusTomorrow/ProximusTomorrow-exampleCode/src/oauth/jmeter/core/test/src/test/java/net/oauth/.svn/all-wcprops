@@ -1,0 +1,23 @@
+K 25
+svn:wc:ra_dav:version-url
+V 69
+/svn/!svn/ver/1183/code/java/jmeter/core/test/src/test/java/net/oauth
+END
+OAuthValidatorTest.java
+K 25
+svn:wc:ra_dav:version-url
+V 93
+/svn/!svn/ver/1183/code/java/jmeter/core/test/src/test/java/net/oauth/OAuthValidatorTest.java
+END
+OAuthTest.java
+K 25
+svn:wc:ra_dav:version-url
+V 84
+/svn/!svn/ver/1183/code/java/jmeter/core/test/src/test/java/net/oauth/OAuthTest.java
+END
+OAuthMessageTest.java
+K 25
+svn:wc:ra_dav:version-url
+V 91
+/svn/!svn/ver/1183/code/java/jmeter/core/test/src/test/java/net/oauth/OAuthMessageTest.java
+END

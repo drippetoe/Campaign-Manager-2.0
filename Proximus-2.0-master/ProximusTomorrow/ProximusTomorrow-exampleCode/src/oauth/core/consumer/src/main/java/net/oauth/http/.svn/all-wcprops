@@ -1,0 +1,35 @@
+K 25
+svn:wc:ra_dav:version-url
+V 71
+/svn/!svn/ver/1206/code/java/core/consumer/src/main/java/net/oauth/http
+END
+package-info.java
+K 25
+svn:wc:ra_dav:version-url
+V 89
+/svn/!svn/ver/1206/code/java/core/consumer/src/main/java/net/oauth/http/package-info.java
+END
+HttpMessage.java
+K 25
+svn:wc:ra_dav:version-url
+V 88
+/svn/!svn/ver/1206/code/java/core/consumer/src/main/java/net/oauth/http/HttpMessage.java
+END
+HttpMessageDecoder.java
+K 25
+svn:wc:ra_dav:version-url
+V 95
+/svn/!svn/ver/1206/code/java/core/consumer/src/main/java/net/oauth/http/HttpMessageDecoder.java
+END
+HttpClient.java
+K 25
+svn:wc:ra_dav:version-url
+V 87
+/svn/!svn/ver/1206/code/java/core/consumer/src/main/java/net/oauth/http/HttpClient.java
+END
+HttpResponseMessage.java
+K 25
+svn:wc:ra_dav:version-url
+V 96
+/svn/!svn/ver/1206/code/java/core/consumer/src/main/java/net/oauth/http/HttpResponseMessage.java
+END

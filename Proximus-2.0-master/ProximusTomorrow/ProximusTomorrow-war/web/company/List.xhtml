@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+
+
+    <h:head>
+        <title>Company</title>
+        <link rel="stylesheet" type="text/css" href="/ProximusTomorrow-war/faces/jsfcrud.css" />
+        <h:outputStylesheet name="css/jsfcrud.css"/>
+    </h:head>
+
+    <h:body>
+        <ui:composition template="/template.xhtml">
+            <ui:define name="pageHeader">
+                <h:outputText value="#{message.manageCompanies}"></h:outputText>
+            </ui:define>
+
+            <h:form rendered="#{!loginController.privileges.contains(bundle.SuperUser)}">
+                <h:outputText value="#{message.InsufficientPrivileges}" 
+                              style="font-family: Arial;font-size: 16px;color: red;"/>
+            </h:form>
+
+            <h:form id="companyForm" prependId="true" rendered="#{loginController.privileges.contains(bundle.SuperUser)}">
+
+
+                <h:outputText escape="false" value="#{message.noCompaniesFound}" rendered="#{companyController.companyModel.rowCount == 0}"/>
+                <h:panelGroup rendered="#{companyController.companyModel.rowCount > 0}">
+                    <p:commandButton id="addButton" value="#{message.newCompany}" oncomplete="companyDialog.show()" icon="ui-icon-plus" title="#{message.addCompany}" rendered="#{loginController.privileges.contains(bundle.SuperUser)}"/>  
+
+                    <p:dataTable id="companyList" var="company" widgetVar="companyTable" value="#{companyController.companyModel}" rowKey="#{company.name}" selection="#{companyController.selectedCompany}" selectionMode="single"
+                                 paginator="true" rows="10" filteredValue="#{companyController.filteredCompanies}"
+                                 currentPageReportTemplate="{currentPage} #{message.of} {totalPages}" 
+                                 paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                 rowsPerPageTemplate="5,10,15,20,50,100">
+                        
+                        <f:facet name="header">
+                            <p:outputPanel>
+                                <h:outputText value="#{message.search}: "/>
+                                <p:inputText id="globalFilter" onkeyup="companyTable.filter()"/>
+                            </p:outputPanel>
+                        </f:facet>
+
+                        <p:column id="name" headerText="#{message.name}" filterBy="#{company.name}" filterMatchMode="contains" filterStyle="display: none;">
+                            <h:outputText value="#{company.name}"/>
+                        </p:column>
+                        
+                        
+                        <p:column headerText="#{message.editOptions}" style="width:10px;">
+                            <p:commandButton id="editButton" update=":companyForm" oncomplete="editDialog.show()" icon="ui-icon-pencil" title="#{message.edit}">                                
+                                <f:setPropertyActionListener value="#{company}" target="#{companyController.selectedCompany}"/>
+                            </p:commandButton>
+                        </p:column>
+
+                        <f:facet name="footer">
+                        </f:facet>
+                    </p:dataTable>
+                </h:panelGroup>
+
+                <p:dialog id="dialog" header="#{message.addCompany}" widgetVar="companyDialog" resizable="true" height="320" width="400" showEffect="clip" hideEffect="fold">
+                    <h:panelGrid id="display" columns="2" cellpadding="5">  
+
+                        <h:outputLabel value="#{message.chooseLicense}:" for="licenseDropDown" />
+                        <p:selectOneMenu id="licenseDropDown" value="#{companyController.selectedLicense.licenseText}" style="width: 200px">  
+                            <f:selectItems value="#{companyController.licenseList}"/>
+                            <p:ajax update=":companyForm:display"/>
+                        </p:selectOneMenu>
+
+                        <h:outputLabel value="#{message.name}:" for="name" />
+                        <p:inputText id="name" value="#{companyController.newCompany.name}" style="width: 200px"/>
+
+                        <h:outputLabel value="#{message.selectPricingModel}:" for="pricingDropDown" />
+                        <p:selectOneMenu id="pricingDropDown" value="#{companyController.selectedPricingModel.name}" style="width: 200px">  
+                            <f:selectItem itemLabel="#{message.selectPricingModel}" itemValue=""  />  
+                            <f:selectItems value="#{companyController.pricingModelList}"/>  
+                        </p:selectOneMenu>
+
+                        <h:outputLabel value="#{message.chooseBrand}:" for="brandDropDown" rendered="#{companyController.selectedLicense.licenseText.contains('G')}" />
+                        <p:selectOneMenu id="brandDropDown" value="#{companyController.selectedBrand.name}" style="width: 200px" 
+                                         rendered="#{companyController.selectedLicense.licenseText.contains('G')}">  
+                            <f:selectItem itemLabel="#{message.selectBrand}" itemValue=""  />  
+                            <f:selectItems value="#{companyController.brandList}"/>
+                        </p:selectOneMenu>
+
+                        <h:outputLabel value="#{message.companySalt}" for="salt"/>
+                        <p:password id="salt"  value="#{companyController.salt}" feedback="false" style="width: 200px"/>
+
+                        <p:commandButton action="#{companyController.createNewCompany(companyController.newCompany)}" ajax="false" value="#{message.save}" id="iconOnly" icon="ui-icon-disk">
+                            <f:param name="company" value="#{companyController.newCompany}"/>
+                        </p:commandButton>            
+                    </h:panelGrid>
+                </p:dialog>
+                
+                
+                
+                <p:dialog id="editDialog" header="#{message.editCompany}" widgetVar="editDialog" resizable="true" height="320" width="400" showEffect="clip" hideEffect="fold">
+                    <h:panelGrid id="display2" columns="2" cellpadding="5">  
+                        <h:outputLabel value="#{message.chooseLicense}:" for="licenseDropDown" />
+                        <p:selectOneMenu id="elicenseDropDown" value="#{companyController.selectedCompany.license.licenseText}" style="width: 200px">  
+                            <f:selectItems value="#{companyController.licenseList}"/>
+                            <p:ajax update=":companyForm:display2"/>
+                        </p:selectOneMenu>
+
+                        <h:outputLabel value="#{message.name}:" for="name" />
+                        <p:inputText id="ename" value="#{companyController.selectedCompany.name}" style="width: 200px"/>
+
+                        <h:outputLabel value="#{message.choosePricingModel}:" for="pricingDropDown" />
+                        <p:selectOneMenu id="epricingDropDown" value="#{companyController.selectedPricingModel.name}" style="width: 200px">  
+                            <f:selectItem itemLabel="#{message.selectPricingModel}" itemValue=""  />  
+                            <f:selectItems value="#{companyController.pricingModelList}"/>  
+                        </p:selectOneMenu>
+
+                        <h:outputLabel value="#{message.chooseBrand}:" for="brandDropDown" rendered="#{companyController.selectedCompany.license.licenseText.contains('G')}" />
+                        <p:selectOneMenu id="ebrandDropDown" value="#{companyController.selectedBrand.name}" style="width: 200px" 
+                                         rendered="#{companyController.selectedCompany.license.licenseText.contains('G')}">  
+                            <f:selectItem itemLabel="#{message.selectBrand}" itemValue=""  />  
+                            <f:selectItems value="#{companyController.brandList}"/>
+                        </p:selectOneMenu>
+
+                        <p:commandButton action="#{companyController.editCompany(companyController.selectedCompany)}" ajax="false" value="#{message.save}" id="iconOnly2" icon="ui-icon-disk">
+                            <f:param name="company" value="#{companyController.selectedCompany}"/>
+                        </p:commandButton>            
+                    </h:panelGrid>
+                </p:dialog>
+
+            </h:form>
+        </ui:composition>
+    </h:body>
+</html>

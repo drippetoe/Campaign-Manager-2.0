@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+
+    <ui:define name="body">
+        <ui:composition template="/template.xhtml">
+            <ui:define name="title">
+                <h:outputText value="#{message.deviceDetails}"/>
+            </ui:define>
+            <ui:define name="pageHeader">
+                <h:outputText value="#{message.deviceDetails}"></h:outputText>
+            </ui:define>
+
+            <h:form rendered="#{!loginController.privileges.contains(bundle.ViewDevice)}">
+                <h:outputText value="#{bundle.InsufficientPrivileges}" 
+                              style="font-family: Arial;font-size: 16px;color: red;"/>
+            </h:form>
+
+
+
+            <p:layout fullPage="false" style="height: 131%" id="deviceDetailsLayout" >  
+
+
+                <p:layoutUnit  id="west" position="west" size="300" resizable="false" closable="false" collapsible="true" minSize="200"  effect="drop"> 
+                    <p:panel rendered="#{loginController.privileges.contains(bundle.ViewDevice)}" >
+                        <f:facet name="header"><h:outputText value="#{deviceDetailController.selectedDevice.platform}"/></f:facet>
+                        <p:graphicImage  height="200" width="200" value="/images/#{deviceDetailController.selectedDevice.platform}.png" rendered="#{deviceDetailController.selectedDevice.platform.length()>0}"/>
+                    </p:panel>
+                    <p:panel>
+                        <f:facet name="header">#{message.supports}</f:facet>
+                        <center>
+                            <p:graphicImage  height="50" width="50" value="/images/bluetooth-logo.jpg" />
+                            <p:graphicImage  height="50" width="75" value="/images/wifi-logo.png" />
+                        </center>
+                    </p:panel>
+
+                    <p:panel rendered="#{loginController.privileges.contains(bundle.ViewDevice) and ( deviceDetailController.selectedDevice.contact.email!=null || deviceDetailController.selectedDevice.contact.email.length>0)}">
+                        <f:facet name="header">#{message.contact}</f:facet>
+                        <h:form id="contactForm">
+                            <h:outputText value="#{deviceDetailController.selectedDevice.contact.description} "/>
+                            <br />
+                            <h:outputText value="#{deviceDetailController.selectedDevice.contact.email}"/>
+                            <p:separator/>
+                            <h:outputText value="#{deviceDetailController.selectedDevice.contact.address1} "/>
+                            <h:outputText value="#{deviceDetailController.selectedDevice.contact.address2} "/>
+                            <br />
+                            <h:outputText value="#{deviceDetailController.selectedDevice.contact.city} #{deviceDetailController.selectedDevice.contact.zipcode}, #{deviceDetailController.selectedDevice.contact.stateProvince} "/>
+                            <h:outputText value="#{deviceDetailController.selectedDevice.contact.country} "/>
+                        </h:form>
+                    </p:panel>
+
+                </p:layoutUnit>  
+
+                <p:layoutUnit id="center" position="center" minSize="200">  
+                    <h:form id="deviceDetails" rendered="#{loginController.privileges.contains(bundle.ViewDevice)}">
+                        <p:panel>
+                            <f:facet name="header">#{message.details}</f:facet>
+                            <p:panelGrid columns="4" style="width:100%;">
+                                <h:outputText value="#{message.name}:" />
+                                <h:outputText value="#{deviceDetailController.selectedDevice.name}"/>
+                                <h:outputLabel value="#{message.serialNumber}:" for="serialNumber" />
+                                <h:outputText id="serialNumber" value="#{deviceDetailController.selectedDevice.serialNumber}" />
+                                <h:outputLabel value="#{message.wifiChannel}:"/>
+                                <h:outputText value="#{deviceDetailController.selectedDevice.wifiChannel}"/>   
+                                <h:outputLabel value="#{message.allowChannelOverride}" rendered="#{loginController.privileges.contains(bundle.SuperUser)}"/>
+                                <p:column rendered="#{deviceDetailController.selectedDevice.allowWifiClientOverride and loginController.privileges.contains(bundle.SuperUser)}" >
+                                    <h:outputText value="#{message.yes}"/>
+                                    <span class="ui-icon ui-icon-check" style="vertical-align:middle"></span>
+                                </p:column>
+                                <p:column rendered="#{!deviceDetailController.selectedDevice.allowWifiClientOverride and loginController.privileges.contains(bundle.SuperUser)}" >
+                                    <h:outputText value="#{message.no}"/>
+                                    <span class="ui-icon ui-icon-cancel" style="vertical-align:middle"></span>
+                                </p:column>
+                                <h:outputLabel value="#{message.logRotation}:" rendered="#{loginController.privileges.contains(bundle.SuperUser)}"/>
+                                <h:outputText value="#{deviceDetailController.logRotation}" rendered="#{loginController.privileges.contains(bundle.SuperUser)}"/>
+                                <h:outputLabel value="#{message.active}:" />
+                                <p:column rendered="#{deviceDetailController.selectedDevice.active}" >
+                                    <h:outputText value="#{message.yes}"/>
+                                    <span class="ui-icon ui-icon-check" style="vertical-align:middle"></span>
+                                </p:column>
+                                <p:column rendered="#{!deviceDetailController.selectedDevice.active}" >
+                                    <h:outputText value="#{message.no}"/>
+                                    <span class="ui-icon ui-icon-cancel" style="vertical-align:middle"></span>
+                                </p:column>
+                                <h:outputLabel value="#{message.platform}:" />
+                                <h:outputText value="#{deviceDetailController.selectedDevice.platform}"/>                                
+                                <h:outputLabel value="#{message.macAddress}:" for="macAddress" />
+                                <h:outputText value="#{deviceDetailController.macAddress}"/>
+
+
+                                <h:outputLabel value="#{message.softwareVersion}" rendered="#{loginController.privileges.contains(bundle.SuperUser)}"/>
+                                <h:outputText value="#{deviceDetailController.selectedDevice.major}.#{deviceDetailController.selectedDevice.minor}.#{deviceDetailController.selectedDevice.build}" rendered="#{loginController.privileges.contains(bundle.SuperUser)}"/>
+
+                                <h:outputLabel value="#{message.kernel}" rendered="#{loginController.privileges.contains(bundle.SuperUser)}"/>
+                                <h:outputText value="#{deviceDetailController.selectedDevice.kernel}" rendered="#{loginController.privileges.contains(bundle.SuperUser)}"/>
+
+                                <h:outputLabel value="#{message.license}" rendered="#{loginController.privileges.contains(bundle.SuperUser)}"/>
+                                <h:outputText value="#{deviceDetailController.selectedDevice.license}" rendered="#{loginController.privileges.contains(bundle.SuperUser)}"/>
+                                
+                                <h:outputLabel value="#{message.token}" rendered="#{loginController.privileges.contains(bundle.SuperUser)}"/>
+                                <h:outputText value="#{deviceDetailController.selectedDevice.hasToken()}" rendered="#{loginController.privileges.contains(bundle.SuperUser)}"/>
+
+
+
+                            </p:panelGrid>
+                        </p:panel>
+                        <p:panel>
+                            <f:facet name="header">#{message.connectionStatus}</f:facet>
+                            <p:panelGrid columns="2" style="width:100%;">
+                                <h:outputLabel value="#{message.reconnectInterval}:" rendered="#{loginController.privileges.contains(bundle.SuperUser)}"/>
+                                <h:outputText value="#{deviceDetailController.reconnectInterval}" rendered="#{loginController.privileges.contains(bundle.SuperUser)}"/>
+                                <h:outputLabel value="#{message.status}:" />
+                                <h:outputText value="#{deviceDetailController.selectedDevice.getConnectStatus()}" class="#{deviceDetailController.selectedDevice.getConnectStatus()}" />
+                                <h:outputLabel value="#{message.lastSeen}:" />
+                                <h:outputText value="#{deviceDetailController.selectedDevice.getLastSeenFmt()}"/>
+                                <h:outputLabel value="#{message.lastIP}:" />
+                                <h:outputText  value="#{deviceDetailController.selectedDevice.lastIpAddress}" />
+
+                            </p:panelGrid>
+                        </p:panel>
+
+                        <p:panel>
+                            <f:facet name="header">#{message.grouping}</f:facet>
+                            <p:panelGrid columns="2" style="width:100%;">
+                                <h:outputLabel value="#{message.deviceGroup}:" />
+                                <h:outputText value="#{deviceDetailController.selectedDevice.tag}"/>
+                            </p:panelGrid>
+                        </p:panel>
+                        <p:panel>
+                            <f:facet name="header">#{message.campaigns}</f:facet>
+                            <p:dataTable id="basic" var="campaign" value="#{deviceDetailController.selectedDevice.campaigns}" style="width:100%">  
+                                <p:column>  
+                                    <f:facet name="header">  
+                                        #{message.name}  
+                                    </f:facet>  
+                                    <h:outputText value="#{campaign.name}" />  
+                                </p:column>  
+
+                                <p:column>  
+                                    <f:facet name="header">  
+                                        #{message.startDate}
+                                    </f:facet>  
+
+                                    <h:outputText value="#{campaign.startDate}">
+                                        <f:convertDateTime pattern="MMM dd, YYYY"/>
+                                    </h:outputText>
+                                </p:column>  
+
+                                <p:column>  
+                                    <f:facet name="header">  
+                                        #{message.endDate}
+                                    </f:facet>  
+                                    <h:outputText value="#{campaign.endDate}">
+                                        <f:convertDateTime pattern="MMM dd, YYYY"/>
+                                    </h:outputText>
+                                </p:column> 
+                                <p:column>  
+                                    <f:facet name="header">  
+                                        #{message.active}  
+                                    </f:facet>  
+                                    <p:column rendered="#{campaign.active}" >
+                                        <h:outputText value="#{message.yes}"/>
+                                        <span class="ui-icon ui-icon-check" style="vertical-align:middle"></span>
+                                    </p:column>
+                                    <p:column rendered="#{!campaign.active}" >
+                                        <h:outputText value="#{message.no}"/>
+                                        <span class="ui-icon ui-icon-cancel" style="vertical-align:middle"></span>
+                                    </p:column>
+                                </p:column> 
+                            </p:dataTable>
+                        </p:panel>
+                    </h:form>
+                </p:layoutUnit>  
+
+
+            </p:layout> 
+        </ui:composition>
+    </ui:define> 
+</html>

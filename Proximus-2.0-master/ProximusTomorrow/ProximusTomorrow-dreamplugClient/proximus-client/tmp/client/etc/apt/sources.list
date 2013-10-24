@@ -1,0 +1,5 @@
+deb http://ftp.us.debian.org/debian/ squeeze main contrib non-free
+deb http://http.us.debian.org/debian stable main contrib non-free
+deb http://security.debian.org squeeze/updates main contrib non-free
+deb http://debian.cs.binghamton.edu/debian-backports squeeze-backports main contrib non-free
+deb http://backports.debian.org/debian-backports squeeze-backports main contrib non-free

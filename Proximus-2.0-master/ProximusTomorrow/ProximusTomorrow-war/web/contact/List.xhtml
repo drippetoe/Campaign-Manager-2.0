@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+
+    <h:head>
+        <title>Contacts</title>
+        <link rel="stylesheet" type="text/css" href="/ProximusTomorrow-war/faces/jsfcrud.css" />
+        <h:outputStylesheet name="css/jsfcrud.css"/>
+    </h:head>
+
+    <h:body>
+        <ui:composition template="/template.xhtml">
+             <script type="text/javascript">
+                function handleEditRequest(args) {
+                    if(!args.validation) {
+                        jQuery('#editDialog').effect("shake", { times:2 }, 100);
+                    } else {
+                        editDlg.hide();
+                       
+                    }
+                }
+                function handleCreateRequest(args) {
+                    if(!args.validation) {
+                        jQuery('#dialog').effect("shake", { times:2 }, 100);
+                    } else {
+                        contactDlg.hide();
+                       
+                    }
+                }
+            </script>
+            <ui:define name="pageHeader">
+                <h:outputText value="#{message.manageContacts}"></h:outputText>
+            </ui:define>
+
+            <h:form rendered="#{!loginController.privileges.contains(bundle.ContactPrivilege)}">
+                <h:outputText value="#{message.InsufficientPrivileges}" 
+                              style="font-family: Arial;font-size: 16px;color: red;"/>
+            </h:form>
+
+            <h:form id="contactForm" rendered="#{loginController.privileges.contains(bundle.ContactPrivilege)}">
+
+                <h1><h:outputText escape="false" value="#{message.startByAddingAContact}" rendered="#{contactController.contactModel.rowCount lt 1}"/></h1>
+                <p:commandButton id="addContact" rendered="#{contactController.contactModel.rowCount lt 1}" value="#{message.newContact}" update=":dialog" oncomplete="contactDlg.show()" icon="ui-icon-person" title="#{message.addContact}"/>  
+
+                <h:outputText escape="false" value="#{message.noContactFound}" rendered="#{contactController.contactModel.rowCount == 0}"/>
+                <h:panelGroup rendered="#{contactController.contactModel.rowCount > 0}">
+
+                    <p:commandButton id="addButton" value="#{message.newContact}" update=":dialog" oncomplete="contactDlg.show()"  icon="ui-icon-person" title="#{message.addContact}"/>  
+                    <p:dataTable id="contactList" var="contact" widgetVar="contactTable" value="#{contactController.contactModel}" rowKey="#{contact.email}" selection="#{contactController.selectedContact}" selectionMode="single"
+                                 paginator="true" rows="10" filteredValue="#{contactController.filteredContacts}"
+                                 currentPageReportTemplate="{currentPage} #{message.of} {totalPages}" 
+                                 paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                 rowsPerPageTemplate="5,10,15,20,50,100">
+
+                        <p:ajax event="rowEdit" update="@this" listener="#{contactController.saveContact(contact)}">
+                            <f:param name="contact" value="#{contact}"/>
+                        </p:ajax>      
+
+                        <f:facet name="header">
+                            <p:outputPanel>
+
+                                <h:outputText value="#{message.search}: "/>
+                                <p:inputText id="globalFilter" onkeyup="contactTable.filter()"/>
+                            </p:outputPanel>
+                        </f:facet>
+
+                        <p:column id="description" headerText="#{message.description}" filterBy="#{contact.description}" filterMatchMode="contains" filterStyle="display: none;" 
+                                  sortBy="#{contact.description}" style="width:120px">
+                            <h:outputText value="#{contact.description}"/>
+                        </p:column>
+
+                        <p:column id="email" headerText="#{message.email}" filterBy="#{contact.email}" filterMatchMode="contains" filterStyle="display: none;" 
+                                  sortBy="#{contact.email}" style="width:120px">
+                            <h:outputText value="#{contact.email}"/>
+                        </p:column>
+                        <p:column id="phone" headerText="#{message.phone}" filterBy="#{contact.phone}" filterMatchMode="contains" filterStyle="display: none;" 
+                                  sortBy="#{contact.phone}" style="width:120px">
+                            <h:outputText value="#{contact.phone}"/>
+                        </p:column>
+
+                        <p:column id="address1" headerText="#{message.addressLine1}" filterBy="#{contact.address1}" filterMatchMode="contains" filterStyle="display: none;" 
+                                  sortBy="#{contact.address1}" style="width:150px">
+                            <h:outputText value="#{contact.address1}"/>
+                        </p:column>
+
+                        <p:column id="address2" headerText="#{message.addressLine2}" filterBy="#{contact.address2}" filterMatchMode="contains" filterStyle="display: none;" 
+                                  sortBy="#{contact.address2}" style="width:150px">
+                            <h:outputText value="#{contact.address2}"/>
+                        </p:column>
+
+                        <p:column id="zipcode" headerText="#{message.zipcode}" filterBy="#{contact.zipcode}" filterMatchMode="contains" filterStyle="display: none;" 
+                                  sortBy="#{contact.zipcode}" style="width:100px">
+                            <h:outputText value="#{contact.zipcode}"/>
+                        </p:column>
+                        
+                        <p:column id="city" headerText="#{message.city}" filterBy="#{contact.city}" filterMatchMode="contains" filterStyle="display: none;" 
+                                  sortBy="#{contact.city}" style="width:150px">
+                            <h:outputText value="#{contact.city}"/>
+                        </p:column>
+
+                        <p:column id="country" headerText="#{message.country}" filterBy="#{contact.country}" filterMatchMode="contains" filterStyle="display: none;" 
+                                  sortBy="#{contact.country}" style="width:100px">
+                            <h:outputText value="#{contact.country}"/>
+                        </p:column>
+
+                        <p:column id="state" headerText="#{message.state}" filterBy="#{contact.stateProvince}" filterMatchMode="contains" filterStyle="display: none;" 
+                                  sortBy="#{contact.stateProvince}" style="width:100px">
+                            <h:outputText value="#{contact.stateProvince}"/>
+                        </p:column>
+                        
+                        <p:column headerText="#{message.options}" style="width:10px;">
+                            <p:commandButton id="editButton" update=":editDialog" oncomplete="editDlg.show()" icon="ui-icon-pencil" title="#{message.edit}">                                
+                                <f:setPropertyActionListener value="#{contact}" target="#{contactController.selectedContact}"/>
+                            </p:commandButton>
+                            <p:commandButton id="deleteButton" update=":contactForm" oncomplete="confirmation.show()" icon="ui-icon-trash" title="#{message.delete}">                                
+                                <f:setPropertyActionListener value="#{contact}" target="#{contactController.selectedContact}"/>
+                            </p:commandButton>
+
+                        </p:column>
+
+                        <f:facet name="footer">
+                        </f:facet>
+                    </p:dataTable>
+                    <p:panel>
+                        <p:commandButton ajax="false" action="#{contactController.prepareContactToDevice()}" value="#{message.linkContactsToDevices}"/>
+                    </p:panel>
+                </h:panelGroup>
+
+
+                <p:confirmDialog id="confirmDialog" message="#{message.sureYouWantToDelete} #{contactController.selectedContact.email} ?" severity="alert" widgetVar="confirmation">
+                    <p:commandButton id="confirm" value="#{message.yes}" onclick="confirmation.hide()" actionListener="#{contactController.deleteContact}" update="contactForm" />
+                    <p:commandButton id="decline" value="#{message.no}" onclick="confirmation.hide()"/>    
+                </p:confirmDialog>
+            </h:form>
+            
+              <p:dialog id="dialog" header="#{message.addContact}" widgetVar="contactDlg" resizable="true" height="500" width="450" showEffect="clip" hideEffect="fold">
+                  <p:ajax event="close" update="contactForm" listener="#{contactController.prepareList()}"/>  
+                  <h:form>
+                    <h:panelGrid id="display" columns="2" cellpadding="5"> 
+                        
+                        
+                        <h:outputLabel value="#{message.description}: *" for="description" />
+                        <p:inputTextarea id="idescription" rows="3" cols="30" value="#{contactController.newContact.description}" required="true" requiredMessage="#{message.pleaseEnterDescription}"/>
+                        
+                        
+                        <h:outputLabel value="#{message.email}:" for="email" />
+                        <p:inputText id="email" value="#{contactController.newContact.email}"  required="true" requiredMessage="#{message.pleaseEnterAnEmail}" validatorMessage="#{message.invalidEmail}">
+                        </p:inputText>
+                        <h:outputLabel value="#{message.phone}:" for="phone" />
+                        <p:inputMask id="phone" value="#{contactController.newContact.phone}"  required="false" mask="(999) 999-9999" requiredMessage="#{message.pleaseEnterPhone}"/>
+                        <h:outputLabel value="#{message.addressLine1}: " for="address1" />
+                        <p:inputText id="address1" value="#{contactController.newContact.address1}"  required="false"/>
+                        <h:outputLabel value="#{message.addressLine2}: " for="address2" />
+                        <p:inputText id="address2" value="#{contactController.newContact.address2}"  required="false"/>
+                        <h:outputLabel value="#{message.zipcode}:" for="zipcode" />
+                        <p:inputText id="zipcode" value="#{contactController.newContact.zipcode}"  required="false"/>
+
+                        <h:outputText value="#{message.country}: " />  
+                        <p:selectOneMenu value="#{contactController.newContact.country}" effect="fade" immediate="true">  
+                            <f:selectItem itemLabel="#{message.chooseCountry}" itemValue="" />  
+                            <f:selectItems value="#{contactController.selectedCountries}"/> 
+                        </p:selectOneMenu> 
+                        
+                        <h:outputLabel value="#{message.city}:" for="city" />
+                        <p:inputText id="city" value="#{contactController.newContact.city}"  required="false"/>
+
+                        <h:outputText value="#{message.state}: " />
+                        <p:selectOneMenu id="states" value="#{contactController.newContact.stateProvince}">  
+                            <f:selectItem itemLabel="#{message.chooseState}" itemValue="" />  
+                            <f:selectItems value="#{contactController.selectedStates}"/>  
+                        </p:selectOneMenu> 
+
+                        
+                        <p:commandButton action="#{contactController.createNewContact}" update=":contactForm,:growl"  oncomplete="handleCreateRequest(args)" value="#{message.save}" id="iconOnly" icon="ui-icon-disk" title="Icon Only"/>              
+                    </h:panelGrid>
+                  </h:form>
+                </p:dialog>
+
+                <p:dialog id="editDialog" header="#{message.editContact}" widgetVar="editDlg" resizable="true" height="500" width="450" showEffect="clip" hideEffect="fold">
+                     <p:ajax event="close" update="contactForm" listener="#{contactController.prepareList()}"/> 
+                     <h:form>
+                    <h:panelGrid id="displayEdit" columns="2" cellpadding="5">       
+
+
+                        <h:outputLabel value="#{message.description}: " for="edescription" />
+                        <p:inputTextarea id="edescription" rows="3" cols="30" value="#{contactController.selectedContact.description}" required="true" requiredMessage="#{message.pleaseEnterDescription}"/>
+
+                        <h:outputLabel value="#{message.email}:" for="email" />
+                        <p:inputText id="eemail" value="#{contactController.selectedContact.email}"  required="false" requiredMessage="#{message.pleaseEnterAnEmail}" validatorMessage="#{message.invalidEmail}">
+
+                        </p:inputText>    
+                        <h:outputLabel value="#{message.phone}:" for="phone" />
+                        <p:inputMask id="ephone" value="#{contactController.selectedContact.phone}"  required="false" mask="(999) 999-9999" requiredMessage="#{message.pleaseEnterPhone}"/>
+                        <h:outputLabel value="#{message.addressLine1}: " for="address1" />
+                        <p:inputText id="eaddress1" value="#{contactController.selectedContact.address1}"  required="false"/>
+                        <h:outputLabel value="#{message.addressLine2}: " for="address2" />
+                        <p:inputText id="eaddress2" value="#{contactController.selectedContact.address2}"  required="false"/>
+                        <h:outputLabel value="#{message.zipcode}:" for="zipcode" />
+                        <p:inputText id="ezipcode" value="#{contactController.selectedContact.zipcode}"  required="false"/>
+
+                        <h:outputText value="#{message.country}: " />  
+                        <p:selectOneMenu value="#{contactController.selectedContact.country}" effect="fade" immediate="true">  
+                            <f:selectItem itemLabel="#{message.chooseCountry}" itemValue="" />  
+                            <f:selectItems value="#{contactController.selectedCountries}"/> 
+                        </p:selectOneMenu>
+                        
+                        <h:outputLabel value="#{message.city}" for="city" />
+                        <p:inputText id="ecity" value="#{contactController.selectedContact.city}"  required="false"/>
+
+                        <h:outputText value="#{message.state}: " />
+                        <p:selectOneMenu id="estates" value="#{contactController.selectedContact.stateProvince}">  
+                            <f:selectItem itemLabel="#{message.chooseState}" itemValue="" />  
+                            <f:selectItems value="#{contactController.selectedStates}"/>  
+                        </p:selectOneMenu> 
+                        
+                        <p:commandButton actionListener="#{contactController.editContact()}" oncomplete="handleEditRequest(args)" update=":contactForm,:growl" value="#{message.save}" id="eiconOnly" icon="ui-icon-disk" title="Icon Only"/>  
+                    </h:panelGrid>
+                     </h:form>
+                </p:dialog>  
+        </ui:composition>
+    </h:body>
+</html>

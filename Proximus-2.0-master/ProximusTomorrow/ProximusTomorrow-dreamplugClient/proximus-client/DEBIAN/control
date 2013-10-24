@@ -1,0 +1,11 @@
+Source: proximus-software
+Section: admin
+Priority: extra
+Maintainer: Eric Johansson <ejohansson@proximusmobility.com>
+Homepage: http://www.proximusmobility.com
+Version: 3.0-1
+Package: proximus-software
+Architecture: all
+Depends: 
+Description: proximus-software
+ proximus-software 3.0

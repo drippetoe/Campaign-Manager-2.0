@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+
+    <h:head>
+        <link rel="stylesheet" type="text/css" href="/ProximusTomorrow-war/faces/jsfcrud.css" />
+        <h:outputStylesheet name="css/jsfcrud.css"/>
+    </h:head>
+
+    <h:body>
+
+        <ui:composition template="/template.xhtml">
+            <style>
+                .ui-picklist .ui-picklist-list {
+                    width: 100%;
+                }
+            </style>
+            <ui:define name="pageHeader">
+                <h:outputText value="#{message.assignUsersToRoles}"></h:outputText>
+            </ui:define>
+
+            <br />
+            <h:form rendered="#{!loginController.privileges.contains(bundle.UserPrivilege)}">
+                <h:outputText value="#{message.InsufficientPrivileges}" 
+                              style="font-family: Arial;font-size: 16px;color: red;"/>
+            </h:form>
+
+            <h:form id="userRoleForm" rendered="#{loginController.privileges.contains(bundle.UserPrivilege)}">
+                <p:panelGrid columns="1" style="width:100%">
+                    <f:facet name="header">
+                        <h:outputText value="#{message.assignUsersToARole}"/>
+                    </f:facet> 
+                    <p:column>
+                        <h:outputLabel value="#{message.role}" for="roleDropdown" />
+                        <br />
+                        <p:selectOneMenu id="roleDropdown" value="#{roleController.selectedRoleName}" style="width: 250px">  
+                            <f:selectItem itemLabel="#{message.selectRole}" itemValue=""  />  
+                            <f:selectItems value="#{roleController.listRoles}"/>  
+                            <p:ajax update="userRoleForm" listener="#{roleController.recreatePickListRole()}"/>
+                        </p:selectOneMenu>
+                    </p:column>
+                </p:panelGrid>
+                <br />
+
+                <p:panelGrid columns="1" style="width:100%" rendered="#{roleController.selectedRoleName.length() gt 1}">
+
+                    <p:column >
+                        <p:pickList id="pickList" value="#{roleController.picklistRoleModel}"  
+                                    var="users"  
+                                    itemLabel="#{users}"  
+                                    itemValue="#{users}" style="width:100%;"
+                                    onTransfer="modifyTable();" >
+
+                            <f:facet name="sourceCaption">#{message.users}</f:facet>  
+                            <f:facet name="targetCaption">#{message.assignedToRole}</f:facet> 
+
+                        </p:pickList>  
+                        <p:remoteCommand name="modifyTable">
+                            <f:setPropertyActionListener value="#{roleController.picklistRoleModel.target}"
+                                                         target="#{roleController.picklistRoleTarget}" />
+                            <f:setPropertyActionListener value="#{roleController.picklistRoleModel.source}"
+                                                         target="#{roleController.picklistRoleSource}" />
+                            
+                        </p:remoteCommand>
+                    </p:column>
+
+                </p:panelGrid>
+                <br />
+                <p:commandButton value="#{message.save}" action="#{roleController.saveUsersToRole()}" update="userRoleForm"/>
+            </h:form>
+        </ui:composition>
+    </h:body> 
+</html>

@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Samy</string>
+    <string name="label">Facebook Fragment Example</string>
+    <string name="label_share">Share on Facebook Example</string>
+    <string name="appId">437508149621375</string>
+    <string name="successfully_posted_post">Successfully posted \'%1$s\'.\nPost ID: %2$s</string>
+</resources>

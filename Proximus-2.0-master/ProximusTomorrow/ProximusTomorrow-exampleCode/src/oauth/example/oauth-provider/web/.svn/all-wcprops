@@ -1,0 +1,29 @@
+K 25
+svn:wc:ra_dav:version-url
+V 55
+/svn/!svn/ver/1038/code/java/example/oauth-provider/web
+END
+index.jsp
+K 25
+svn:wc:ra_dav:version-url
+V 64
+/svn/!svn/ver/311/code/java/example/oauth-provider/web/index.jsp
+END
+authorize.jsp
+K 25
+svn:wc:ra_dav:version-url
+V 68
+/svn/!svn/ver/311/code/java/example/oauth-provider/web/authorize.jsp
+END
+OAuthProblemException.jsp
+K 25
+svn:wc:ra_dav:version-url
+V 80
+/svn/!svn/ver/750/code/java/example/oauth-provider/web/OAuthProblemException.jsp
+END
+banner.jsp
+K 25
+svn:wc:ra_dav:version-url
+V 65
+/svn/!svn/ver/311/code/java/example/oauth-provider/web/banner.jsp
+END

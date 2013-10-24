@@ -1,0 +1,23 @@
+K 25
+svn:wc:ra_dav:version-url
+V 58
+/svn/!svn/ver/1183/code/java/jmeter/example/oauth-provider
+END
+readme
+K 25
+svn:wc:ra_dav:version-url
+V 65
+/svn/!svn/ver/1183/code/java/jmeter/example/oauth-provider/readme
+END
+build.xml
+K 25
+svn:wc:ra_dav:version-url
+V 68
+/svn/!svn/ver/1183/code/java/jmeter/example/oauth-provider/build.xml
+END
+pom.xml
+K 25
+svn:wc:ra_dav:version-url
+V 66
+/svn/!svn/ver/1183/code/java/jmeter/example/oauth-provider/pom.xml
+END

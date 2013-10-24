@@ -1,0 +1,50 @@
+body{
+padding:0;
+font-family: Georgia, "Times New Roman", Times, serif;
+font-size:12px;
+margin:0px auto auto auto;
+color:#FFFFFF;
+background:#000000;
+}
+.preview_container{
+width:420px;
+margin:auto;
+}
+
+.iphone_container{
+position: absolute;
+top:0;
+left:0;
+width:378px;
+height:742px;
+margin:0px;
+padding:0px;
+float:left;
+background:url(preview.png) no-repeat center;
+overflow: hidden;
+}
+.preview_content{
+position: absolute;
+top:132px;
+left:32px;
+width:320px;
+height:480px;
+padding:0px;
+overflow: auto;
+}
+
+.nav{
+float:left;
+padding:300px 0 0 0; text-align:center;
+width:150px;
+}
+.nav p{
+font-family:Georgia, "Times New Roman", Times, serif;
+color:#fff;
+font-size:18px;
+font-style:italic;
+line-height:20px;
+}
+.nav a{
+margin:0 10px 0 10px;
+}

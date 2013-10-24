@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+    <h:body>
+
+        <ui:composition template="/template.xhtml">
+            <style>
+                .ui-picklist .ui-picklist-list {
+                    width: 100%;
+                }
+            </style>
+            <ui:define name="pageHeader">
+                <h:outputText value="#{message.assignPropertyManagers}"></h:outputText>
+            </ui:define>
+
+            <br />
+            <h:form rendered="#{!loginController.privileges.contains(bundle.UserPrivilege) and !loginController.hasGeoFenceLicense }">
+                <h:outputText value="#{bundle.InsufficientPrivileges}" 
+                              style="font-family: Arial;font-size: 16px;color: red;"/>
+            </h:form>
+
+            <h:form id="propertyManagerForm" rendered="#{loginController.privileges.contains(bundle.UserPrivilege) and loginController.hasGeoFenceLicense}">
+                <p:panelGrid columns="1" style="width:100%">
+                    <f:facet name="header">
+                        <h:outputText value="#{message.assignUserToProperty}"/>
+                    </f:facet> 
+                    <p:column>
+                        <h:outputLabel value="#{message.user}" for="userDropdown" />
+                        <br />
+                        <p:selectOneMenu id="userDropdown" value="#{userController.selectedUser}" converter="userControllerConverter" style="width: 250px">  
+                            <f:selectItem itemLabel="#{message.selectUsers}" itemValue=""  />  
+                            <f:selectItems value="#{userController.listOfUsers}"/>  
+                            <p:ajax update="propertyManagerForm" listener="#{userController.recreatePickList()}"/>
+                        </p:selectOneMenu>
+                    </p:column>
+                </p:panelGrid>
+                <br />
+
+                <p:panelGrid columns="1" style="width:100%" rendered="#{userController.selectedUser.userName.length() gt 1}">
+
+                    <p:column>
+                        <p:pickList id="pickList" value="#{userController.picklistModel}"  
+                                    var="properties"  
+                                    itemLabel="#{properties}"  
+                                    itemValue="#{properties}" style="width:100%;"
+                                    onTransfer="modifyTable();" >
+
+                            <f:facet name="sourceCaption">#{message.properties}</f:facet>  
+                            <f:facet name="targetCaption">#{message.managedProperties}</f:facet> 
+
+                        </p:pickList>  
+                        <p:remoteCommand name="modifyTable">
+                            <f:setPropertyActionListener value="#{userController.picklistModel.target}"
+                                                         target="#{userController.picklistTarget}" />
+                        </p:remoteCommand>
+                    </p:column>
+
+                </p:panelGrid>
+                <br />
+                <p:commandButton value="#{message.save}" action="#{userController.saveUserToProperty()}" rendered="#{userController.selectedUser.userName ne null}" update="propertyManagerForm"/>
+            </h:form>
+        </ui:composition>
+    </h:body> 
+</html>

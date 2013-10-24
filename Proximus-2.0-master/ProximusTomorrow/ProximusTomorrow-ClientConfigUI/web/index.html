@@ -1,0 +1,35 @@
+<!DOCTYPE html> 
+<html> 
+	<head> 
+	<title>Client Configuration</title> 
+	<meta name="viewport" content="width=device-width, initial-scale=1"> 
+	<link rel="stylesheet" href="css/jquery.mobile-1.0.1.min.css" />
+	<script src="jquery/jquery-1.6.4.min.js"></script>
+	<script src="jquery/jquery.mobile-1.0.1.min.js"></script>
+</head> 
+<body> 
+
+<div data-role="page" id="login">
+
+	<div data-role="header">
+		<h1>Client Configuration -- Login</h1>
+	</div><!-- /header -->
+
+	<div data-role="content">
+            <form action="form.php" method="post">
+                <div data-role="fieldcontain" class="ui-hide-label">
+                    <label for="username">Username:</label>
+                    <input type="text" name="username" id="username" value="" placeholder="Username"/>
+                    <label for="password">Password:</label>
+                    <input type="password" name="password" id="password" value="" placeholder="Password"/>
+                </div>
+		  <a href="setup.html" data-role="button">Login</a>
+            </form>     
+	</div><!-- /content -->
+<div data-role="footer"> 
+	<h4>Copyright &copy; 2012, Proximus Mobility, LLC</h4> 
+</div> 
+</div><!-- /page -->
+
+</body>
+</html>

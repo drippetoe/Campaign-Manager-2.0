@@ -1,0 +1,18 @@
+# build application files
+*.apk
+*.ap_
+
+# files for the dex VM
+*.dex
+
+# Java Class files
+*.class
+
+
+# generated files
+gen/
+bin/
+
+# Local configuration
+
+local.properties

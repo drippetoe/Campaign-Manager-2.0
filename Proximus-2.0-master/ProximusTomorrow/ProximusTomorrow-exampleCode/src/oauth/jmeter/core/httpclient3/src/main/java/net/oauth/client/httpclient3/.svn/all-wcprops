@@ -1,0 +1,29 @@
+K 25
+svn:wc:ra_dav:version-url
+V 95
+/svn/!svn/ver/1183/code/java/jmeter/core/httpclient3/src/main/java/net/oauth/client/httpclient3
+END
+HttpMethodResponse.java
+K 25
+svn:wc:ra_dav:version-url
+V 119
+/svn/!svn/ver/1183/code/java/jmeter/core/httpclient3/src/main/java/net/oauth/client/httpclient3/HttpMethodResponse.java
+END
+HttpClient3.java
+K 25
+svn:wc:ra_dav:version-url
+V 112
+/svn/!svn/ver/1183/code/java/jmeter/core/httpclient3/src/main/java/net/oauth/client/httpclient3/HttpClient3.java
+END
+package-info.java
+K 25
+svn:wc:ra_dav:version-url
+V 113
+/svn/!svn/ver/1183/code/java/jmeter/core/httpclient3/src/main/java/net/oauth/client/httpclient3/package-info.java
+END
+HttpClientPool.java
+K 25
+svn:wc:ra_dav:version-url
+V 115
+/svn/!svn/ver/1183/code/java/jmeter/core/httpclient3/src/main/java/net/oauth/client/httpclient3/HttpClientPool.java
+END

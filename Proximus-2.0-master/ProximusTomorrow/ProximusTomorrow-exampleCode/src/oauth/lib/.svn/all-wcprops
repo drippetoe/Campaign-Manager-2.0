@@ -1,0 +1,41 @@
+K 25
+svn:wc:ra_dav:version-url
+V 32
+/svn/!svn/ver/1138/code/java/lib
+END
+jetty-util-6.1.11.jar
+K 25
+svn:wc:ra_dav:version-url
+V 53
+/svn/!svn/ver/698/code/java/lib/jetty-util-6.1.11.jar
+END
+commons-logging-1.1.jar
+K 25
+svn:wc:ra_dav:version-url
+V 55
+/svn/!svn/ver/200/code/java/lib/commons-logging-1.1.jar
+END
+servlet-api-2.5-6.1.11.jar
+K 25
+svn:wc:ra_dav:version-url
+V 58
+/svn/!svn/ver/698/code/java/lib/servlet-api-2.5-6.1.11.jar
+END
+jetty-6.1.11.jar
+K 25
+svn:wc:ra_dav:version-url
+V 48
+/svn/!svn/ver/698/code/java/lib/jetty-6.1.11.jar
+END
+commons-httpclient-3.1.jar
+K 25
+svn:wc:ra_dav:version-url
+V 58
+/svn/!svn/ver/285/code/java/lib/commons-httpclient-3.1.jar
+END
+junit.jar
+K 25
+svn:wc:ra_dav:version-url
+V 41
+/svn/!svn/ver/202/code/java/lib/junit.jar
+END

@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+
+
+    <h:head>
+        <title>Company</title>
+        <link rel="stylesheet" type="text/css" href="/ProximusTomorrow-war/faces/jsfcrud.css" />
+        <h:outputStylesheet name="css/jsfcrud.css"/>
+    </h:head>
+
+    <h:body>
+        <ui:composition template="/template.xhtml">
+            <ui:define name="pageHeader">
+                <h:outputText value="#{message.manageKeywords}"></h:outputText>
+            </ui:define>
+
+            <h:form rendered="#{!loginController.privileges.contains(bundle.GeoFenceSettings)}">
+                <h:outputText value="#{message.InsufficientPrivileges}" 
+                              style="font-family: Arial;font-size: 16px;color: red;"/>
+            </h:form>
+
+            <h:form id="keywordForm"  rendered="#{loginController.privileges.contains(bundle.GeoFenceSettings)}">
+
+                <h:outputText escape="false" value="#{message.noKeywordsFound}" rendered="#{keywordController.keywordDataModel.rowCount == 0}"/>
+                <p:commandButton id="addButton" value="#{message.newKeyword}" oncomplete="bwDialog.show()" icon="ui-icon-plus" 
+                                 title="#{message.addKeyword}"/>  
+                <h:panelGroup rendered="#{keywordController.keywordDataModel.rowCount > 0}">
+
+                    <p:dataTable id="bwList" var="keyword" widgetVar="bwTable" value="#{keywordController.keywordDataModel}" 
+                                 rowKey="#{keyword.keyword}" selection="#{keywordController.selectedKeyword}" selectionMode="single"
+                                 paginator="true" rows="20" filteredValue="#{keywordController.filteredKeywords}"
+                                 currentPageReportTemplate="{currentPage} #{message.of} {totalPages}" 
+                                 paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                 rowsPerPageTemplate="5,10,15,20,50,100">
+
+                        <f:facet name="header">
+                            <p:outputPanel>
+                                <h:outputText value="#{message.search}: "/>
+                                <p:inputText id="globalFilter" onkeyup="bwTable.filter()"/>
+                            </p:outputPanel>
+                        </f:facet>
+
+                        <p:column id="name" headerText="#{message.keyword}" filterBy="#{keyword.keyword}" filterMatchMode="contains" filterStyle="display: none;" sortBy="#{keyword.keyword}">
+                            <h:outputText value="#{keyword.keyword}"/>
+                        </p:column>
+
+                        <p:column id="property" headerText="#{message.property}" filterBy="#{keyword.property}" filterMatchMode="contains" filterStyle="display: none;" sortBy="#{keyword.property.name}">
+                            <h:outputText value="#{keyword.property}"/>
+                        </p:column>
+
+                        <p:column id="sourceType" headerText="#{message.source}" filterBy="#{keyword.sourceType}" filterMatchMode="contains" filterStyle="display: none;" sortBy="#{keyword.sourceType.sourceType}">
+                            <h:outputText value="#{keyword.sourceType}"/>
+                        </p:column>
+
+                        <p:column id="language" headerText="#{message.languageSelector}" filterBy="#{keyword.locale}" filterMatchMode="contains" filterStyle="display: none;" sortBy="#{keyword.locale.name}">
+                            <h:outputText value="#{keyword.locale}"/>
+                        </p:column>
+
+                        <p:column headerText="#{message.editOptions}" style="width:10px;">
+                            <p:commandButton id="editButton" update=":keywordForm" oncomplete="editDialog.show()" icon="ui-icon-pencil" title="#{message.edit}">                                
+                                <f:setPropertyActionListener value="#{keyword}" target="#{keywordController.selectedKeyword}"/>
+                            </p:commandButton>
+                            <p:commandButton id="deleteButton" update=":keywordForm" oncomplete="confirmation.show()" icon="ui-icon-trash" title="#{message.delete}"
+                                             rendered="#{loginController.privileges.contains(bundle.DeleteKeyword)}">                                
+                                <f:setPropertyActionListener value="#{keyword}" target="#{keywordController.selectedKeyword}"/>
+                            </p:commandButton>
+                        </p:column>
+                        <f:facet name="footer">
+                        </f:facet>
+                    </p:dataTable>
+                </h:panelGroup>
+
+
+                <p:confirmDialog id="confirmDialog" message="#{message.sureYouWantToDelete} #{keywordController.selectedKeyword.keyword} ?" 
+                                 severity="alert" widgetVar="confirmation">
+                    <p:commandButton id="confirm" value="#{message.yes}" onclick="confirmation.hide()" actionListener="#{keywordController.deleteKeyword()}"
+                                     update="keywordForm" ajax="false"/>
+                    <p:commandButton id="decline" value="#{message.no}" onclick="confirmation.hide()"/>    
+                </p:confirmDialog>
+
+
+
+                <p:dialog id="dialog" header="#{message.addKeyword}" widgetVar="bwDialog" resizable="true"  height="220" width="400" 
+                          showEffect="clip" hideEffect="fold">
+                    <h:panelGrid id="display" columns="2">       
+                        <h:outputLabel value="#{message.chooseSource}" for="sourceDropDown" />
+                        <p:selectOneMenu id="sourceDropDown" value="#{keywordController.newKeyword.sourceType.sourceType}" style="width: 150px">  
+                            <f:selectItem itemLabel="#{message.chooseSource}" itemValue=""  />  
+                            <f:selectItems value="#{keywordController.sourceTypeList}"/>  
+                        </p:selectOneMenu>
+
+                        <h:outputLabel value="#{message.selectProperty}" for="propertyDropDown" />
+                        <p:selectOneMenu id="propertyDropDown" value="#{keywordController.newKeyword.property.name}" style="width: 150px">  
+                            <f:selectItem itemLabel="#{message.selectProperty}" itemValue=""  />  
+                            <f:selectItems value="#{keywordController.propertyList}"/>  
+                        </p:selectOneMenu>
+
+                        <h:outputLabel value="#{message.selectLanguage}" for="localeDropDown" />
+                        <p:selectOneMenu id="localeDropDown" value="#{keywordController.newKeyword.locale.name}" style="width: 150px">  
+                            <f:selectItem itemLabel="#{message.selectLanguage}" itemValue=""  />  
+                            <f:selectItems value="#{keywordController.localeList}"/>  
+                        </p:selectOneMenu>
+
+                        <h:outputLabel value="#{message.keyword}:" for="word" />
+                        <p:inputText id="word" value="#{keywordController.newKeyword.keyword}">          
+                        </p:inputText>    
+
+                        <p:commandButton action="#{keywordController.createNewKeyWord()}" ajax="false" value="#{message.save}" id="iconOnly" icon="ui-icon-disk">
+                            <f:param name="keyword" value="#{keywordController.newKeyword}"/>
+                        </p:commandButton>            
+                    </h:panelGrid>
+                </p:dialog>
+
+                <p:dialog id="editDialog" header="#{message.editKeyword}" widgetVar="editDialog" resizable="true" height="220" width="400" showEffect="clip" hideEffect="fold">
+                    <h:panelGrid id="displayEdit" columns="2" cellpadding="5">       
+                        <h:outputLabel value="#{message.chooseSource}" for="esourceDropDown" />
+                        <p:selectOneMenu id="esourceDropDown" value="#{keywordController.selectedKeyword.sourceType.sourceType}" style="width: 150px">  
+                            <f:selectItem itemLabel="#{message.chooseSource}" itemValue=""  />  
+                            <f:selectItems value="#{keywordController.sourceTypeList}"/>  
+                        </p:selectOneMenu>
+
+                        <h:outputLabel value="#{message.selectProperty}" for="epropertyDropDown" />
+                        <p:selectOneMenu id="epropertyDropDown" value="#{keywordController.selectedKeyword.property.name}" style="width: 150px">  
+                            <f:selectItem itemLabel="#{message.selectProperty}" itemValue=""  />  
+                            <f:selectItems value="#{keywordController.propertyList}"/>  
+                        </p:selectOneMenu>
+
+                        <h:outputLabel value="#{message.keyword}:"/>
+                        <h:outputLabel value="#{keywordController.selectedKeyword.keyword}"/>
+                        
+                        <p:commandButton actionListener="#{keywordController.editKeyword()}" update=":keywordForm" value="#{message.save}" id="eiconOnly" icon="ui-icon-disk"/>  
+                    </h:panelGrid>
+                </p:dialog>
+            </h:form>
+
+        </ui:composition>
+    </h:body>
+</html>

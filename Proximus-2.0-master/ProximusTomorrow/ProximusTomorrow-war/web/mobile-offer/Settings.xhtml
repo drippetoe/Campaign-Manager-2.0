@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+    <ui:define name="title">
+        <h:outputText value="#{message.mobileOfferSettings}"></h:outputText>
+    </ui:define>
+
+    <ui:define name="body">
+        <ui:composition template="/template.xhtml">
+            <style type="text/css">
+                .customPanelGrid table {
+                    border: 2px solid;
+                    border-color: lightgray;
+                }
+                .customPanelGrid td { 
+                    border-width: 1px;
+                    border-color: white;
+                }
+                .customPanelGrid tr {
+                    border-width: 0px;
+                    border-color: black;
+                }
+
+                .customPanelGridTimeChooser td {
+                    border-width: 0px;
+                }
+                .customPanelGridTimeChooser tr {
+                    border-width: 0px !important;
+                }
+
+                #selector {
+                    background: -moz-linear-gradient(center top , rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0)) repeat scroll 0% 0% rgb(196, 196, 196) !important;
+                    box-shadow: none;
+                }
+
+
+                .selectorButton .ui-button {
+                    background: -moz-linear-gradient(center top , rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0)) repeat scroll 0% 0% rgb(196, 196, 196) !important;
+                    box-shadow: none;
+                }
+                .selectorButton .ui-button.ui-state-active {
+                    background: -moz-linear-gradient(center top , rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0)) repeat scroll 0% 0% rgb(196, 196, 196) !important;
+                    box-shadow: none;
+                }
+
+            </style>  
+            <ui:define name="pageHeader">
+                <h:outputText value="#{message.mobileOfferSettings}"/>
+            </ui:define>
+
+            <h:form rendered="#{!loginController.privileges.contains(bundle.BrandAccess)}">
+                <h:outputText value="#{message.InsufficientPrivileges}" 
+                              style="font-family: Arial;font-size: 16px;color: red;"/>
+            </h:form>
+
+            <h:form id="formId" enctype="multipart/form-data" rendered="#{loginController.privileges.contains(bundle.BrandAccess)}">
+
+                <p:commandButton value="#{message.editGeoLocationSettings}" action="#{geoLocationSettingsController.prepareSettings()}" rendered="#{loginController.privileges.contains(bundle.SuperUser)}"/>
+                <p:panel header="#{message.subscriberSettings}" toggleable="true" closable="false" toggleSpeed="500" closeSpeed="2000" widgetVar="subscriberPanel" style="min-width:500px;">
+                    <p:panelGrid columns="2">
+                        <p:panel style="border-width:0px" styleClass="customPanelGrid">
+                            <p:panelGrid columns="2">
+                                <h:outputText value="#{message.liveGeoLocation}"/> 
+                                <p:inputText value="#{mobileOfferSettingsController.selectedMobileOfferSettings.liveGeoLocation}" disabled="true"/>
+                                <h:outputText value="#{message.shortCode}"/> 
+                                <p:inputText value="#{mobileOfferSettingsController.selectedMobileOfferSettings.shortCode.shortCode}" disabled="true"/>
+                                <h:outputText value="#{message.masterCampaignId}" rendered="#{loginController.privileges.contains(bundle.SuperUser)}"/> 
+                                <p:inputText value="#{mobileOfferSettingsController.selectedMobileOfferSettings.masterCampaignId}" disabled="true" rendered="#{loginController.privileges.contains(bundle.SuperUser)}"/>
+                                <h:outputText value="#{message.mobileOfferBalanceNumber}" rendered="#{loginController.privileges.contains(bundle.SuperUser)}"/>
+                                <p:inputText value="#{mobileOfferSettingsController.selectedMobileOfferSettings.mobileOfferBalance}" rendered="#{loginController.privileges.contains(bundle.SuperUser)}"/>
+                                <h:outputText value="#{message.mobileOfferHeader}"/> 
+                                <p:inputText value="#{mobileOfferSettingsController.selectedMobileOfferSettings.offerHeader}"/>
+                                <h:outputText value="#{message.mobileOfferFixedUrl}"/> 
+                                <p:inputText value="#{mobileOfferSettingsController.selectedMobileOfferSettings.offerUrl}" disabled="true"/>
+                                <h:outputText value="#{message.expirationMultiplier}" style="width:0.85em ! important"  rendered="#{loginController.privileges.contains(bundle.SuperUser)}"/>
+                                <p:inputText  value="#{mobileOfferSettingsController.selectedMobileOfferSettings.expirationMultiplier}" style="width:60px ! important" rendered="#{loginController.privileges.contains(bundle.SuperUser)}"/>
+
+                                <h:outputText value="#{message.maxLookupsPerMonth}" style="width:0.85em ! important" rendered="#{loginController.privileges.contains(bundle.SuperUser)}"/>
+                                <p:inputText  value="#{mobileOfferSettingsController.selectedMobileOfferSettings.maxLookupsPerMonth}" disabled="false" style="width:60px ! important" rendered="#{loginController.privileges.contains(bundle.SuperUser)}"/>
+                                <h:outputText value="#{message.maxLookupsPerSubscriberPerMonth}" style="width:0.85em ! important" rendered="#{loginController.privileges.contains(bundle.SuperUser)}"/>
+                                <p:inputText  value="#{mobileOfferSettingsController.selectedMobileOfferSettings.maxLookupsPerMonthPerSubscriber}" disabled="false" style="width:60px ! important" rendered="#{loginController.privileges.contains(bundle.SuperUser)}"/>
+                                <h:outputText value="#{message.minTimeBetweenLookups}" style="width:0.85em ! important" rendered="#{loginController.privileges.contains(bundle.SuperUser)}"/>
+
+                                <p:selectOneMenu id="minlookup" value="#{mobileOfferSettingsController.selectedMobileOfferSettings.minLookupWaitTime}" rendered="#{loginController.privileges.contains(bundle.SuperUser)}">
+                                    <f:selectItem itemLabel="#{message.selectInterval}" itemValue="3600000" />
+                                    <f:selectItem itemLabel="#{message.fifteenMin}" itemValue="#{15*60*1000}"/>  
+                                    <f:selectItem itemLabel="#{message.thirtyMin}" itemValue="#{30*60*1000}"/> 
+                                    <f:selectItem itemLabel="#{message.oneHour}" itemValue="#{1*60*60*1000}"/> 
+                                    <f:selectItem itemLabel="#{message.fourHours}" itemValue="#{4*60*60*1000}"/> 
+                                    <f:selectItem itemLabel="#{message.eightHours}" itemValue="#{8*60*60*1000}"/> 
+                                    <f:selectItem itemLabel="#{message.oneDay}" itemValue="#{24*60*60*1000}"/> 
+                                    <f:selectItem itemLabel="#{message.twoDays}" itemValue="#{48*60*60*1000}"/> 
+                                </p:selectOneMenu>
+
+                                <h:outputText value="#{message.maxTimeBetweenLookups}" style="width:0.85em ! important" rendered="#{loginController.privileges.contains(bundle.SuperUser)}"/>
+
+                                <p:selectOneMenu id="maxlookup" value="#{mobileOfferSettingsController.selectedMobileOfferSettings.maxLookupWaitTime}" rendered="#{loginController.privileges.contains(bundle.SuperUser)}">
+                                    <f:selectItem itemLabel="#{message.selectInterval}" itemValue="172800000" />
+                                    <f:selectItem itemLabel="#{message.fifteenMin}" itemValue="#{15*60*1000}"/>  
+                                    <f:selectItem itemLabel="#{message.thirtyMin}" itemValue="#{30*60*1000}"/> 
+                                    <f:selectItem itemLabel="#{message.oneHour}" itemValue="#{1*60*60*1000}"/> 
+                                    <f:selectItem itemLabel="#{message.fourHours}" itemValue="#{4*60*60*1000}"/> 
+                                    <f:selectItem itemLabel="#{message.eightHours}" itemValue="#{8*60*60*1000}"/> 
+                                    <f:selectItem itemLabel="#{message.oneDay}" itemValue="#{24*60*60*1000}"/> 
+                                    <f:selectItem itemLabel="#{message.twoDays}" itemValue="#{48*60*60*1000}"/> 
+                                </p:selectOneMenu>
+
+                                <h:outputText value="#{message.maxMessagesPerMonth}" style="width:0.85em ! important"/>
+                                <p:inputText  value="#{mobileOfferSettingsController.selectedMobileOfferSettings.maxMessagesPerMonth}" style="width:100px ! important"/>
+
+                                <h:outputText value="#{message.maxMessagesPerSubscriberPerMonth}" style="width:0.85em ! important"/>
+                                <p:inputText  value="#{mobileOfferSettingsController.selectedMobileOfferSettings.maxMessagesPerSubscriberPerMonth}" style="width:60px ! important"/>
+
+
+                                <h:outputText value="#{message.minTimeBetweenMessages}" style="width:0.85 em ! important"/>
+                                <p:selectOneMenu id="timeoff" value="#{mobileOfferSettingsController.selectedMobileOfferSettings.minTimeBetweenMessages}">
+                                    <f:selectItem itemLabel="#{message.selectInterval}" itemValue="172800000" />
+                                    <f:selectItem itemLabel="#{message.twelveHours}" itemValue="#{12*60*60*1000}"/>  
+                                    <f:selectItem itemLabel="#{message.oneDay}" itemValue="#{24*60*60*1000}"/> 
+                                    <f:selectItem itemLabel="#{message.twoDays}" itemValue="#{48*60*60*1000}"/> 
+                                    <f:selectItem itemLabel="#{message.threeDays}" itemValue="#{72*60*60*1000}"/> 
+                                    <f:selectItem itemLabel="#{message.fiveDays}" itemValue="#{120*60*60*1000}"/> 
+                                    <f:selectItem itemLabel="#{message.oneWeek}" itemValue="#{168*60*60*1000}"/> 
+                                    <f:selectItem itemLabel="#{message.twoWeeks}" itemValue="#{336*60*60*1000}"/> 
+                                </p:selectOneMenu>
+
+                                <h:outputText value="#{message.maximumDistanceFromGeofence}" style="width:0.85em ! important"/>
+                                <p:inputText  value="#{mobileOfferSettingsController.selectedMobileOfferSettings.maxDistance}" disabled="true" style="width:60px ! important"/>
+
+                                <h:outputText value="#{message.geoLocationZipcode}" style="width:0.85em ! important" rendered="#{loginController.privileges.contains(bundle.SuperUser)}"/>
+                                <p:inputText  value="#{mobileOfferSettingsController.selectedMobileOfferSettings.geoLocationZipCode}" disabled="false" style="width:60px ! important" rendered="#{loginController.privileges.contains(bundle.SuperUser)}"/>
+
+                            </p:panelGrid>
+
+
+
+                        </p:panel>
+
+                        <p:panel style="border-width:0px" styleClass="chartPanel">
+                            <p:lineChart id="slopeChart" value="#{mobileOfferSettingsController.slopeModel}" legendPosition="e"  
+                                         title="#{message.lookupsPerTime}" minX="0" minY="0"  xaxisLabel="#{message.timeXLabel}" yaxisLabel="#{message.distanceYLabel}" maxX="#{mobileOfferSettingsController.maxX}" maxY="#{mobileOfferSettingsController.maxY}" style="width: 400px; height:400px"/>
+                        </p:panel>  
+                    </p:panelGrid>
+                </p:panel>
+                <br />
+
+
+                <p:commandButton action="#{mobileOfferSettingsController.addToVisibleParts()}" 
+                                 disabled="#{mobileOfferSettingsController.visibleParts.size() gt 4 or !loginController.privileges.contains(bundle.SuperUser)}"
+
+                                 update=":formId" value="#{message.newDayPart}" icon="ui-icon-plus"/>
+                <p:panel header="#{message.dayParts}" toggleable="true" closable="false" toggleSpeed="500" closeSpeed="2000" widgetVar="dayPartPanel" style="min-width:500px;" rendered="#{loginController.privileges.contains(bundle.SuperUser)}">
+                    <p:panel style="border-width:0px" styleClass="customPanelGrid">
+                        <p:panelGrid columns="1" style="width:100%;border:0px" >
+
+                            <ui:repeat value="#{mobileOfferSettingsController.visibleParts}" var="rule" varStatus="status" > 
+                                <p:panelGrid styleClass="customPanelGrid" columns="1">
+                                    <p:panelGrid styleClass="customPanelGridTimeChooser" columns="6" style="width:100%; font-size: 0.85em ! important; border: 1px solid white !important;">
+                                        <h:outputLabel value="#{message.from}" for="hourStart" />
+                                        <p:spinner id="hourStart" value="#{rule.hourStart}" min="1" max="12" maxlength="2"/>
+
+                                        <p:selectBooleanButton value="#{rule.amStart}" onLabel="AM" offLabel="PM" style="border: 1px solid rgb(168, 168, 168); background: -moz-linear-gradient(center top , rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0)) repeat scroll 0% 0% rgb(196, 196, 196) !important;box-shadow: none; color:rgb(49,49,49)"/>  
+
+                                        <h:outputLabel value="#{message.to}" for="hourEnd" />
+                                        <p:spinner id="hourEnd" value="#{rule.hourEnd}" min="1" max="12"/>
+                                        <p:selectBooleanButton value="#{rule.amEnd}" onLabel="AM" offLabel="PM" style="border: 1px solid rgb(168, 168, 168); background: -moz-linear-gradient(center top , rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0)) repeat scroll 0% 0% rgb(196, 196, 196) !important;box-shadow: none; color:rgb(49,49,49)"/>                    
+                                    </p:panelGrid>
+                                    <p:panel style="border-width:0px">
+                                        <h:outputText id="selectedText" value="#{message.selectedDays} #{rule.selectedDays}" style="font-size: 0.80em"/>
+                                        <br />
+                                        <p:selectManyButton value="#{rule.selectedDaysOfWeek}" style="font-size: 0.80em ! important;float:left;">  
+                                            <f:selectItem itemLabel="#{message.monday}" itemValue="M"/>
+                                            <f:selectItem itemLabel="#{message.tuesday}" itemValue="T"/>
+                                            <f:selectItem itemLabel="#{message.wednesday}" itemValue="W"/>
+                                            <f:selectItem itemLabel="#{message.thursday}" itemValue="R"/>
+                                            <f:selectItem itemLabel="#{message.friday}" itemValue="F"/>
+                                            <f:selectItem itemLabel="#{message.saturday}" itemValue="S"/>
+                                            <f:selectItem itemLabel="#{message.sunday}" itemValue="U"/>
+                                            <p:ajax update="selectedText"/>
+                                        </p:selectManyButton>  
+                                        <p:commandButton action="#{mobileOfferSettingsController.removeFromVisibleParts(rule)}" update=":formId" value="#{message.remove}" icon="ui-icon-trash" style="font-size: 0.80em;float:right">
+                                            <f:param name="rule" value="#{rule}"/>
+                                        </p:commandButton>
+                                    </p:panel>
+                                </p:panelGrid>
+                                <br/>
+                            </ui:repeat>
+                        </p:panelGrid>
+                    </p:panel>
+                </p:panel>
+                <br/>
+
+
+                <p:panel header="#{message.customHelpAndStopMessages}" toggleable="true" closable="false" toggleSpeed="500" closeSpeed="2000" widgetVar="cutomMessagesPanel" style="min-width:500px;">
+                    <p:panelGrid id="contentPanel" columns="2" style="width:50%" styleClass="customPanelGrid">
+                        <p:panelGrid columns="1" styleClass="customPanelGrid">
+                            <p:column>                               
+                                <p:panel header="#{message.helpMessage}" toggleable="true" closable="false" toggleSpeed="500" closeSpeed="2000" widgetVar="helpPanel" style="min-width:500px;">
+                                    <p:editor id="helpEditor" value="#{mobileOfferSettingsController.selectedMobileOfferSettings.helpCustomMessage}"
+                                              widgetVar="helpEditorHtml" width="600" immediate="true" controls=""/>
+                                </p:panel>
+                                <p:panel header="#{message.stopMessage}" toggleable="true" closable="false" toggleSpeed="500" closeSpeed="2000" widgetVar="stopPanel" style="min-width:500px;">
+                                    <p:editor id="stopEditor" value="#{mobileOfferSettingsController.selectedMobileOfferSettings.stopCustomMessage}"
+                                              widgetVar="stopEditorHtml" width="600" immediate="true" controls=""/>
+                                </p:panel>
+                            </p:column>
+                        </p:panelGrid>    
+
+                    </p:panelGrid>
+
+                </p:panel>
+
+
+                <h:panelGrid columns="2" id="uploadPanel">
+                    <h:panelGrid columns="2">
+                        <p:column>
+                            <p:commandButton id="saveButton" update=":growl" action="#{mobileOfferSettingsController.save()}" value="#{message.save}" icon="ui-icon-disk" ajax="false"/>
+                            <p:commandButton action="/home.xhtml?faces-redirect=true" value="#{message.cancel}" icon="ui-icon-cancel" ajax="false"/>
+                            <p:commandButton action="#{mobileOfferSettingsController.prepareSettings()}" value="#{message.reset}"  update=":formId"/>
+                        </p:column>
+                    </h:panelGrid>
+                </h:panelGrid>
+
+            </h:form>
+            <br/>
+        </ui:composition>
+
+
+    </ui:define> 
+</html>

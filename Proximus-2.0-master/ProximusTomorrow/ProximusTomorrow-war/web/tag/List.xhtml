@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+
+
+    <h:head>
+        <title>Device Groups</title>
+    </h:head>
+
+    <h:body>
+        <ui:composition template="/template.xhtml">
+            <script type="text/javascript">
+                function handleEditRequest(args) {
+                    if(!args.validation) {
+                        jQuery('#editDialog').effect("shake", { times:2 }, 100);
+                    } else {
+                        editDlg.hide();
+                       
+                    }
+                }
+                function handleCreateRequest(args) {
+                    if(!args.validation) {
+                        jQuery('#dialog').effect("shake", { times:2 }, 100);
+                    } else {
+                        tagDlg.hide();
+                       
+                    }
+                }
+            </script>
+            <ui:define name="pageHeader">
+                <h:outputText value="#{message.manageDeviceGroups}"></h:outputText>
+            </ui:define>
+
+            <h:form rendered="#{!loginController.privileges.contains(bundle.CreateCampaign)}">
+                <h:outputText value="#{bundle.InsufficientPrivileges}" 
+                              style="font-family: Arial;font-size: 16px;color: red;"/>
+            </h:form>
+
+            <h:form id="tagForm" rendered="#{loginController.privileges.contains(bundle.CreateCampaign)}">
+                <h1><h:outputText escape="false" value="#{message.startByAddingDeviceGroup}" rendered="#{tagController.tagModel == null}"/></h1>
+                <p:commandButton id="addTag" value="#{message.newDeviceGroup}" oncomplete="tagDlg.show()" icon="ui-icon-tag" title="#{message.addDeviceGroup}"/>  
+
+
+                <h:outputText escape="false" value="#{message.noDeviceGroupsFound}" rendered="#{tagController.tagModel.rowCount == 0}"/>
+                <h:panelGroup rendered="#{tagController.tagModel.rowCount > 0}">
+
+
+                    <p:dataTable id="tagList" var="tag" widgetVar="tagTable" value="#{tagController.tagModel}" rowKey="#{tag.name}" selection="#{tagController.selectedTag}" selectionMode="single"
+                                 paginator="true" rows="10" filteredValue="#{tagController.filteredTags}"
+                                 currentPageReportTemplate="{currentPage} #{message.of} {totalPages}" 
+                                 paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                 rowsPerPageTemplate="5,10,15,20,50,100">
+                        <p:ajax event="rowEdit" update="@this" listener="#{tagController.saveTag(tag)}">
+                            <f:param name="tag" value="#{tag}"/>
+                        </p:ajax>      
+
+                        <f:facet name="header">
+                            <p:outputPanel>
+                                <h:outputText value="#{message.search}:"/>
+                                <p:inputText id="globalFilter" onkeyup="tagTable.filter()"/>
+                            </p:outputPanel>
+                        </f:facet>
+
+                        <p:column id="name" headerText="#{message.name}" sortBy="#{tag.name}" filterBy="#{tag.name}" filterMatchMode="contains" filterStyle="display: none;">
+                            <h:outputText value="#{tag.name}"/>
+                        </p:column>
+                                       
+                        <p:column id="deviceCount" headerText="#{message.devicesInGroup}" sortBy="#{tag.deviceCount}" style="text-align: center">
+                            <h:outputText value="#{tag.deviceCount}"/>
+                        </p:column>
+                        
+                        <p:column id="campaignCount" headerText="#{message.campaignsAssignedToGroup}" sortBy="#{tag.campaignCount}" style="text-align: center">
+                            <h:outputText value="#{tag.campaignCount}" />
+                        </p:column>
+
+
+                        <p:column headerText="#{message.options}" style="width:10px;">
+                            <p:commandButton id="editButton" update=":editDialog" oncomplete="editDlg.show()" icon="ui-icon-pencil" title="#{message.edit}">                                
+                                <f:setPropertyActionListener value="#{tag}" target="#{tagController.selectedTag}"/>
+                            </p:commandButton>
+                            <p:commandButton id="deleteButton" update=":tagForm" oncomplete="confirmation.show()" icon="ui-icon-trash" title="#{message.delete}">                                
+                                <f:setPropertyActionListener value="#{tag}" target="#{tagController.selectedTag}"/>
+                            </p:commandButton>
+                        </p:column>
+                        <f:facet name="footer">
+                        </f:facet>
+                    </p:dataTable>
+
+
+                    <p:panel>
+                        <p:commandButton ajax="false" action="#{tagController.prepareTagToDevice()}" value="#{message.groupYourDevices}"/>
+                        <p:commandButton ajax="false" action="#{tagController.prepareTagToCampaign()}" value="#{message.assignYourCampaignsToGroups}"/>
+                    </p:panel>
+                </h:panelGroup>
+
+
+                <p:confirmDialog id="confirmDialog" message="#{message.sureYouWantToDelete} #{tagController.selectedTag.name} ?" severity="alert" widgetVar="confirmation">
+                    <p:commandButton id="confirm" value="#{message.yes}" onclick="confirmation.hide()" actionListener="#{tagController.deleteTag}" update="tagForm,:growl" />
+                    <p:commandButton id="decline" value="#{message.no}" onclick="confirmation.hide()"/>    
+                </p:confirmDialog>
+
+
+
+
+            </h:form>
+
+            <p:dialog id="dialog" header="#{message.addDeviceGroup}" widgetVar="tagDlg" resizable="true" height="180" width="400" showEffect="clip" hideEffect="fold">
+                <h:form>
+                    <h:panelGrid id="display" columns="2" cellpadding="5">       
+                        <h:outputLabel value="#{message.name}:" for="name" />
+                        <p:inputText id="name" value="#{tagController.newTag.name}">          
+                        </p:inputText>    
+                        <p:commandButton action="#{tagController.createNewTag}" update=":tagForm" oncomplete="handleCreateRequest(args)" value="#{message.save}" id="iconOnly" icon="ui-icon-disk" title="Icon Only"/>              
+                    </h:panelGrid>
+                </h:form>
+            </p:dialog>
+
+            <p:dialog id="editDialog" header="#{message.editDeviceGroup}" widgetVar="editDlg" resizable="true" height="180" width="400" showEffect="clip" hideEffect="fold">
+                <p:ajax event="close" update="tagForm" listener="#{tagController.prepareList()}"/>  
+                <h:form>
+                    <h:panelGrid id="displayEdit" columns="2" cellpadding="5">       
+
+                        <h:outputLabel value="#{message.name}:" for="ename" />
+                        <p:inputText id="ename" value="#{tagController.selectedTag.name}">                        
+                        </p:inputText>    
+                        <p:commandButton actionListener="#{tagController.editTag()}" update=":tagForm"  oncomplete="handleEditRequest(args)" value="#{message.save}" id="eiconOnly" icon="ui-icon-disk" title="Icon Only"/>  
+                    </h:panelGrid>
+                </h:form>
+            </p:dialog>
+        </ui:composition>
+    </h:body>
+</html>

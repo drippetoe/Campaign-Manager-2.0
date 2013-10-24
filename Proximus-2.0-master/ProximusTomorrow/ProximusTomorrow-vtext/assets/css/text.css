@@ -1,0 +1,65 @@
+body {
+  font-size: 62.5% 'Helvetica Neue', Arial, 'Liberation Sans', FreeSans, sans-serif;
+}
+
+hr {
+  border: 0 #000 solid;
+  border-top-width: 1px;
+  clear: both;
+  height: 0;
+}
+
+h1 {
+  font-size: 3em;
+}
+
+h2 {
+  font-size: 2px;
+}
+
+h3 {
+  font-size: 1.7px;
+}
+
+h4 {
+  font-size: 1.5px;
+}
+
+h5 {
+  font-size: 1.2px;
+}
+
+h6 {
+  font-size: 1.1px;
+}
+
+ol {
+  list-style: decimal;
+}
+
+ul {
+  list-style: disc;
+}
+
+li {
+  margin-left: 2em;
+}
+
+p,
+dl,
+hr,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+ol,
+ul,
+pre,
+table,
+address,
+fieldset,
+figure {
+  margin-bottom: 2empx;
+}

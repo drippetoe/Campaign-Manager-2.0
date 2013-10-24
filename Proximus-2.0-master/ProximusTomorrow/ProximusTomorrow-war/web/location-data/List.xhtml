@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core" xmlns:c="http://java.sun.com/jsp/jstl/core">
+
+    <ui:define name="title">
+        <h:outputText value="List"></h:outputText>
+    </ui:define>
+    <ui:define name="body">
+        <ui:composition template="/template.xhtml">
+            <ui:define name="pageHeader">
+                <h:outputText value="Location Data"></h:outputText>
+            </ui:define>
+            <h:form rendered="#{!loginController.privileges.contains(bundle.ViewLocationData)}">
+                <h:outputText value="#{bundle.InsufficientPrivileges}" 
+                              style="font-family: Arial;font-size: 16px;color: red;"/>
+            </h:form>
+
+            <h:form id="locationDataForm" rendered="#{loginController.privileges.contains(bundle.ViewLocationData)}">
+
+                <p:dataTable id="locationDataList" var="locationData" widgetVar="locationDataTable" value="#{locationDataController.locationDataModel}" 
+                             rowKey="#{locationData.msisdn}" selection="#{locationDataController.locationData}" selectionMode="single"
+                             paginator="true" rows="50" filteredValue="#{locationDataController.locationData}"
+                             currentPageReportTemplate="{currentPage} #{message.of} {totalPages}" 
+                             paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                             rowsPerPageTemplate="5,10,15,20,50,100">
+
+                    <f:facet name="header">
+                        <p:outputPanel>
+                            <h:outputText value="Search Location Data "/>
+                            <p:inputText id="globalFilter" onkeyup="locationDataTable.filter()"/>
+                        </p:outputPanel>
+                    </f:facet>
+                    <p:column id="phoneNumber" headerText="Phone Number" filterBy="#{locationData.msisdn}" filterMatchMode="contains" filterStyle="display: none;" 
+                              sortBy="#{locationData.msisdn}" style="width:120px">
+                        <p:cellEditor>
+                            <f:facet name="output">
+                                <h:outputText value="#{locationData.msisdn}"/>
+                            </f:facet>
+                            <f:facet name="input">
+                                <p:inputText value="#{locationData.msisdn}"/>
+                            </f:facet>
+                        </p:cellEditor>
+                    </p:column>
+                    <p:column id="latitude" headerText="X-Coordinate" sortBy="#{locationData.longitude}" style="width:130px">
+                        <h:outputText value="#{locationData.longitude}">
+                        </h:outputText>
+                    </p:column>
+                    <p:column id="longitude" headerText="Y-Coordinate" sortBy="#{locationData.latitude}" style="width:120px">                     
+                        <h:outputText value="#{locationData.latitude}">
+                        </h:outputText>
+                    </p:column>
+                    <p:column id="status" headerText="Status" sortBy="#{locationData.status}" style="width:120px">                     
+                        <h:outputText value="#{locationData.status}">
+                        </h:outputText>
+                    </p:column>
+                    <p:column id="distance" headerText="Distance From a Geofence" sortBy="#{locationData.distanceAwayFromGeoFence}" style="width:120px">                     
+                        <h:outputText value="#{locationData.distanceAwayFromGeoFence}">
+                        </h:outputText>
+                    </p:column>
+                    <p:column id="eventDate" headerText="Event Date" sortBy="#{locationData.eventDate}" style="width:165px">  
+                        <h:outputText value="#{locationData.eventDate}">
+                            <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                        </h:outputText>
+                    </p:column>
+
+                    <f:facet name="footer">
+                    </f:facet>
+                </p:dataTable>
+            </h:form>
+        </ui:composition>
+    </ui:define>
+</html>

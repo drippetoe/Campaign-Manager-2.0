@@ -1,0 +1,134 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core" xmlns:c="http://java.sun.com/jsp/jstl/core">
+    <h:head>
+        <title>Retail Report</title>
+        <link rel="stylesheet" type="text/css" href="/ProximusTomorrow-war/faces/jsfcrud.css" />
+        <h:outputStylesheet name="css/jsfcrud.css"/>
+
+        <style>      
+            #pageRequestList th {
+                text-align: center !important;
+            }        
+            .textAlign {
+                text-align: left; width: 120px;
+            }      
+        </style>
+    </h:head>
+
+    <h:body>
+        <ui:composition template="/template.xhtml">
+            <ui:define name="title">
+                <h:outputText value="#{message.bluetoothSummaryReport}"></h:outputText>
+            </ui:define>
+            <ui:define name="pageHeader">
+                <h:outputText value="#{message.bluetoothSummaryReport}"></h:outputText>
+            </ui:define>
+
+            <h:form rendered="#{!loginController.privileges.contains(bundle.ViewBluetoothSummaryReport)}">
+                <h:outputText value="#{bundle.InsufficientPrivileges}" 
+                              style="font-family: Arial;font-size: 16px;color: red;"/>
+            </h:form>
+
+            <h:form id="retailForm" rendered="#{loginController.privileges.contains(bundle.ViewBluetoothSummaryReport)}">
+
+                <ui:insert name="body">
+                    <ui:include src="/reports/ReportTemplate.xhtml"/>
+                </ui:insert>
+                <p:panel id="configuration" header="#{message.configuration}" toggleable="true" closable="false" toggleSpeed="500" closeSpeed="2000" widgetVar="panel" style="min-width:500px;">  
+                    <h:panelGrid columns="3" cellpadding="2">
+                        <h:outputText value="#{message.startDate}:" />
+                        <p:calendar navigator="true" value="#{bluetoothSummaryReportController.startDate}" pattern="yyyy-MM-dd" showOn="button" id="startDate">
+                        </p:calendar>
+                        <h:outputText/>
+
+                        <h:outputText value="#{message.endDate}:" />
+                        <p:calendar navigator="true" value="#{bluetoothSummaryReportController.endDate}" pattern="yyyy-MM-dd" showOn="button" id="endDate">                       
+                        </p:calendar>
+                        <h:outputText/>
+                        <h:outputText value="#{message.campaign}:" />
+
+                        <p:selectOneMenu id="campaigndropdown" effect="fade" converter="#{campaignConverter}" value="#{bluetoothSummaryReportController.selectedCampaign}">  
+                            <f:selectItem itemLabel="#{message.selectCampaign}" itemValue="" />  
+                            <f:selectItems var="camp" itemLabel="#{camp.name}" itemValue="#{camp}"  value="#{bluetoothSummaryReportController.listCampaigns}"/>  
+                        </p:selectOneMenu>  
+                        <h:outputText value=""/>
+
+                        <h:outputText value="#{message.device}" />
+                        <p:selectOneMenu id="deviceDropdown" value="#{bluetoothSummaryReportController.selectedDevice.name}" effect="fade">  
+                            <f:selectItem itemLabel="#{message.selectDevice}" itemValue="" />  
+                            <f:selectItems value="#{bluetoothSummaryReportController.listDevices}"/>  
+                        </p:selectOneMenu> 
+                        <h:outputText value=""/>
+                    </h:panelGrid>
+
+                    <p:commandButton action="#{bluetoothSummaryReportController.updateInterface()}" value="#{message.updateReport}" ajax="false" update="printThis,pageRequestList"/>
+                </p:panel>
+
+
+                <br />
+
+                <p:panel id="printThis" rendered="#{loginController.privileges.contains(bundle.ViewRetailReport)}" header="#{message.summaryReportFor} '#{loginController.companyName}' #{message.from} #{bluetoothSummaryReportController.formattedStartDate} #{message.to} #{bluetoothSummaryReportController.formattedEndDate}">
+
+                    <div id="inner_center" align="center">
+
+                        <p:panelGrid columns="2">
+                            <p:column>
+
+                                
+                                <p:lineChart id="bluetoothSendChartModel" value="#{bluetoothSummaryReportController.bluetoothChartModel}" legendPosition="nw"  
+                                             title="#{message.bluetoothDownloads}" minY="0" maxY="#{bluetoothSummaryReportController.maxChartVal}" 
+                                             seriesColors="#{wifiSummaryReportController.seriesColors}" style="height:300px;width:400px"/> 
+                                
+                                
+                            </p:column>
+
+                            <p:column>
+                                <p:panelGrid id="bluetoothSendReport" style="width:500px"> 
+                                    <f:facet name="header">  
+                                        <p:row>  
+                                            <p:column colspan="2">#{message.bluetoothSendReport}</p:column>  
+                                        </p:row>
+                                    </f:facet>
+                                    <p:row>  
+                                        <p:column><h:outputText value="#{message.totalDevicesSeen}" /></p:column>
+                                        <p:column style="text-align:right;"><h:outputText value="#{bluetoothSummaryReportController.totalDevicesSeen}" /></p:column>
+                                    </p:row>
+                                    
+                                    <p:row>  
+                                        <p:column><h:outputText value="#{message.uniqueDevicesSeen}" /></p:column>
+                                        <p:column style="text-align:right;"><h:outputText value="#{bluetoothSummaryReportController.uniqueDevicesSeen}" /></p:column>
+                                    </p:row>
+
+                                    <p:row>  
+                                        <p:column><h:outputText value="#{message.uniqueDevicesAcceptingPush}" /></p:column>
+                                        <p:column style="text-align:right;"><h:outputText value="#{bluetoothSummaryReportController.uniqueDevicesAcceptingPush}" /></p:column>
+                                    </p:row>
+                                    
+                                    <p:row>  
+                                        <p:column><h:outputText value="#{message.uniqueDevicesDownloadingContent}" /></p:column>
+                                        <p:column style="text-align:right;"><h:outputText value="#{bluetoothSummaryReportController.uniqueDevicesDownloadingContent}" /></p:column>
+                                    </p:row>
+                                    
+                                    <p:row>  
+                                        <p:column><h:outputText value="#{message.totalContentDownloads}" /></p:column>
+                                        <p:column style="text-align:right;"><h:outputText value="#{bluetoothSummaryReportController.totalContentDownloads}" /></p:column>
+                                    </p:row>
+                                </p:panelGrid>
+                                <p:separator></p:separator>
+                                <p:commandButton id="downloadLinkWifiLog" value="#{message.downloadRawData}" ajax="false" icon="ui-icon-circle-triangle-s">
+                                    <p:fileDownload value="#{bluetoothSummaryReportController.bluetoothSendFile}">
+                                    </p:fileDownload>
+                                </p:commandButton>
+                            </p:column>
+
+                        </p:panelGrid>
+                    </div>
+
+                </p:panel>   
+            </h:form>
+        </ui:composition>
+    </h:body>
+</html>

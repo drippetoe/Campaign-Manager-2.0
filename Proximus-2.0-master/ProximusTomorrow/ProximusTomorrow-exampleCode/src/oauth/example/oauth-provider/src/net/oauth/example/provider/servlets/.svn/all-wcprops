@@ -1,0 +1,29 @@
+K 25
+svn:wc:ra_dav:version-url
+V 90
+/svn/!svn/ver/561/code/java/example/oauth-provider/src/net/oauth/example/provider/servlets
+END
+RequestTokenServlet.java
+K 25
+svn:wc:ra_dav:version-url
+V 115
+/svn/!svn/ver/561/code/java/example/oauth-provider/src/net/oauth/example/provider/servlets/RequestTokenServlet.java
+END
+EchoServlet.java
+K 25
+svn:wc:ra_dav:version-url
+V 107
+/svn/!svn/ver/561/code/java/example/oauth-provider/src/net/oauth/example/provider/servlets/EchoServlet.java
+END
+AuthorizationServlet.java
+K 25
+svn:wc:ra_dav:version-url
+V 116
+/svn/!svn/ver/561/code/java/example/oauth-provider/src/net/oauth/example/provider/servlets/AuthorizationServlet.java
+END
+AccessTokenServlet.java
+K 25
+svn:wc:ra_dav:version-url
+V 114
+/svn/!svn/ver/561/code/java/example/oauth-provider/src/net/oauth/example/provider/servlets/AccessTokenServlet.java
+END

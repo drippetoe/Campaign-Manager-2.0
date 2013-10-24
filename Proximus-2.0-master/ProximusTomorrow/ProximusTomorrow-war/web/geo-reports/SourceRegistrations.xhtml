@@ -1,0 +1,130 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core" xmlns:c="http://java.sun.com/jsp/jstl/core">
+    <h:head>
+        <title>Registration by Source</title>
+        <link rel="stylesheet" type="text/css" href="/ProximusTomorrow-war/faces/jsfcrud.css" />
+        <h:outputStylesheet name="css/jsfcrud.css"/>
+    </h:head>
+
+    <h:body>
+        <ui:composition template="/template.xhtml">
+            <ui:define name="title">
+                <h:outputText value="Registration by Source"></h:outputText>
+            </ui:define>
+            <ui:define name="pageHeader">
+                <h:outputText value="Registration by Source"></h:outputText>
+            </ui:define>
+
+            <h:form rendered="#{!loginController.privileges.contains(bundle.ViewDMARegistration)}">
+                <h:outputText value="#{bundle.InsufficientPrivileges}" 
+                              style="font-family: Arial;font-size: 16px;color: red;"/>
+            </h:form>
+
+            <h:form rendered="#{loginController.privileges.contains(bundle.ViewDMARegistration)}">
+                <ui:insert name="body">
+                    <ui:include src="/reports/ReportTemplate.xhtml"/>
+                </ui:insert>
+                <p:panel id="criteria" header="Report Criteria" toggleable="true" closable="false" toggleSpeed="500" closeSpeed="2000" widgetVar="panel" style="min-width:500px;">  
+                    <h:panelGrid columns="3" cellpadding="2">
+                        <h:outputText value="Today's Date:" />
+                        <p:calendar navigator="true" value="#{registrationReportController.today}" pattern="yyyy-MM-dd" showOn="button" id="startDate">
+                        </p:calendar>
+                        <h:outputText/>
+
+<!--                        <h:outputText value="End Date:" />
+                        <p:calendar navigator="true" value="#{registrationReportController.endDate}" pattern="yyyy-MM-dd" showOn="button" id="endDate">                       
+                        </p:calendar>
+                        <h:outputText/>-->
+                    </h:panelGrid>
+                </p:panel>
+
+                <p:commandButton rendered="#{loginController.privileges.contains(bundle.ViewDMARegistration)}" action="#{registrationReportController.updateDmaInterface()}" value="Update Report" update="printReport" ajax="false"/>
+                <p:commandButton rendered="#{loginController.privileges.contains(bundle.ViewDMARegistration)}" value="Print Report" type="button" icon="ui-icon-print" >  
+                    <p:printer target="printReport" />  
+                </p:commandButton>
+
+                <p:panel rendered="#{loginController.privileges.contains(bundle.ViewDMARegistration)}" id="printReport" >
+                    <div id="inner_center" align="center">
+
+                        <h:form id="form"> 
+                            <p:lineChart id="topFive" value="#{registrationReportController.topFiveSourceChartModel}" legendPosition="ne"  
+                                        title="Top Five Sources" min="0" max="#{registrationReportController.maxChartHeight}" style="height:300px;font-size:8pt"
+                                        seriesColors="#{registrationReportController.seriesColors}"/> 
+                            <p:separator/>              
+                            <p:dataTable id="summaries" var="rpt" value="#{registrationReportController.registrationBySourceSummaryReport}">  
+
+                                <f:facet name="header">  
+                                    Registrations by Source for #{loginController.companyName}  
+                                </f:facet>
+                                  <p:columnGroup type="header">  
+                                    <p:row>  
+                                        <p:column headerText="Keyword"/>
+                                        <p:column headerText="Source"/>
+                                        <p:column headerText="Source Type"/>
+                                        <p:column headerText="#{registrationReportController.registrationBySourceSummaryReport.previousThreeMonthsHeader}"/>
+                                        <p:column headerText="#{registrationReportController.registrationBySourceSummaryReport.previousTwoMonthsHeader}"/>
+                                        <p:column headerText="#{registrationReportController.registrationBySourceSummaryReport.previousMonthHeader}"/>
+                                        <p:column headerText="#{registrationReportController.registrationBySourceSummaryReport.currentMonthHeader}"/>
+                                        <p:column headerText="Percent Change"/>
+                                        
+                                   </p:row>  
+                                
+                                  </p:columnGroup>
+                                <p:subTable var="stats" value="#{rpt.getSourceRegistrationRowsAsList()}">  
+                                <p:column id="dmaHeader" headerText="Keyword">  
+                                    <h:outputText value="#{stats.keyword.keyword}" /> 
+                                </p:column>      
+                                
+                                <p:column id="sourceHeader" headerText="Source">  
+                                    <h:outputText value="#{stats.keyword.source}" />  
+                                </p:column>
+                                
+                                <p:column id="sourceTypeHeader" headerText="Source Type">  
+                                    <h:outputText value="#{stats.keyword.sourceType.sourceType}" />  
+                                </p:column>
+                                
+                                <p:column id="totalThreeMonthHeader" headerText="#{rpt.previousThreeMonthsHeader}" style="text-align:right">  
+                                    <h:outputText value="#{stats.totalRegistrationsPreviousThreeMonths}" />
+                                </p:column>
+                                 
+                                <p:column id="totalTwoMonthHeader" headerText="#{rpt.previousTwoMonthsHeader}" style="text-align:right">  
+                                    <h:outputText value="#{stats.totalRegistrationsPreviousTwoMonths}"/>
+                                </p:column>
+                                
+                                <p:column id="totalOneMonthHeader" headerText="#{rpt.previousMonthHeader}" style="text-align:right">  
+                                    <h:outputText value="#{stats.totalRegistrationsPreviousOneMonth}"/> 
+                              </p:column>
+                                
+                                <p:column id="totalCurrentHeader" headerText="#{rpt.currentMonthHeader}" style="text-align:right">  
+                                    <h:outputText value="#{stats.totalRegistrationsCurrentMonth}" />  
+                                </p:column>
+                                    
+                                <p:column id="percentHeader" headerText="Percent Change" style="text-align:right">  
+                                    <h:outputText value="#{stats.percentChange}%" />  
+                                </p:column>    
+                                
+                                <p:columnGroup type="footer">  
+                                        <p:row>  
+                                            <p:column footerText=""/>
+                                            <p:column footerText=""/> 
+                                            <p:column footerText="Totals:"/> 
+                                            <p:column footerText="#{registrationReportController.registrationBySourceSummaryReport.finalCountRegistrationsPreviousThreeMonths}" style="text-align:right"/> 
+                                            <p:column footerText="#{registrationReportController.registrationBySourceSummaryReport.finalCountRegistrationsPreviousTwoMonths}" style="text-align:right" /> 
+                                            <p:column footerText="#{registrationReportController.registrationBySourceSummaryReport.finalCountRegistrationsPreviousOneMonth}" style="text-align:right" /> 
+                                            <p:column footerText="#{registrationReportController.registrationBySourceSummaryReport.finalCountRegistrationsCurrentMonth}" style="text-align:right" />
+                                            <p:column footerText=""/>
+                                        </p:row>  
+                                    </p:columnGroup>
+                             </p:subTable>       
+                            </p:dataTable>  
+                        </h:form>  
+                        <p:separator></p:separator>
+                    </div>
+                </p:panel>
+            </h:form>        
+        </ui:composition>
+    </h:body>
+</html>

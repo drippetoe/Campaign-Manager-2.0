@@ -1,0 +1,89 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core">
+    <h:head>
+        <link rel="stylesheet" type="text/css" href="/ProximusTomorrow-war/faces/jsfcrud.css" />
+        <h:outputStylesheet name="css/jsfcrud.css"/>
+    </h:head>
+
+    <h:body>
+        <ui:composition template="/template.xhtml">
+            <ui:define name="title">
+                <h:outputText value="#{message.kazeInvoice}"></h:outputText>
+            </ui:define>
+            <ui:define name="pageHeader">
+                <h:outputText value="#{message.kazeInvoice}"></h:outputText>
+            </ui:define>
+
+            <h:form rendered="#{!loginController.privileges.contains(bundle.ViewBillingReport)}">
+                <h:outputText value="#{bundle.InsufficientPrivileges}" 
+                              style="font-family: Arial;font-size: 16px;color: red;"/>
+            </h:form>
+
+
+            <h:form id="billingForm" prependId="false" rendered="#{loginController.privileges.contains(bundle.ViewBillingReport)}">
+
+                <p:panel id="configuration" toggleable="true" header="#{message.configuration}" closable="false" toggleSpeed="500" closeSpeed="2000" widgetVar="panel" style="min-width:500px;">  
+                    <h:panelGrid columns="2" cellpadding="2">
+                        <h:outputText value="#{message.startDate}" />
+                        <p:calendar navigator="true" value="#{billingController.startDate}" pattern="yyyy-MM-dd" showOn="button" id="startDate">
+                        </p:calendar>
+
+                        <h:outputText value="#{message.endDate}" />
+                        <p:calendar navigator="true" value="#{billingController.endDate}" pattern="yyyy-MM-dd" showOn="button" id="endDate">                       
+                        </p:calendar>       
+
+                        <p:selectOneMenu id="companydropdown" value="#{billingController.selectedCompany.name}">  
+                            <f:selectItem itemLabel="#{message.selectCompany}" itemValue=""  />  
+                            <f:selectItems value="#{billingController.listCompanies}"/>  
+                        </p:selectOneMenu> 
+                        
+                        <p:commandButton update=":billingForm" action="#{billingController.updateBillingReport()}" value="#{message.updateReport}" ajax="false" /> 
+                    </h:panelGrid>
+                </p:panel>
+
+
+                <h:panelGroup >
+                    <p:dataTable id="kazeBillingTable" var="messageProfile" value="#{billingController.messageProfile}" 
+                                 paginator="true" rows="20"
+                                 currentPageReportTemplate="{currentPage} #{message.of} {totalPages}" 
+                                 paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                 rowsPerPageTemplate="5,10,15,20,50,100">  
+
+                        <f:facet name="header">
+                            <p:column colspan="2">
+                                <h:outputText value="#{message.kazeInvoice}"/>
+                            </p:column> 
+                        </f:facet>
+
+                        <p:column id="systemMessage" headerText="#{message.systemMessage}" style="width:200px">
+                            <h:outputText value="#{messageProfile.systemMessage}"/>
+                        </p:column>
+
+                        <p:column id="messageCount" headerText="#{message.timesSent}" sortBy="#{messageProfile.messageCount}" style="width:130px">
+                            <h:outputText value="#{messageProfile.messageCount}"/>
+                        </p:column>
+
+                        <p:column id="cost" headerText="#{message.cost}" sortBy="#{messageProfile.cost}" style="width:130px">
+                            <h:outputText value="$"/>
+                            <h:outputText value="#{messageProfile.cost}"/>
+                        </p:column>
+
+
+                        <p:columnGroup type="footer">  
+                            <p:row>  
+                                <p:column colspan="1" footerText="#{message.total}"  
+                                          style="text-align:right"  />  
+                                <p:column footerText="#{billingController.totalMessages}" />  
+                                <p:column footerText="&#36; #{billingController.kazeBill}" />  
+                            </p:row>  
+                        </p:columnGroup>  
+                    </p:dataTable>
+                </h:panelGroup>
+
+            </h:form>
+        </ui:composition>
+    </h:body>
+</html>

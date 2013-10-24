@@ -1,0 +1,151 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core" xmlns:c="http://java.sun.com/jsp/jstl/core">
+    <h:head>
+        <title>Geo-Fence Invoice</title>
+        <link rel="stylesheet" type="text/css" href="/ProximusTomorrow-war/faces/jsfcrud.css" />
+        <h:outputStylesheet name="css/jsfcrud.css"/>
+    </h:head>
+
+    <h:body>
+        <ui:composition template="/template.xhtml">
+            <ui:define name="title">
+                <h:outputText value="Geo-Fence Invoice"></h:outputText>
+            </ui:define>
+            <ui:define name="pageHeader">
+                <h:outputText value="Geo-Fence Invoice"></h:outputText>
+            </ui:define>
+
+            <h:form rendered="#{!loginController.privileges.contains(bundle.SuperUser)}">
+                <h:outputText value="#{bundle.InsufficientPrivileges}" 
+                              style="font-family: Arial;font-size: 16px;color: red;"/>
+            </h:form>
+
+            <h:form id="changeCompany">
+                <p:panelGrid columns="6">
+                    <f:facet name="header">
+                        <h:outputLabel value="Geo-Fence Invoice Criteria" for="companydropdown" />
+                    </f:facet>
+                    <p:selectOneMenu id="companydropdown" value="#{invoiceController.selectedGeoCompany.name}">
+                                    <f:selectItem itemLabel="Select Company" itemValue="" />  
+                        <f:selectItems value="#{invoiceController.geoFenceCompanies}"/>  
+                    </p:selectOneMenu>
+                    <h:outputText value="Start Date:"/>
+                    <p:calendar label="Start Date:"
+                                navigator="true" value="#{invoiceController.startDate}" pattern="yyyy-MM-dd" showOn="button" id="startDate">
+                        </p:calendar>
+                    <h:outputText value="End Date:" />
+                        <p:calendar navigator="true" value="#{invoiceController.endDate}" pattern="yyyy-MM-dd" showOn="button" id="endDate">                       
+                        </p:calendar>   
+                    <p:commandButton
+                        action="#{invoiceController.updateInvoice(invoiceController.selectedGeoCompany, invoiceController.startDate, invoiceController.endDate)}" 
+                        value="Update Invoice" ajax="false" update="@all">
+                            <f:param name="geoCompany" value="#{invoiceController.selectedGeoCompany}"/>
+                            <f:param name="invoiceStartDate" value="#{invoiceController.startDate}"/>
+                            <f:param name ="invoiceEndDate" value="#{invoiceController.endDate}"/>
+                    </p:commandButton>     
+                </p:panelGrid>
+          
+            </h:form>
+
+
+            <p:separator/>
+            <h:form id="invoiceForm" rendered="#{invoiceController.selectedGeoCompany != null}">
+                <p:panel id="geoInvoice" header="Invoice For: #{invoiceController.selectedGeoCompany.name}" toggleable="false" closable="false" toggleSpeed="500" closeSpeed="2000" widgetVar="panel" style="min-width:500px;">    
+                    <p:panelGrid style="margin-top:20px;text-align: right">  
+                        <f:facet name="header">
+                            
+                            <p:row>  
+                                <p:column colspan="4" style="font-weight: bold;">Invoice Item</p:column>  
+                                <p:column colspan="1" style="font-weight: bold;">Units</p:column> 
+                                <p:column colspan="1" style="font-weight: bold;">Price Per Unit</p:column>  
+                                <p:column colspan="1" style="font-weight: bold;">Total</p:column>  
+                            </p:row>  
+                        </f:facet>  
+
+                        <p:row>  
+                            <p:column style="font-weight: bold;" colspan ="4">Total Opt-ins This Period</p:column>  
+                            <p:column rowspan="1">
+                                <h:outputText value="#{invoiceController.optinsCount}" style="text-align:right" />
+                            </p:column>
+                            <p:column rowspan="1">
+                                <h:outputText value="#{invoiceController.pricingModel.subscriberFee}" style="text-align:right"/>
+                            </p:column>
+                            <p:column rowspan="1">
+                                <h:outputText value="#{invoiceController.totalSubscriberFee}" style="text-align:right"/>
+                            </p:column>
+                        </p:row>
+                        <p:row>  
+                            <p:column style="font-weight: bold;" colspan ="4">Total Properties This Period</p:column>  
+                            <p:column rowspan="1">
+                                <h:outputText value="#{invoiceController.propertiesCount}" style="text-align: right"/>
+                            </p:column>
+                            <p:column rowspan="1">
+                                <h:outputText value="#{invoiceController.pricingModel.monthlyPropertyFee}" style="text-align: right"/>
+                            </p:column>
+                            <p:column rowspan="1">
+                                <h:outputText value="#{invoiceController.totalPropertiesFee}" style="text-align: right"/>
+                            </p:column>
+                        </p:row>
+                        <p:row rendered="#{invoiceController.newPropertiesCount > 0}">  
+                            <p:column style="font-weight: bold;" colspan ="4">Total New Properties This Period</p:column>  
+                            <p:column rowspan="1">
+                                <h:outputText value="#{invoiceController.newPropertiesCount}" style="text-align: right"/>
+                            </p:column>
+                            <p:column rowspan="1">
+                                <h:outputText value="#{invoiceController.pricingModel.newPropertyFee}" style="text-align: right"/>
+                            </p:column>
+                            <p:column rowspan="1">
+                                <h:outputText value="#{invoiceController.totalNewPropertiesFee}" style="text-align: right"/>
+                            </p:column>
+                        </p:row>
+                        <f:facet name="footer">  
+                            <p:row>  
+                                <p:column colspan="6">Total:</p:column>
+                                <p:column colspan="1" style="text-align: right">$#{invoiceController.totalInvoice}</p:column>
+                            </p:row>
+                        </f:facet>  
+                    </p:panelGrid>   
+
+                </p:panel>
+                <p:separator></p:separator>
+                <p:panel id="otherInfo" header="Other Information" toggleable="false" closable="false" toggleSpeed="500" closeSpeed="2000" widgetVar="panel" style="min-width:500px;">    
+                    <p:panelGrid style="margin-top:20px">  
+                        <f:facet name="header">  
+                            <p:row>  
+                                <p:column colspan="6">Totals This Period:</p:column>  
+                            </p:row>
+                        </f:facet>  
+
+                        <p:row>
+                             <p:column style="font-weight: bold;" colspan ="5">Total Messages Sent This Period:</p:column>
+                             <p:column rowspan="1">
+                                 <h:outputText value="#{invoiceController.totalMessagesSent}"/>
+                            </p:column>
+                        </p:row>
+                        <p:row>
+                             <p:column style="font-weight: bold;" colspan ="5">Total Opt-outs:</p:column>
+                             <p:column rowspan="1">
+                                 <h:outputText value="#{invoiceController.totalOptOuts}"/>
+                            </p:column>
+                        </p:row> 
+                         <p:row>
+                             <p:column style="font-weight: bold;" colspan ="5">Total Active Subscribers:</p:column>
+                             <p:column rowspan="1">
+                                 <h:outputText value="#{invoiceController.totalActiveSubscribers}"/>
+                            </p:column>
+                        </p:row>   
+                             
+
+                    </p:panelGrid>
+                </p:panel>
+
+            </h:form>
+
+
+
+        </ui:composition>
+    </h:body>
+</html>

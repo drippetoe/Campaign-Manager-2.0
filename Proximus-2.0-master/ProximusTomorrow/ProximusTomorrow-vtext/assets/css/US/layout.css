@@ -1,0 +1,70 @@
+/*
+* English
+*/ 
+
+/*
+*/
+#content {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    right: 0px;
+    bottom: 0px;
+}
+#header {
+    position: relative;
+    top: 0px;
+    left: 0px;
+    right: 0px;
+    padding: 1em;
+    background-color: greenyellow;
+    border-bottom: 1px solid #999;
+}
+#ad1space {
+    position: relative;
+    left: 0px;
+    right: 0px;
+    background-color: red;
+    border-top: 1px solid #FFF;
+    border-bottom: 1px solid #999;
+
+}
+
+#main {
+    position: relative;
+    left: 0px;
+    right: 0px;
+    padding: 1em;
+    background-color: blueviolet;
+    border-top: 1px solid #FFF;
+
+}
+#footer {
+    position: absolute;
+    bottom: 0px;
+    left: 0px;
+    right: 0px;
+    height: 20px;
+    padding: 1em;
+    background-color: yellowgreen;
+}
+#offers {
+    width: 100%;
+}
+.retailer{
+    display: block;
+    width: 100%;
+    background-color: orange;
+    padding: 26px;
+}
+/*
+media querioes
+*/
+#container {
+    position: relative;
+    width: 80%;
+    height: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    background-color: #00a1dd;
+}

@@ -1,0 +1,35 @@
+K 25
+svn:wc:ra_dav:version-url
+V 88
+/svn/!svn/ver/1183/code/java/jmeter/core/test/src/test/resources/net/oauth/signature/pem
+END
+private_pkcs8.pem
+K 25
+svn:wc:ra_dav:version-url
+V 106
+/svn/!svn/ver/1183/code/java/jmeter/core/test/src/test/resources/net/oauth/signature/pem/private_pkcs8.pem
+END
+public_x509.pem
+K 25
+svn:wc:ra_dav:version-url
+V 104
+/svn/!svn/ver/1183/code/java/jmeter/core/test/src/test/resources/net/oauth/signature/pem/public_x509.pem
+END
+cert.csr
+K 25
+svn:wc:ra_dav:version-url
+V 97
+/svn/!svn/ver/1183/code/java/jmeter/core/test/src/test/resources/net/oauth/signature/pem/cert.csr
+END
+certificate_x509.pem
+K 25
+svn:wc:ra_dav:version-url
+V 109
+/svn/!svn/ver/1183/code/java/jmeter/core/test/src/test/resources/net/oauth/signature/pem/certificate_x509.pem
+END
+private_pkcs1.pem
+K 25
+svn:wc:ra_dav:version-url
+V 106
+/svn/!svn/ver/1183/code/java/jmeter/core/test/src/test/resources/net/oauth/signature/pem/private_pkcs1.pem
+END

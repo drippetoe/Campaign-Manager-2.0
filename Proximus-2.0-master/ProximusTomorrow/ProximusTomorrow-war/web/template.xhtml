@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+
+    <h:head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <title><ui:insert name="title"><h:outputText value="#{loginController.companyName}" /> | #{message.campaignManagerHeader}</ui:insert></title> 
+        <h:outputScript library="primefaces" name="jquery/jquery.js" target="head" />
+        <script src="#{loginController.googleMapsApi}" type="text/javascript" ></script>
+
+
+        <style>
+
+            .ui-growl-item-container {
+                background-color: red;
+            }
+
+            /*
+            .ui-messages-info, .ui-messages-warn, .ui-messages-error, .ui-messages-fatal {
+                position: absolute;
+                top: 10px;
+                right: 20px;
+                margin: 10px 0;
+                
+            }
+            */
+
+
+        </style>
+
+
+        <style type="text/css">
+            html {
+                overflow: scroll;
+            }
+
+            #branding
+            {
+                text-align: center;
+                position: absolute;
+                top:38px;
+                bottom:0px;
+                left: 5%;
+                right: 5%;
+                height:70px;
+                margin-left: auto;
+                margin-right: auto;
+                z-index: -1;
+            }
+
+            #container {
+                position: absolute;
+                top:50px;
+                bottom:0px;
+                left: 5%;
+                right: 5%;
+                margin-left: auto;
+                margin-right: auto;
+            }
+            #right-menu{
+                position:absolute;      
+                top: 0px;
+                right: 16px;  
+                float: right;
+                text-shadow: 2px 2px 2px #666;
+            }
+            .icon-inline{
+                display: inline-block;
+            }
+            #left-menu{
+                position:absolute;      
+                top: 0px;               
+                left: 0px;  
+                float: left;
+                text-shadow: 2px 2px 2px #666;
+
+            }
+            #menubar{
+                margin: 0;
+                position: absolute;
+                top: 0px;  
+                left: 0px;
+                width: 100%;
+                height: 30px;
+                background-color: #999;
+                border-bottom: 2px solid #969696;
+            }
+
+            .Current {
+                background-color: #78c283 !important;
+                background-image: none !important;
+                color: #000000 !important;
+            }
+            .Late {
+                background-color: #c4a979 !important;
+                background-image: none !important;
+                color: #000000 !important;
+            }
+            .Offline {
+                background-color: #c47979 !important;
+                background-image: none !important;
+                color: #000000 !important;
+            }
+            h1{
+                font-size:24px;
+                font-family: Arial
+            }
+
+        </style>
+
+        <style type="text/css">
+            #box {
+                position: absolute;
+                top:10%;
+                bottom:25%;
+                left:25%;
+                right:25%;
+                padding:2%;
+                margin:50px;
+            }
+            #insidebox {
+                position: absolute;
+                top:25%;
+                bottom:25%;
+                left:25%;
+                right:25%;
+            }
+
+            #footerbox {
+                position: absolute;
+                /*            top:25%;
+                            bottom:25%;*/
+                left:25%;
+                right:25%;
+            }
+        </style>
+
+        <style type="text/css">
+            .signin-box h2 {
+                font-size: 16px;
+                line-height: 17px;
+                height: 16px;
+                margin: 0 0 1.2em;
+                position: relative;
+            }
+            .signin-box h2 strong {
+                display: inline-block;
+                position: absolute;
+                right: 0;
+                top: 1px;
+                height: 190px;
+                width: 52px;
+                background: transparent url(images/Proximus-logo.png) no-repeat;
+
+            }
+            .signin-box div {
+                margin: 0 0 1.5em;
+            }
+            .signin-box label {
+                display: block;
+            }
+            .signin-box input[type=text],
+            .signin-box input[type=password] {
+                width: 100%;
+                height: 32px;
+                font-size: 15px;
+            }
+            .signin-box .email-label,
+            .signin-box .passwd-label {
+                font-weight: bold;
+                margin: 0 0 .5em;
+                display: block;
+                -webkit-user-select: none;
+                -moz-user-select: none;
+            }
+            .signin-box .reauth {
+                display: inline-block;
+                font-size: 15px;
+                height: 29px;
+                line-height: 29px;
+                margin: 0;
+            }
+            .signin-box label.remember {
+                display: inline-block;
+                vertical-align: top;
+                margin: 9px 0 0;
+            }
+            .signin-box .remember-label {
+                font-weight: normal;
+                color: #666;
+                line-height: 0;
+                padding: 0 0 0 .4em;
+                -webkit-user-select: none;
+                -moz-user-select: none;
+            }
+            .signin-box input[type=submit] {
+                margin: 0 1.5em 1.2em 0;
+                height: 32px;
+                font-size: 13px;
+            }
+            .signin-box ul {
+                margin: 0;
+            }
+            .signin-box .training-msg {
+                padding: .5em 8px;
+                background: #f9edbe;
+            }
+            .signin-box .training-msg p {
+                margin: 0 0 .5em;
+            }
+
+            .g-button-red {
+                border: 1px solid #b0281a;
+                color: #fff;
+                text-shadow: 0 1px rgba(0,0,0,0.3);
+                background-color: #c53727;
+            }
+            .g-button-red:hover {
+                border: 1px solid #b0281a;
+                color: #fff;
+                text-shadow: 0 1px rgba(0,0,0,0.3);
+                background-color: #c53727;
+                -webkit-box-shadow: 0 1px 1px rgba(0,0,0,0.2);
+                -moz-box-shadow: 0 1px 1px rgba(0,0,0,0.2);
+                -ms-box-shadow: 0 1px 1px rgba(0,0,0,0.2);
+                -o-box-shadow: 0 1px 1px rgba(0,0,0,0.2);
+            }
+            .g-button-red:active {
+                border: 1px solid #992a1b;
+                background-color: #b0281a;
+                -webkit-box-shadow: inset 0 1px 2px rgba(0,0,0,0.3);
+                -moz-box-shadow: inset 0 1px 2px rgba(0,0,0,0.3);
+            }
+
+            .g-button-red:focus:hover {
+                -webkit-box-shadow: inset 0 0 0 1px #fff, 0 1px 1px rgba(0,0,0,0.1);
+                -moz-box-shadow: inset 0 0 0 1px #fff, 0 1px 1px rgba(0,0,0,0.1);
+            }
+
+            .errormsg {
+                border: 1px solid #b0281a;
+                margin: .5em 0 0;
+                display: block;
+                color: #dd4b39;
+                line-height: 25px;
+                list-style-type: none;
+                list-style: none;
+                font-size: 20px;
+                font-style: oblique;
+            }
+
+        </style>
+
+        <script type="text/javascript">
+            PrimeFaces.locales['es'] = {
+                closeText: 'Cerrar',
+                prevText: 'Anterior',
+                nextText: 'Siguiente',
+                monthNames: ['Enero','Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
+                monthNamesShort: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun','Jul','Ago','Sep','Oct','Nov','Dic'],
+                dayNames: ['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'],
+                dayNamesShort: ['Dom','Lun', 'Mar', 'Mie', 'Jue', 'Vie', 'Sab'],
+                dayNamesMin: ['Dom','Lun','Mar','Mie','Jue','Vie','Sab'],
+                weekHeader: 'Semana',
+                firstDay: 1,
+                isRTL: false,
+                showMonthAfterYear: false,
+                yearSuffix: '',
+                timeOnlyTitle: 'Solo hora',
+                timeText: 'Tiempo',
+                hourText: 'Hora',
+                minuteText: 'Minuto',
+                secondText: 'Segundo',
+                currentText: 'Fecha actual',
+                ampm: false,
+                month: 'Mes',
+                week: 'Semana',
+                day: 'Día',
+                allDayText : 'Todo el día'
+            };
+        </script>
+
+
+    </h:head>
+
+    <h:body>
+        <f:view locale="#{loginController.locale}">
+
+            <f:event type="preRenderView" listener="#{loginController.checkLogin}"/> 
+
+            <div id="menubar" class="ui-widget-header">
+                <div id="left-menu">
+                    <h:form>
+                        <p:commandLink id="proximus"  style="text-decoration: none;">                    
+                            <span class="ui-icon ui-icon-home icon-inline"></span>#{loginController.companyName}
+                        </p:commandLink>
+
+                        <p:tieredMenu overlay="true"  trigger="proximus" position="dynamic" my="left top" at="left bottom" type="tiered" style="width: 200px">
+                            <p:menuitem value="#{message.home}" icon="ui-icon-home" url="/faces/home.xhtml"/>
+
+                            <p:submenu label="#{message.companies}" icon="ui-icon-folder-collapsed" rendered="#{loginController.privileges.contains(bundle.SuperUser)}">
+                                <p:menuitem icon="ui-icon-document" value="#{message.list}" ajax="false" action="#{companyController.prepareList()}"/>
+                            </p:submenu>
+
+                           
+
+                            <p:submenu label="#{message.devices}" icon="ui-icon-signal-diag" rendered="#{loginController.hasProximityLicense and loginController.privileges.contains(bundle.ViewDevice)}">
+                                <p:menuitem icon="ui-icon-document" value="#{message.list}" ajax="false" action="#{deviceController.prepareList()}" 
+                                            rendered="#{loginController.privileges.contains(bundle.ViewDevice)}"/>
+                                <p:menuitem icon="ui-icon-plus" value="#{message.add}" ajax="false" action="#{deviceController.prepareCreate()}" 
+                                            rendered="#{loginController.privileges.contains(bundle.SuperUser)}"/>
+                                <p:menuitem icon="ui-icon-arrowstop-1-n" value="#{message.import}" ajax="false" action="#{deviceImportController.prepareImport()}" 
+                                            rendered="#{loginController.privileges.contains(bundle.SuperUser)}"/>
+                                <p:menuitem icon="ui-icon-contact" value="#{message.contact}" ajax="false" action="#{contactController.prepareContactToDevice()}"
+                                            rendered="#{loginController.privileges.contains(bundle.ContactPrivilege)}"/>
+                                <p:menuitem icon="ui-icon-alert" value="#{message.limbo}" ajax="false" action="#{deviceInLimboController.prepareList()}" 
+                                            rendered="#{loginController.privileges.contains(bundle.SuperUser)}"/>
+                            </p:submenu>
+                            
+                              <p:submenu label="#{message.campaigns}" icon="ui-icon-bookmark" rendered="#{loginController.hasProximityLicense and loginController.privileges.contains(bundle.ViewCampaign)}">
+                                <p:menuitem icon="ui-icon-document" value="#{message.list}" ajax="false" action="#{campaignController.prepareList()}"
+                                            rendered="#{loginController.privileges.contains(bundle.ViewCampaign)}"/>
+                                <p:menuitem icon="ui-icon-plus" value="#{message.add}" ajax="false" action="#{campaignController.prepareCreate()}"
+                                            rendered="#{loginController.privileges.contains(bundle.CreateCampaign)}"/>
+                                <p:menuitem icon="ui-icon-wrench" value="#{message.contentGenerator}" ajax="false" action="#{campaignController.prepareGenerator()}" rendered="#{loginController.privileges.contains(bundle.CampaignWizard) and loginController.hasProximityLicense}"/>
+
+                            </p:submenu>
+
+                            <p:submenu label="#{message.groups}" icon="ui-icon-tag" rendered="#{loginController.hasProximityLicense and loginController.privileges.contains(bundle.CreateCampaign)}">
+                                <p:menuitem value="#{message.manageGroups}" icon="ui-icon-tag" ajax="false" action="#{tagController.prepareList()}"/>
+                                <p:menuitem value="#{message.assignToDevices}" icon="ui-icon-tag" ajax="false" action="#{tagController.prepareTagToDevice()}"/>
+                                <p:menuitem value="#{message.assignToCampaigns}" icon="ui-icon-tag" ajax="false" action="#{tagController.prepareTagToCampaign()}"/>
+                            </p:submenu>
+
+                            <p:submenu label="#{message.mobileOffers}" icon="ui-icon-comment" rendered="#{loginController.hasGeoFenceLicense and loginController.privileges.contains(bundle.ViewMobileOffer)}">
+                                <p:menuitem icon="ui-icon-document" value="#{message.listOffers}" ajax="false" action="#{mobileOfferAbstractController.prepareList()}"
+                                            rendered="#{loginController.privileges.contains(bundle.ViewMobileOffer)}"/>
+                                <p:menuitem icon="ui-icon-document" value="#{message.sendTestOffer}" ajax="false" action="#{sendMobileOfferController.prepareSend()}"
+                                            rendered="#{loginController.privileges.contains(bundle.SuperUser)}"/> 
+
+                                <p:menuitem value="#{message.globalSettings}" ajax="false"  icon="ui-icon-wrench" action="#{mobileOfferSettingsController.prepareSettings()}" rendered="#{loginController.privileges.contains(bundle.BrandAccess) and loginController.privileges.contains(bundle.EditMobileOffer)}"/>   
+                            </p:submenu>
+                            
+                             <p:submenu label="#{message.geofence}" icon="ui-icon-arrow-4-diag" rendered="#{loginController.hasGeoFenceLicense and loginController.privileges.contains(bundle.GeoFencePrivilege)}">
+                                <p:menuitem icon="ui-icon-home" value="#{message.manageGeofences}" ajax="false" action="#{geoFenceController.prepareCreate()}"
+                                            rendered="#{loginController.privileges.contains(bundle.GeoFencePrivilege)}"/>
+                                <p:menuitem icon="ui-icon-home" value="#{message.listGeofence}" ajax="false" action="#{geoFenceController.prepareList()}"
+                                            rendered="#{loginController.privileges.contains(bundle.GeoFencePrivilege)}"/>
+                                <p:separator />
+                                <p:menuitem icon="ui-icon-home" value="#{message.tracksubscriber}" ajax="false" action="#{locationDataController.prepareTracker()}"
+                                            rendered="#{loginController.privileges.contains(bundle.ViewLocationData)}"/>
+
+                                <p:menuitem icon="ui-icon-home" value="#{message.listTrackingData}" ajax="false" action="#{locationDataController.prepareList()}"
+                                            rendered="#{loginController.privileges.contains(bundle.ViewLocationData)}"/>
+                            </p:submenu>
+
+                            <p:submenu label="#{message.stores}" icon="ui-icon-comment" rendered="#{loginController.hasGeoFenceLicense and loginController.privileges.contains(bundle.GeoFenceSettings)}">
+                                <p:menuitem icon="ui-icon-document" value="#{message.dma}" ajax="false" action="#{dmaController.prepareList()}"
+                                            rendered="#{loginController.privileges.contains(bundle.GeoFenceSettings)}"/> 
+                                <p:menuitem icon="ui-icon-document" value="#{message.property}" ajax="false" action="#{propertyController.prepareList()}"
+                                            rendered="#{loginController.privileges.contains(bundle.GeoFenceSettings)}"/>    
+                                <p:menuitem icon="ui-icon-document" value="#{message.retailer}" ajax="false" action="#{retailerController.prepareList()}"
+                                            rendered="#{loginController.privileges.contains(bundle.RetailerPrivilege)}"/>    
+                                <p:menuitem icon="ui-icon-document" value="#{message.category}" ajax="false" action="#{categoryController.prepareList()}"
+                                            rendered="#{loginController.privileges.contains(bundle.BrandCategory)}"/>
+                            </p:submenu>
+
+                            <p:submenu label="#{message.keywords}" icon="ui-icon-comment" rendered="#{loginController.hasGeoFenceLicense and loginController.privileges.contains(bundle.GeoFenceSettings)}">
+                                <p:menuitem icon="ui-icon-document" value="#{message.keywords}" ajax="false" action="#{keywordController.prepareList()}"
+                                            rendered="#{loginController.privileges.contains(bundle.GeoFenceSettings)}"/>
+                                <p:menuitem icon="ui-icon-document" value="#{message.sources}" ajax="false" action="#{sourceTypeController.prepareList()}"
+                                            rendered="#{loginController.privileges.contains(bundle.SuperUser)}"/>   
+                                <p:menuitem icon="ui-icon-cancel" value="#{message.bannedWords}" ajax="false" action="#{bannedWordController.prepareList()}"
+                                            rendered="#{loginController.privileges.contains(bundle.GeoFenceSettings)}"/>
+                            </p:submenu>
+
+                          
+                            <p:submenu label="#{message.reportsInternal}" icon="ui-icon-disk" rendered="#{loginController.privileges.contains(bundle.SuperUser) and loginController.hasGeoFenceLicense}">
+                                <p:menuitem icon="ui-icon-document" value="#{message.geoFenceDashboard}"    rendered="#{loginController.privileges.contains(bundle.SuperUser) and loginController.hasGeoFenceLicense}"  ajax="false" action="#{dashboardController.prepareDashboard()}"/>
+                                <p:menuitem icon="ui-icon-document" value="#{message.geoFenceInvoice}"    rendered="#{loginController.privileges.contains(bundle.SuperUser) and loginController.hasGeoFenceLicense}"  ajax="false" action="#{invoiceController.prepareInvoice()}"/>
+                                <p:menuitem icon="ui-icon-document" value="#{message.subscriberStatistics}"    rendered="#{loginController.privileges.contains(bundle.SuperUser) and loginController.hasGeoFenceLicense}"  ajax="false" action="#{subscriberStatsController.prepareStatistics()}"/>
+                                <p:menuitem icon="ui-icon-document" value="#{message.subscriberProfiler}"    rendered="#{loginController.privileges.contains(bundle.SuperUser) and loginController.hasGeoFenceLicense}"  ajax="false" action="#{subscriberProfileController.prepareProfile()}"/>
+                                <p:menuitem icon="ui-icon-document" value="#{message.statusChecker}"    rendered="#{loginController.privileges.contains(bundle.SuperUser) and loginController.hasGeoFenceLicense}"  ajax="false" action="#{subscriberStatusReportController.prepareList()}"/>
+                                <p:menuitem icon="ui-icon-document" value="#{message.kazeInvoice}"    rendered="#{loginController.privileges.contains(bundle.SuperUser) and loginController.hasGeoFenceLicense}"  ajax="false" action="#{billingController.prepareBillingReport()}"/>
+                            </p:submenu>
+                            <p:submenu label="#{message.reports}" icon="ui-icon-disk" rendered="#{loginController.privileges.contains(bundle.ViewReports)}">
+                                <p:menuitem icon="ui-icon-document" value="#{message.wifiSummaryReport}" rendered="#{loginController.privileges.contains(bundle.ViewWifiSummaryReport) and loginController.hasProximityLicense}"              ajax="false" action="#{wifiSummaryReportController.prepareList()}"/>
+                                <p:menuitem icon="ui-icon-document" value="#{message.bluetoothSummaryReport}" rendered="#{loginController.privileges.contains(bundle.ViewBluetoothSummaryReport) and loginController.hasProximityLicense}"              ajax="false" action="#{bluetoothSummaryReportController.prepareList()}"/>
+                                <p:menuitem icon="ui-icon-document" value="#{message.userProfile}" rendered="#{loginController.privileges.contains(bundle.ViewUserProfileReport) and loginController.hasProximityLicense}"         ajax="false" action="#{userProfileReportController.prepareList()}"/>
+                                <p:menuitem icon="ui-icon-document" value="#{message.mostPopularServers}" rendered="#{loginController.privileges.contains(bundle.ViewMostPopularServersReport) and loginController.hasProximityLicense}"  ajax="false" action="#{mostPopularServersReportController.renderMostPopularServers()}"/>
+                                <p:menuitem icon="ui-icon-document" value="#{message.registrations}" rendered="#{loginController.privileges.contains(bundle.ViewGeoMessageSummary) and loginController.hasGeoFenceLicense}"  ajax="false" action="#{keywordRegistrationReportController.prepareKeywordRegistrationReport()}"/>
+                                <p:menuitem icon="ui-icon-document" value="Property Stats" rendered="#{loginController.privileges.contains(bundle.ViewGeoMessageSummary) and loginController.hasGeoFenceLicense}"  ajax="false" action="#{propertyStatisticsController.prepareList()}"/>
+<!--                                <p:menuitem icon="ui-icon-document" value="# {message.sentOffers}" rendered="# {loginController.privileges.contains(bundle.ViewGeoMessageSummary) and loginController.hasGeoFenceLicense}"  ajax="false" action="# {propertyStatisticsController.prepareMessagesSentAndActiveUsers()}"/>-->
+                                <p:menuitem icon="ui-icon-document" value="#{message.carrierProfiler}"    rendered="#{loginController.privileges.contains(bundle.ViewCarrierProfileReport) and loginController.hasGeoFenceLicense}"  ajax="false" action="#{carrierProfileController.prepareProfile()}"/>
+                            </p:submenu>
+
+                            <!--                        <p:submenu label="Software" icon="ui-icon-arrowrefresh-1-n" rendered="# {loginController.privileges.contains(bundle.SuperUser)}">
+                                                        <p:menuitem icon="ui-icon-plus" value="Create" ajax="false" action="# {softwareReleaseController.prepareCreate()}"/>
+                                                    </p:submenu>-->
+                        </p:tieredMenu>
+                    </h:form>
+                </div>
+
+
+                <div id="right-menu"> 
+                    <h:form>
+                        <p:commandLink  id="settings" style="text-decoration: none;">
+                            #{message.welcome}, #{loginController.first_name} #{loginController.last_name}
+                            <span class="ui-icon ui-icon-gear icon-inline"></span>                            
+                        </p:commandLink>
+                        <p:tieredMenu overlay="true"  trigger="settings" position="dynamic" my="right top" at="right bottom" type="tiered" style="width: 200px">
+                            <p:menuitem value="#{message.manageRoles}" icon="ui-icon-link" ajax="false" action="#{roleController.prepareRoleToUser()}"
+                                        rendered="#{loginController.privileges.contains(bundle.RolePrivilege)}"/>
+                            <p:menuitem value="#{message.managePrivileges}" icon="ui-icon-link" ajax="false" action="#{roleController.preparePrivilegeToRole()}"
+                                        rendered="#{loginController.privileges.contains(bundle.SuperUser)}"/>
+                            <p:menuitem value="#{message.manageUserProperty}" icon="ui-icon-link" ajax="false" action="#{userController.prepareUserToProperty()}"
+                                        rendered="#{loginController.privileges.contains(bundle.RolePrivilege) and loginController.hasGeoFenceLicense}"/>
+                            <p:menuitem value="#{message.manageUsers}" icon="ui-icon-document" ajax="false" action="#{userController.prepareList()}" 
+                                        rendered="#{loginController.privileges.contains(bundle.UserPrivilege)}"/>
+                            <p:separator rendered="#{loginController.privileges.contains(bundle.UserPrivilege)}"/>
+                            <p:menuitem value="#{message.settings}" action="#{userController.setUserSettings(loginController.username)}" ajax="false"  icon="ui-icon-person"/> 
+                            <p:menuitem icon="ui-icon-wrench" value="#{message.pubNubSettings}" ajax="false" action="#{pubNubController.prepareList()}" 
+                                        rendered="#{loginController.privileges.contains(bundle.SuperUser)}"/>
+                            <p:menuitem icon="ui-icon-wrench" value="#{message.eventSubscription}" ajax="false" action="#{eventSubscriptionController.prepareEventSubscription()}" 
+                                        rendered="#{loginController.privileges.contains(bundle.SuperUser)}"/>
+                            <p:separator/>
+
+                            <p:menuitem value="#{message.logout}" icon="ui-icon-key"  action="#{loginController.logout}" ajax="false"/>
+                        </p:tieredMenu>
+                    </h:form>
+                </div> 
+            </div>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <div id="branding">
+
+                <h:commandButton id="brandingImageDefault" image="/faces/images/Proximus-logo-sm.png" title ="Proximus Mobility, LLC." disabled="true" rendered="#{!loginController.hasCustomCompanyLogo()}"/>  
+                <h:commandButton id="brandingImage" image="#{loginController.getLogoUrl()}" title ="Proximus Mobility, LLC." disabled="true" rendered="#{loginController.hasCustomCompanyLogo()}"/>
+                <br />
+
+            </div>
+
+            <div id="container">
+                <h1><ui:insert class="pageHeadercss" name="pageHeader">Header</ui:insert></h1> 
+                <p:growl id="growl" showDetail="true" sticky="false" life="3500" severity="warn,error" showSummary="false" autoUpdate="true"/> 
+                <br />
+                <p:messages id="successInfo" severity="info" autoUpdate="true"/>
+                <ui:insert/>
+            </div>
+
+        </f:view>
+    </h:body>
+</html>

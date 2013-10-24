@@ -1,0 +1,383 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+    <ui:define name="title">
+        <h:outputText value="#{message.createMobileOffer}"></h:outputText>
+    </ui:define>
+
+
+    <h:body id="offerBody">
+        <ui:composition template="/template.xhtml">
+            <script type="text/javascript">
+                function insertInEditor(xhr, status, args) { 
+                    editorHtml.editor.updateTextArea();
+                    editorHtml.editor.execCommand('inserthtml', args.macro, true);
+                }
+            </script>
+
+
+            <script type="text/javascript">     
+                var interval = setTimeout('setInterval("updateEditor()", 500)', 3500);
+                function updateEditor(){
+                    editorHtml.editor.updateTextArea();
+                    PrimeFaces.ajax.AjaxRequest({formId:'formId',update:'charsRemaining', source:'formId'});
+                    PrimeFaces.ajax.AjaxRequest({formId:'formId',update:'saveButton', source:'formId'});
+                }
+            </script>
+
+            <style type="text/css">
+                .customPanelGrid table {
+                    border: 1px solid;
+                }
+                .customPanelGrid td { 
+                    border-width: 1px;
+                    border-color: white;
+                }
+                .customPanelGrid tr {
+                    border-width: 0px;
+                    border-color: black;
+                }
+
+                .customPanelGridTimeChooser td {
+                    border-width: 0px;
+                }
+                .customPanelGridTimeChooser tr {
+                    border-width: 0px !important;
+                }
+
+                #selector {
+                    background: -moz-linear-gradient(center top , rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0)) repeat scroll 0% 0% rgb(196, 196, 196) !important;
+                    box-shadow: none;
+                }
+                .selectorButton .ui-button {
+                    background: -moz-linear-gradient(center top , rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0)) repeat scroll 0% 0% rgb(196, 196, 196) !important;
+                    box-shadow: none;
+                }
+                .selectorButton .ui-button.ui-state-active {
+                    background: -moz-linear-gradient(center top , rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0)) repeat scroll 0% 0% rgb(196, 196, 196) !important;
+                    box-shadow: none;
+                }
+
+                .ui-picklist .ui-picklist-list {
+                    width: 100%;
+                }
+
+
+            </style>  
+
+            <ui:define name="pageHeader" rendered="#{mobileOfferMultipleStoreController.hasCategories()}">
+                <h:outputText value="#{message.createMobileOffer}"/>
+            </ui:define>
+
+            <ui:define name="pageHeader" rendered="#{!mobileOfferMultipleStoreController.hasCategories()}">
+                <br />
+                <h1><h:outputText escape="false" value="#{message.noCategoriesError}" rendered="#{!mobileOfferMultipleStoreController.hasCategories()}"/></h1>
+                <h1><h:outputText escape="false" value="#{message.noCategoriesError2}" rendered="#{!mobileOfferMultipleStoreController.hasCategories() and loginController.privileges.contains(bundle.BrandCategory) }"/></h1>
+            </ui:define>
+
+            <h:form rendered="#{loginController.privileges.contains(bundle.EditMobileOffer) and !mobileOfferMultipleStoreController.hasCategories() and loginController.privileges.contains(bundle.BrandCategory)}">
+                <p:commandButton icon="ui-icon-plus" value="#{message.addACategory}" ajax="false" action="#{categoryController.prepareList()}" rendered="#{loginController.privileges.contains(bundle.EditMobileOffer)}"/>
+            </h:form>
+            <h:form rendered="#{!loginController.privileges.contains(bundle.EditMobileOffer)}">
+                <h:outputText value="#{bundle.InsufficientPrivileges}" 
+                              style="font-family: Arial;font-size: 16px;color: red;"/>
+            </h:form>
+
+            <h:form id="dayPartForm" prependId="false" enctype="multipart/form-data" rendered="#{loginController.privileges.contains(bundle.EditMobileOffer) and mobileOfferMultipleStoreController.hasCategories()}">
+                <p:selectBooleanButton value="#{mobileOfferMultipleStoreController.overwriteDayParts}" onLabel="#{message.removeCustomDayParts}" offLabel="#{message.addCustomDayParts}"> 
+                    <p:ajax update="dayPartForm"/>
+                </p:selectBooleanButton>
+                <br />
+                <p:panel header="#{message.dayParts}" toggleable="true" closable="false" toggleSpeed="500" closeSpeed="2000" widgetVar="dayPartPanel" style="min-width:500px;" rendered="#{mobileOfferMultipleStoreController.overwriteDayParts}">   
+                    <p:commandButton action="#{mobileOfferMultipleStoreController.addToVisibleParts()}" disabled="#{mobileOfferMultipleStoreController.visibleParts.size() gt 4}"  update=":dayPartForm" value="#{message.newDayPart}" icon="ui-icon-plus"/>
+                    <p:panelGrid id="dates" columns="1" style="width:100%">
+                        <f:facet name="header">
+                            <h:outputLabel value="#{message.dayParts}"/>
+                        </f:facet>
+
+                        <p:panel style="border-width:0px" styleClass="customPanelGrid">
+
+                            <p:panelGrid columns="1" style="width:100%;border:0px" >
+
+                                <ui:repeat value="#{mobileOfferMultipleStoreController.visibleParts}" var="rule" varStatus="status" > 
+                                    <p:panelGrid styleClass="customPanelGrid" columns="1">
+                                        <p:panelGrid styleClass="customPanelGridTimeChooser" columns="6" style="width:100%; font-size: 0.85em ! important; border: 1px solid white !important;">
+                                            <h:outputLabel value="#{message.from}" for="hourStart" />
+                                            <p:spinner id="hourStart" value="#{rule.hourStart}" min="1" max="12" maxlength="2">
+                                                <p:ajax update=":dayPartForm"/>
+                                            </p:spinner>
+
+                                            <p:selectBooleanButton value="#{rule.amStart}" onLabel="AM" offLabel="PM" style="border: 1px solid rgb(168, 168, 168); background: -moz-linear-gradient(center top , rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0)) repeat scroll 0% 0% rgb(196, 196, 196) !important;box-shadow: none; color:rgb(49,49,49)">
+                                                <p:ajax update=":dayPartForm"/>
+                                            </p:selectBooleanButton>  
+
+                                            <h:outputLabel value="#{message.to}" for="hourEnd" />
+                                            <p:spinner id="hourEnd" value="#{rule.hourEnd}" min="1" max="12">
+                                                <p:ajax update=":dayPartForm"/>
+                                            </p:spinner>
+                                            <p:selectBooleanButton value="#{rule.amEnd}" onLabel="AM" offLabel="PM" style="border: 1px solid rgb(168, 168, 168); background: -moz-linear-gradient(center top , rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0)) repeat scroll 0% 0% rgb(196, 196, 196) !important;box-shadow: none; color:rgb(49,49,49)">
+                                                <p:ajax update=":dayPartForm"/>
+                                            </p:selectBooleanButton>                    
+                                        </p:panelGrid>
+                                        <p:panel style="border-width:0px">
+                                            <h:outputText id="selectedText" value="#{message.selectedDays} #{rule.selectedDays}" style="font-size: 0.80em"/>
+                                            <br />
+                                            <p:selectManyButton value="#{rule.selectedDaysOfWeek}" style="font-size: 0.80em ! important;float:left;">  
+                                                <f:selectItem itemLabel="#{message.monday}" itemValue="M"/>
+                                                <f:selectItem itemLabel="#{message.tuesday}" itemValue="T"/>
+                                                <f:selectItem itemLabel="#{message.wednesday}" itemValue="W"/>
+                                                <f:selectItem itemLabel="#{message.thursday}" itemValue="R"/>
+                                                <f:selectItem itemLabel="#{message.friday}" itemValue="F"/>
+                                                <f:selectItem itemLabel="#{message.saturday}" itemValue="S"/>
+                                                <f:selectItem itemLabel="#{message.sunday}" itemValue="U"/>
+                                                <p:ajax update="selectedText"/>
+                                            </p:selectManyButton>  
+                                            <p:commandButton action="#{mobileOfferMultipleStoreController.removeFromVisibleParts(rule)}" value="#{message.remove}" icon="ui-icon-trash" style="font-size: 0.80em;float:right" ajax="false">
+                                                <f:param name="rule" value="#{rule}"/>      
+                                            </p:commandButton>
+                                        </p:panel>
+                                    </p:panelGrid>
+                                    <br/>
+                                </ui:repeat>
+                            </p:panelGrid>
+                        </p:panel>
+                    </p:panelGrid>
+                </p:panel>
+                <br/>
+            </h:form>
+
+
+            <h:form id="dateSettings" prependId="false" enctype="multipart/form-data" rendered="#{loginController.privileges.contains(bundle.EditMobileOffer) and mobileOfferMultipleStoreController.hasCategories()}">
+
+                <p:panelGrid columns="2" style="width:100%">
+                    <f:facet name="header">
+                        <h:outputText value="#{message.generalSettings}"/>
+                    </f:facet> 
+
+                    <p:column>
+                        <h:outputLabel value="#{message.name}*" for="name" />
+                        <br/>
+                        <p:tooltip for="name" value="#{message.mobileOfferNameTooltip}" />
+                        <p:inputText id="name" value="#{mobileOfferMultipleStoreController.createdMobileOffer.name}"   required="false" requiredMessage="#{message.mobileOfferNameRequired}">
+                            <f:ajax execute="@this" />
+                            <p:ajax event="change" update=":formId"/>
+                        </p:inputText> 
+                    </p:column>               
+                    <p:column>
+                        <h:outputLabel value="#{message.startDate}" for="startDate" />
+                        <br/>
+                        <p:tooltip for="startDate" value="#{message.startDateTooltip}" />
+                        <p:calendar id="startDate" value="#{mobileOfferMultipleStoreController.createdMobileOffer.startDate}" 
+                                    navigator="true"
+                                    pattern="yyyy-MM-dd" 
+                                    showOn="button">
+                            <p:ajax process="@this" event="dateSelect" />
+                        </p:calendar>
+                    </p:column>
+                    <h:form id="langForm">
+                        <p:column>
+
+                            <h:outputLabel value="#{message.languageSelector}" for="lang"/>
+                            <br/>
+
+                            <p:selectOneMenu id="lang" value="#{mobileOfferMultipleStoreController.selectedLanguage}" converter="#{languageSelectorConverter}" panelStyle="width:220px"  
+                                             effect="fade" var="s" style="width:160px"  filter="true" filterMatchMode="startsWith">  
+                                <f:selectItem itemLabel="#{message.selectLanguage}" itemValue="#{mobileOfferMultipleStoreController.selectedLanguage.value}" />  
+                                <f:selectItems value="#{loginController.languageSelectors}" var="selector" itemLabel="#{selector.label}" itemValue="#{selector}"/>  
+                                <p:ajax event="change" update="langForm,:formId"/>
+                                <p:column>  
+                                    <p:graphicImage value="/images/countries/#{s.countryCode}.png"/>  
+                                </p:column>  
+
+                                <p:column>  
+                                    #{s.label} 
+                                </p:column>  
+                            </p:selectOneMenu> 
+                        </p:column>
+
+                    </h:form>
+                    <p:column>
+                        <h:outputLabel value="#{message.endDate}" for="endDate" />
+                        <br/>
+                        <p:tooltip for="endDate" value="#{message.endDateTooltip}" />
+                        <p:calendar id="endDate" value="#{mobileOfferMultipleStoreController.createdMobileOffer.endDate}" 
+                                    navigator="true"
+                                    pattern="yyyy-MM-dd"  
+                                    showOn="button">
+
+                            <p:ajax event="dateSelect" process="@this" />
+                        </p:calendar>
+                    </p:column>   
+
+                </p:panelGrid>
+            </h:form>
+            <br/>
+            <br/>
+
+            <h:form id="generalSettingsFormId" prependId="false" enctype="multipart/form-data" rendered="#{loginController.privileges.contains(bundle.EditMobileOffer) and mobileOfferMultipleStoreController.hasCategories()}">
+                <p:panelGrid columns="2" style="width:100%" rendered="#{loginController.currUser.properties.isEmpty()}">
+                    <f:facet name="header">
+                        <h:outputText value="#{message.storeSettings}"/>
+                    </f:facet>
+
+
+                    <p:column rendered="#{loginController.privileges.contains(bundle.BrandMobileOffer)}">
+
+                        <h:outputLabel value="#{message.company}" for="companyDropDown"/>
+                        <br/>
+                        <p:selectOneMenu id="companyDropDown" value="#{mobileOfferMultipleStoreController.selectedCompanyToAddOffer}" converter="#{companySelectorConverter}" rendered="#{loginController.privileges.contains(bundle.BrandMobileOffer)}">  
+
+                            <f:selectItems value="#{mobileOfferMultipleStoreController.brandCompanies}"/>  
+                            <p:ajax update="generalSettingsFormId,:formId, pickListProperty,:pickListForm:pickList" listener="#{mobileOfferMultipleStoreController.recreateRetailers()}"/>
+                        </p:selectOneMenu> 
+                        <br/>
+                        <p:column>
+                            <h:outputLabel value="#{message.retailer}" for="retailerDropDown2" />
+                            <br />
+                            <p:selectOneMenu id="retailerDropDown3" value="#{mobileOfferMultipleStoreController.selectedRetailer.name}" style="width: 250px" >   
+                                <f:selectItem itemLabel="#{message.selectRetailer}" itemValue=""  />  
+                                <f:selectItems value="#{mobileOfferMultipleStoreController.retailerList}"/>  
+                                <p:ajax update="generalSettingsFormId,:formId,:formId:headerLabel,:formId:macrosPanel" listener="#{mobileOfferMultipleStoreController.recreatePropertyPickList()}"/>
+                            </p:selectOneMenu>
+                        </p:column>
+                    </p:column>
+
+                    <p:column rendered="#{loginController.privileges.contains(bundle.CompanyMobileOffer)}">
+                        <h:outputLabel value="#{message.retailer}" for="retailerDropDownAdmin" />
+                        <br />
+                        <p:selectOneMenu id="retailerDropDownAdmin" value="#{mobileOfferMultipleStoreController.selectedRetailer.name}" style="width: 250px" >   
+                            <f:selectItem itemLabel="#{message.selectRetailer}" itemValue=""  />  
+                            <f:selectItems value="#{mobileOfferMultipleStoreController.retailerList}"/>  
+                            <p:ajax update="generalSettingsFormId,:formId,:formId:headerLabel,:formId:macrosPanel" listener="#{mobileOfferMultipleStoreController.recreatePropertyPickList()}"/>
+                        </p:selectOneMenu>
+
+                    </p:column>
+
+
+                </p:panelGrid>
+
+                <p:panelGrid columns="1" style="wdith:100%" rendered="#{!loginController.currUser.properties.isEmpty()}" >
+ 
+                    <f:facet name="header">
+                        <h:outputText value="#{message.storeSettings}"/>
+                    </f:facet> 
+                    <p:column>
+                        <h:outputLabel value="#{message.retailer}" for="retailerDropDown2" />
+                        <br />
+                        <p:selectOneMenu id="retailerDropDown2" value="#{mobileOfferMultipleStoreController.selectedRetailer.name}" style="width: 250px" >   
+                            <f:selectItem itemLabel="#{message.selectRetailer}" itemValue=""  />  
+                            <f:selectItems value="#{mobileOfferMultipleStoreController.retailerList}"/>  
+                            <p:ajax update="generalSettingsFormId,:formId,:formId:headerLabel,:formId:macrosPanel" listener="#{mobileOfferMultipleStoreController.recreatePropertyPickList()}"/>
+                        </p:selectOneMenu>
+                    </p:column>
+                </p:panelGrid>
+
+
+                <br />
+
+                <p:panelGrid columns="1" style="width:100%" rendered="#{mobileOfferMultipleStoreController.selectedRetailer.name.length() gt 1}">
+
+                    <h:outputText value="#{message.noPropertiesHaveRetailer}: #{mobileOfferMultipleStoreController.selectedRetailer.name}" 
+                                  rendered="#{mobileOfferMultipleStoreController.picklistPropertySource.isEmpty() and mobileOfferMultipleStoreController.picklistPropertyTarget.isEmpty()}" style="font-size: 1.25em; color: red"/>
+                    <p:column rendered="#{!mobileOfferMultipleStoreController.picklistPropertySource.isEmpty() or !mobileOfferMultipleStoreController.picklistPropertyTarget.isEmpty()}" >
+                        <p:pickList id="pickListProperty" value="#{mobileOfferMultipleStoreController.picklistPropertyModel}"  
+                                    var="property"  
+                                    itemLabel="#{property}"  
+                                    itemValue="#{property}" style="width:100%;"
+                                    onTransfer="modifyTable();">
+
+                            <f:facet name="sourceCaption">Properties</f:facet>  
+                            <f:facet name="targetCaption">Assigned To Mobile Offer</f:facet> 
+
+                        </p:pickList>  
+                        <p:remoteCommand name="modifyTable" update="generalSettingsFormId,:formId,:formId:headerLabel,:formId:macrosPanel" actionListener="#{mobileOfferMultipleStoreController.setupMacros(mobileOfferMultipleStoreController.createdMobileOffer)}">
+                            <f:setPropertyActionListener value="#{mobileOfferMultipleStoreController.picklistPropertyModel.target}"
+                                                         target="#{mobileOfferMultipleStoreController.picklistPropertyTarget}" />
+                        </p:remoteCommand>
+
+                    </p:column>
+
+                </p:panelGrid>
+
+
+            </h:form>       
+            <br />
+
+            <h:form id="pickListForm" prependId="false" enctype="multipart/form-data" rendered="#{loginController.privileges.contains(bundle.EditMobileOffer) and mobileOfferMultipleStoreController.hasCategories()}">
+                <p:panelGrid columns="1" style="width:100%">
+                    <f:facet name="header">
+                        <h:outputText value="#{message.categories}"/>
+                    </f:facet> 
+                    <p:column>
+                        <p:pickList id="pickList" value="#{mobileOfferMultipleStoreController.picklistModel}"  
+                                    var="category"  
+                                    itemLabel="#{category}"  
+                                    itemValue="#{category}" style="width:100%;"
+                                    onTransfer="modifyTable();">
+
+                            <f:facet name="sourceCaption">#{message.categories}</f:facet>  
+                            <f:facet name="targetCaption">#{message.selectedCategories}</f:facet> 
+
+                        </p:pickList>  
+                        <p:remoteCommand name="modifyTable">
+                            <f:setPropertyActionListener value="#{mobileOfferMultipleStoreController.picklistModel.target}"
+                                                         target="#{mobileOfferMultipleStoreController.picklistTarget}" />
+                        </p:remoteCommand>
+                    </p:column>
+                </p:panelGrid>
+            </h:form>
+            <br/>
+
+
+            <h:form id="formId" prependId="false" enctype="multipart/form-data" rendered="#{loginController.privileges.contains(bundle.EditMobileOffer) and mobileOfferMultipleStoreController.hasCategories()}">
+                <p:panelGrid id="editorPanel" columns="1" style="width:100%">
+                    <f:facet name="header">
+                        <h:outputText value="#{message.smsContent}"/>
+                    </f:facet>
+                    <p:panelGrid id="contentPanel" columns="2" style="width:50%" styleClass="customPanelGrid">
+                        <p:panelGrid columns="1" styleClass="customPanelGrid">
+                            <h:outputLabel id="headerLabel" value="#{message.header}" rendered="#{mobileOfferMultipleStoreController.showSMS()}"/>
+                            <p:inputText value="#{mobileOfferMultipleStoreController.mos.offerHeader}" disabled="true" rendered="#{mobileOfferMultipleStoreController.showSMS()}"/>
+                            <p:column>                               
+                                <h:outputText id="charsRemaining" value="#{mobileOfferMultipleStoreController.charRemainings()} #{message.charsRemaining}" style="font-size: 0.80em" rendered="#{mobileOfferMultipleStoreController.showSMS()}"/>
+                                <h:outputText id="warningLabel" value="#{message.pleaseSelectAtLeastOneProperty}" rendered="#{!mobileOfferMultipleStoreController.showSMS()}" style="font-size: 1.25em; color: red"/>
+                                <p:editor id="editor" value="#{mobileOfferMultipleStoreController.createdMobileOffer.offerText}"
+                                          widgetVar="editorHtml" width="600" immediate="false" controls="" rendered="#{mobileOfferMultipleStoreController.showSMS()}"/>
+                            </p:column>
+                            <h:outputLabel value="#{message.footer}" rendered="#{mobileOfferMultipleStoreController.showSMS()}"/>
+                            <p:inputText value="#{mobileOfferMultipleStoreController.footerMsg} #{mobileOfferMultipleStoreController.mos.offerUrl}/{#{message.offerId}}" disabled="true" style="width:80%" rendered="#{mobileOfferMultipleStoreController.showSMS()}" />
+                        </p:panelGrid>    
+                        <p:panelGrid id="macrosPanel" columns="1" styleClass="customPanelGrid">
+                            <p:commandButton id="dynaButton" value="#{message.macros}" type="button" rendered="#{mobileOfferMultipleStoreController.showSMS()}" />  
+                            <p:menu overlay="true" position="dynamic" trigger="dynaButton" my="left top" at="left bottom" rendered="#{mobileOfferMultipleStoreController.showSMS()}"> 
+                                <p:submenu label="#{message.macros}">  
+                                    <p:menuitem value="#{message.store}" action="#{mobileOfferMultipleStoreController.macroStore(event)}" oncomplete="insertInEditor(xhr, status, args)" icon="ui-icon-disk"/>  
+                                    <p:menuitem value="#{message.address}" action="#{mobileOfferMultipleStoreController.macroPropertyAddress(event)}" oncomplete="insertInEditor(xhr, status, args)" icon="ui-icon-disk"/>  
+                                    <p:menuitem value="#{message.shortCode}" action="#{mobileOfferMultipleStoreController.macroShortcode(event)}" oncomplete="insertInEditor(xhr, status, args)" icon="ui-icon-disk"/>  
+                                </p:submenu>  
+                            </p:menu>
+                        </p:panelGrid>
+                    </p:panelGrid>
+                </p:panelGrid>
+
+                <h:panelGrid columns="2" id="savePanel">
+                    <h:panelGrid columns="2">
+                        <p:column>
+                            <p:commandButton action="#{mobileOfferAbstractController.cancelToList()}" value="#{message.cancel}" icon="ui-icon-cancel" ajax="false"/>
+                            <p:commandButton id="saveButton" update=":growl" action="#{mobileOfferMultipleStoreController.save()}" value="#{message.save}" icon="ui-icon-disk" ajax="false" rendered="#{mobileOfferMultipleStoreController.showSMS()}" disabled="#{mobileOfferMultipleStoreController.charRemainings() lt 0 or mobileOfferMultipleStoreController.createdMobileOffer.name == null or mobileOfferMultipleStoreController.createdMobileOffer.name.length() lt 1}"/>
+                        </p:column>
+                    </h:panelGrid>
+                </h:panelGrid>
+            </h:form>
+
+
+        </ui:composition>
+
+    </h:body>
+
+</html>

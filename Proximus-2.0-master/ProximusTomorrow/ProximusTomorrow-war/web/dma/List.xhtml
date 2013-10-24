@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core" 
+      xmlns:c="http://java.sun.com/jsp/jstl/core">
+
+
+    <h:head>
+        <link rel="stylesheet" type="text/css" href="/ProximusTomorrow-war/faces/jsfcrud.css" />
+        <h:outputStylesheet name="css/jsfcrud.css"/>
+    </h:head>
+
+
+    <h:body id="deviceBody">
+        <ui:composition id="main"  template="/template.xhtml">
+
+            <style type="text/css">
+                .customPanelGrid table {
+                    border: 2px solid;
+                    border-color: white;
+                }
+                .customPanelGrid td { 
+                    border-width: 1px;
+                    border-color: white;
+                }
+                .customPanelGrid tr {
+                    border-width: 0px;
+                    border-color: white;
+                }
+            </style>
+            <script type="text/javascript">
+                function handleEditRequest(args) {
+              
+                    if(!args.validation) {
+                  
+                        jQuery('#editDialog').effect("shake", { times:3 }, 100);
+                    } else {
+                    
+                        editDlg.hide();
+                       
+                    }
+                }
+                
+                 function handleAddRequest(args) {
+              
+                    if(!args.validation) {          
+                        jQuery('#dmaDialog').effect("shake", { times:3 }, 100);
+                    } else {
+                        dmaDlg.hide();
+                    }
+                }
+            </script>
+            <ui:define name="pageHeader">
+                <h:outputText value="#{message.viewDma}"></h:outputText>
+            </ui:define>
+
+            <h:form rendered="#{!loginController.privileges.contains(bundle.GeoFenceSettings)}">
+                <h:outputText value="#{message.InsufficientPrivileges}" 
+                              style="font-family: Arial;font-size: 16px;color: red;"/>
+            </h:form>
+
+            <h:form id="dmaForm" rendered="#{loginController.privileges.contains(bundle.GeoFenceSettings)}">
+
+                <p:commandButton id="addButton" value="#{message.newDma}" oncomplete="dmaDlg.show()" icon="ui-icon-plus" 
+                                 title="#{message.addDma}" rendered="#{loginController.privileges.contains(bundle.SuperUser)}"/>  
+                <h:outputText escape="false" value="#{message.noDmaFound}" rendered="#{dmaController.dmaModel.rowCount == 0}"/>
+
+                <h:panelGroup rendered="#{dmaController.dmaModel.rowCount > 0}">
+
+                    <p:dataTable id="dmaList" var="dma" widgetVar="dmaTable" value="#{dmaController.dmaModel}" 
+                                 rowKey="#{dma.name}" selection="#{dmaController.selectedDMA}" selectionMode="single"
+                                 paginator="true" rows="20" filteredValue="#{dmaController.filteredDMAs}"
+                                 currentPageReportTemplate="{currentPage} #{message.of} {totalPages}" 
+                                 paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                 rowsPerPageTemplate="5,10,15,20,50,100">
+
+                        <f:facet name="header">
+                            <p:outputPanel>
+                                <h:outputText value="#{message.search}: "/>
+                                <p:inputText id="globalFilter" onkeyup="dmaTable.filter()"/>
+                            </p:outputPanel>
+                        </f:facet>
+
+                        <p:column id="name" headerText="#{message.name}" filterBy="#{dma.name}" filterMatchMode="contains" filterStyle="display: none;" sortBy="#{dma.name}">
+                            <h:outputText value="#{dma.name}"/>
+                        </p:column>
+
+                        <p:column id="country" headerText="#{messsage.country}" filterBy="#{dma.country}" filterMatchMode="contains" filterStyle="display: none;" sortBy="#{dma.country}">
+                            <h:outputText value="#{dma.country}"/>
+                        </p:column>
+
+                        <p:column id="state" headerText="#{message.stateProvince}" filterBy="#{dma.stateProvince}" filterMatchMode="contains" filterStyle="display: none;" sortBy="#{dma.stateProvince}">
+                            <h:outputText value="#{dma.stateProvince}"/>
+                        </p:column>
+
+                        <p:column headerText="#{message.editOptions}" style="width:10px;"  rendered="#{loginController.privileges.contains(bundle.SuperUser)}">
+
+                            <p:commandButton id="editButton" update=":editDialog" oncomplete="editDlg.show()" icon="ui-icon-pencil" title="#{message.edit}">                                
+                                <f:setPropertyActionListener value="#{dma}" target="#{dmaController.selectedDMA}"/>      
+                            </p:commandButton>
+
+                            
+                            <p:commandButton id="deleteButton" update=":dmaForm" oncomplete="confirmation.show()" icon="ui-icon-trash" title="#{message.delete}">                                
+                                <f:setPropertyActionListener value="#{dma}" target="#{dmaController.selectedDMA}"/>
+                            </p:commandButton>
+                        </p:column>
+                        <f:facet name="footer">
+                        </f:facet>
+                    </p:dataTable>
+                </h:panelGroup>
+
+                <p:confirmDialog id="confirmDialog" message="#{message.sureYouWantToDelete} #{dmaController.selectedDMA.name} ?" 
+                                 severity="alert" widgetVar="confirmation">
+                    <p:commandButton id="confirm" value="#{message.yes}" onclick="confirmation.hide()" actionListener="#{dmaController.deleteDMA()}"
+                                     update="dmaForm" />
+                    <p:commandButton id="decline" value="#{message.no}" onclick="confirmation.hide()" update=":dmaForm"/>    
+                </p:confirmDialog>
+
+                
+
+
+            </h:form>
+            
+            
+            <p:dialog id="dmaDialog" header="#{message.addDma}" widgetVar="dmaDlg" resizable="true" height="180" width="400" showEffect="clip" hideEffect="fold" closable="true" >
+                 <p:ajax event="close" update="dmaForm" listener="#{dmaController.prepareList()}"/>  
+                 <h:form>
+                    <h:panelGrid id="display" columns="2" cellpadding="5">       
+                        <h:outputLabel value="#{message.name}:" for="name" />
+                        <p:inputText id="name" value="#{dmaController.newDMA.name}">          
+                        </p:inputText>    
+                        <h:outputText value="#{message.country}: " />  
+                        <p:selectOneMenu value="#{dmaController.newDMA.country}" effect="fade" immediate="true">  
+                            <f:selectItem itemLabel="#{message.chooseCountry}" itemValue="" />  
+                            <f:selectItems value="#{dmaController.selectedCountries}"/> 
+                        </p:selectOneMenu> 
+                        <h:outputText value="#{message.state}: " />
+                        <p:selectOneMenu id="states" value="#{dmaController.newDMA.stateProvince}">  
+                            <f:selectItem itemLabel="#{message.chooseState}" itemValue="" />  
+                            <f:selectItems value="#{dmaController.selectedStates}"/>  
+                        </p:selectOneMenu> 
+                          <f:facet name="footer">
+                            <p:commandButton actionListener="#{dmaController.addDma(dmaController.newDMA)}" oncomplete="handleAddRequest(args)" update=":dmaForm" value="#{message.save}" id="eiconOnly" icon="ui-icon-disk"/>  
+                            <p:commandButton actionListener="#{dmaController.prepareList()}" oncomplete="dmaDlg.hide()" update=":dmaForm" value="#{message.cancel}" id="editcanceliconOnly" icon="ui-icon-cancel"/>  
+                        </f:facet>
+                            
+                    </h:panelGrid>
+                     </h:form>
+                </p:dialog>
+
+
+            <p:dialog id="editDialog" header="#{message.editDma}" widgetVar="editDlg" resizable="true" height="180" width="400" showEffect="clip" hideEffect="fold" closable="true" >
+                <p:ajax event="close" update="dmaForm" listener="#{dmaController.prepareList()}"/>  
+                <h:form>
+                    <p:panelGrid id="displayEdit" columns="2">       
+                        <f:facet name="header">
+                        </f:facet>
+
+                        <h:outputLabel value="#{message.name}: *" for="ename" />
+                        <p:inputText id="ename" value="#{dmaController.selectedDMA.name}">                        
+                        </p:inputText>    
+                        <h:outputText value="#{message.country}: " />  
+                        <p:selectOneMenu value="#{dmaController.selectedDMA.country}" effect="fade" immediate="true">  
+                            <f:selectItem itemLabel="#{message.chooseCountry}" itemValue="" />  
+                            <f:selectItems value="#{dmaController.selectedCountries}"/> 
+                        </p:selectOneMenu> 
+                        <h:outputText value="#{message.state}: " />
+                        <p:selectOneMenu value="#{dmaController.selectedDMA.stateProvince}">  
+                            <f:selectItem itemLabel="#{message.chooseState}" itemValue="" />  
+                            <f:selectItems value="#{dmaController.selectedStates}"/>  
+                        </p:selectOneMenu> 
+
+                        <f:facet name="footer">
+                            <p:commandButton actionListener="#{dmaController.editDMA(event)}" oncomplete="handleEditRequest(args)" update=":dmaForm" value="#{message.save}" id="eiconOnly" icon="ui-icon-disk"/>  
+                            <p:commandButton actionListener="#{dmaController.prepareList()}" oncomplete="editDlg.hide()" update=":dmaForm" value="#{message.cancel}" id="editcanceliconOnly" icon="ui-icon-cancel"/>  
+                        </f:facet>
+                    </p:panelGrid>
+                </h:form>
+            </p:dialog>
+        </ui:composition>
+    </h:body>
+</html>

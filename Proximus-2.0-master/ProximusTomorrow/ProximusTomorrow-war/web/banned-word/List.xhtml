@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+
+
+    <h:head>
+        <title>
+            <ui:insert name="title">
+                <h:outputText value="#{logoLoginController.companyName}" rendered="#{logoLoginController.customLogoExists}" />
+                <h:outputText value="Proximus Mobility, LLC." rendered="#{!logoLoginController.customLogoExists}" /> 
+            </ui:insert>
+        </title>
+        <link rel="stylesheet" type="text/css" href="/ProximusTomorrow-war/faces/jsfcrud.css" />
+        <h:outputStylesheet name="css/jsfcrud.css"/>
+    </h:head>
+
+    <h:body>
+        <ui:composition template="/template.xhtml">
+            <ui:define name="pageHeader">
+                <h:outputText value="#{message.managedBannedWords}"></h:outputText>
+            </ui:define>
+
+            <h:form rendered="#{!loginController.privileges.contains(bundle.GeoFenceSettings)}">
+                <h:outputText value="#{message.InsufficientPrivileges}" 
+                              style="font-family: Arial;font-size: 16px;color: red;"/>
+            </h:form>
+
+            <h:form id="bannedWordForm"  rendered="#{loginController.privileges.contains(bundle.GeoFenceSettings)}">
+
+                <h:outputText escape="false" value="#{message.noBannedWordsFound}" rendered="#{bannedWordController.bwDataModel.rowCount == 0}"/>
+                <p:commandButton id="addButton" value="#{message.newBannedWord}" oncomplete="bwDialog.show()" icon="ui-icon-plus" 
+                                 title="#{message.addBannedWord}"/>  
+                <h:panelGroup rendered="#{bannedWordController.bwDataModel.rowCount > 0}">
+
+                    <p:dataTable id="bwList" var="bannedWord" widgetVar="bwTable" value="#{bannedWordController.bwDataModel}" 
+                                 rowKey="#{bannedWord.word}" selection="#{bannedWordController.selectedWord}" selectionMode="single"
+                                 paginator="true" rows="20" filteredValue="#{bannedWordController.filteredBannedWord}"
+                                 currentPageReportTemplate="{currentPage} #{message.of} {totalPages}" 
+                                 paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                 rowsPerPageTemplate="5,10,15,20,50,100">
+
+                        <f:facet name="header">
+                            <p:outputPanel>
+                                <h:outputText value="#{message.search}: "/>
+                                <p:inputText id="globalFilter" onkeyup="bwTable.filter()"/>
+                            </p:outputPanel>
+                        </f:facet>
+
+                        <p:column id="name" headerText="#{message.bannedWord}" filterBy="#{bannedWord.word}" filterMatchMode="contains" filterStyle="display: none;">
+                            <h:outputText value="#{bannedWord.word}"/>
+                        </p:column>
+
+                        <p:column headerText="#{message.editOptions}" style="width:10px;">
+                            <p:commandButton id="editButton" update=":bannedWordForm" oncomplete="editDialog.show()" icon="ui-icon-pencil" title="#{message.edit}">                                
+                                <f:setPropertyActionListener value="#{bannedWord}" target="#{bannedWordController.selectedWord}"/>
+                            </p:commandButton>
+                            <p:commandButton id="deleteButton" update=":bannedWordForm" oncomplete="confirmation.show()" icon="ui-icon-trash" title="#{message.delete}">                                
+                                <f:setPropertyActionListener value="#{bannedWord}" target="#{bannedWordController.selectedWord}"/>
+                            </p:commandButton>
+                        </p:column>
+                        <f:facet name="footer">
+                        </f:facet>
+                    </p:dataTable>
+                </h:panelGroup>
+
+
+                <p:confirmDialog id="confirmDialog" message="#{message.confirmDelete} #{bannedWordController.selectedWord.word} ?" 
+                                 severity="alert" widgetVar="confirmation">
+                    <p:commandButton id="confirm" value="#{message.yes}" onclick="confirmation.hide()" actionListener="#{bannedWordController.deleteBannedWord()}"
+                                     update="bannedWordForm" ajax="false"/>
+                    <p:commandButton id="decline" value="#{message.no}" onclick="confirmation.hide()"/>    
+                </p:confirmDialog>
+
+
+
+                <p:dialog id="dialog" header="#{message.addBannedWord}" widgetVar="bwDialog" resizable="true" height="180" width="400" showEffect="clip" hideEffect="fold">
+                    <h:panelGrid id="display" columns="2" cellpadding="5">       
+
+                        <h:outputLabel value="#{message.word}" for="word" />
+                        <p:inputText id="word" value="#{bannedWordController.newWord.word}">          
+                        </p:inputText>    
+                        <p:commandButton action="#{bannedWordController.createNewWord(bannedWordController.newWord)}" ajax="false" value="#{message.save}" 
+                                         id="iconOnly" icon="ui-icon-disk" title="">
+                            <f:param name="bannedWord" value="#{bannedWordController.newWord}"/>
+                        </p:commandButton>            
+                    </h:panelGrid>
+                </p:dialog>
+
+                <p:dialog id="editDialog" header="#{message.editBannedWord}" widgetVar="editDialog" resizable="true" height="180" width="400" showEffect="clip" hideEffect="fold">
+                    <h:panelGrid id="displayEdit" columns="2" cellpadding="5">       
+
+                        <h:outputLabel value="#{message.name}" for="ename" />
+                        <p:inputText id="ename" value="#{bannedWordController.selectedWord.word}">                        
+                        </p:inputText>    
+                        <p:commandButton actionListener="#{bannedWordController.editBannedWord()}" update=":bannedWordForm" value="#{message.save}" id="eiconOnly"
+                                         icon="ui-icon-disk" title=""/>  
+                    </h:panelGrid>
+                </p:dialog>
+            </h:form>
+        </ui:composition>
+    </h:body>
+</html>

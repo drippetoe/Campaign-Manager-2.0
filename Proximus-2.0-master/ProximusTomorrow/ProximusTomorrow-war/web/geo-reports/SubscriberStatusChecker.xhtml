@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+
+
+    <h:head>
+        <link rel="stylesheet" type="text/css" href="/ProximusTomorrow-war/faces/jsfcrud.css" />
+        <h:outputStylesheet name="css/jsfcrud.css"/>
+    </h:head>
+
+    <h:body>
+        <ui:composition template="/template.xhtml">
+            <ui:define name="pageHeader">
+                <h:outputText value="Subscriber Status Checker"></h:outputText>
+            </ui:define>
+            <br/>
+            <br/>
+            <h:form rendered="#{!loginController.privileges.contains(bundle.SuperUser)}">
+                <h:outputText value="#{bundle.InsufficientPrivileges}" 
+                              style="font-family: Arial;font-size: 16px;color: red;"/>
+            </h:form>
+
+            <h:form id="subscriberStatusCheckerForm" rendered="#{loginController.privileges.contains(bundle.SuperUser)}">
+
+                <h:panelGroup rendered="#{subscriberStatusReportController.subscriberList.size() > 0}">
+                    <p:dataTable id="subscriberList" var="subscriber" value="#{subscriberStatusReportController.subscriberList}" 
+                                 rowKey="#{subscriber.msisdn}" selection="#{subscriberStatusReportController.selectedSubscriber}" selectionMode="single"
+                                 paginator="true" rows="20"
+                                 currentPageReportTemplate="{currentPage} #{message.of} {totalPages}" 
+                                 paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                 rowsPerPageTemplate="5,10,15,20,50,100">
+                        <f:facet name="header">
+                            <p:column colspan="2">Unsynced Subscribers</p:column> 
+                        </f:facet>
+
+                        <p:column id="msisdn" headerText="MSISDN">
+                            <h:outputText value="#{subscriber.msisdn}"/>
+                        </p:column>
+
+                        <p:column id="subStatus" headerText="Subscriber Status">
+                            <h:outputText value="#{subscriber.status}"/>
+                        </p:column>
+
+                        <p:column id="locaidStatus" headerText="Locaid Status">
+                            <h:outputText value="#{subscriber.locaidStatus}"/>
+                        </p:column>
+
+                        <p:column id="registrationDate" headerText="Registration Date">
+                            <h:outputText value="#{subscriber.registrationDate}"/>
+                        </p:column>
+
+                        <p:column headerText="Get Locaid Status" style="width:10px;">
+                            <center>
+                                <p:commandButton action="#{subscriberStatusReportController.obtainSubscriberStatus()}"  
+                                                 update=":subscriberStatusCheckerForm"  id="locaidStatusButton" icon="ui-icon-zoomin">
+                                    <f:setPropertyActionListener value="#{subscriber}" target="#{subscriberStatusReportController.selectedSubscriber}"/>
+                                </p:commandButton>
+                            </center>
+                        </p:column>
+                    </p:dataTable>
+                </h:panelGroup>           
+            </h:form>
+        </ui:composition>
+    </h:body>
+</html>

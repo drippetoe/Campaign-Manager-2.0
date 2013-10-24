@@ -1,0 +1,58 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1" />
+	<title>Registration</title>
+	<link type="text/css" rel="stylesheet" href="prox.css" />
+	<script type="text/javascript" src="jquery-1.7.2.min.js"></script>
+	<script type="text/javascript" src="jquery.validate.min.js"></script>
+	<script type="text/javascript" src="jquery.maskedinput-1.0.js"></script>
+	<script type="text/javascript" src="validation.js"></script>
+</head>
+
+<body>
+	<div id="container">
+		<div id="header">
+			<a href="index.html">
+				#PROX#ImageUploader_logo#PROX#
+			</a>
+		</div>
+		<div id="navigation">
+			<a class="button navButton alignRight" href="index.html" title="View Offers">BACK</a>
+		</div>
+
+		<center><h2>
+			#PROX#TextEditor_regTitle#PROX#
+		</h2></center>
+		<p>
+			#PROX#TextEditor_regInfo#PROX#
+		</p>
+			<br>
+			<div style="text-align: justify; text-justify: left; color: red; font-size: 9pt;" id="error">
+			</div>
+			<div id="register-form">
+			<form method="POST" novalidate="novalidate"  action="thanks.php">
+				<div class="fieldgroup">
+				<label>1. Name</label>
+				<input id="name" type="name" name="field1" placeholder="Enter your Name.">
+				</div>
+				<div class="fieldgroup">
+				<label>2. Email</label>
+				<input id="email" type="email" name="field2" placeholder="Enter your Email.">
+				</div>
+				<div class="fieldgroup">
+				<label>3. Phone</label>
+				<input id="phone" type="phone" name="field3" placeholder="Enter your Phone Number.">
+				</div>
+		<center><button type="submit" class="button">Submit</button></center>
+		</form>
+		</div>
+		<div id="container-footer">
+			<p class="legal">
+				#PROX#TextEditor_COPYRIGHT#PROX#
+			</p>
+	</div> 
+	</div>	
+</body>
+</html>

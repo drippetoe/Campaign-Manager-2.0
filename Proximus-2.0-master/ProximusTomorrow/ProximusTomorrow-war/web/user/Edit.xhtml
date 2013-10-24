@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+    <h:head>
+        <title>User Settings</title>
+
+    </h:head>
+
+    <h:body id="entireBody">
+
+        <style type="text/css">
+            .ui-selectonemenu-filter {
+                width:88%;
+                padding-right: 15px;
+            }
+
+        </style>
+        <ui:composition template="/template.xhtml">
+            <ui:define name="pageHeader">
+                <h:outputText value="#{message.infoFor} #{loginController.username}"></h:outputText>
+            </ui:define>
+            <br />
+            <br />
+            <h:form id="changeCompany" rendered="#{userController.selectedUser.companies.size() gt 1}">
+                <center>
+                    <p:panelGrid columns="1">
+                        <f:facet name="header">
+                            <h:outputLabel value="#{message.changeCompany}" for="companydropdown" />
+                        </f:facet>
+                        <p:selectOneMenu id="companydropdown" value="#{userController.selectedCompany}" converter="#{companySelectorConverter}"
+                                         effect="fade" var="c" filter="true" filterMatchMode="contains" 
+                                         style="width:200px" panelStyle="width:180px">  
+                            <f:selectItem itemLabel="#{message.selectCompany}" itemValue=""  />  
+                            <f:selectItems value="#{userController.listCompanies}"/>  
+
+                            <p:column>
+                                #{c.name}
+                            </p:column>
+                        </p:selectOneMenu> 
+
+                        <p:commandButton action="#{userController.changeCompany(userController.selectedCompany)}" value="#{message.changeCompany}" icon="ui-icon-locked" ajax="false" update="@all">
+                            <f:param name="#{message.company}" value="#{userController.selectedCompany}"/>
+
+                        </p:commandButton>
+                    </p:panelGrid>
+                </center>
+                <br />
+            </h:form>
+
+            <h:form id="uploadForm" >
+                <p:panel header="#{message.yourCompanyLogo}">
+                    <h:panelGrid columns="1" styleClass="grid" style="min-width: 725px">
+                        <p:fileUpload fileUploadListener="#{userController.handleFileUpload}" 
+                                      mode="advanced"
+                                      auto="true"
+                                      dragDropSupport="true"
+                                      showButtons="false"
+                                      update="uploadForm"
+                                      rendered="#{loginController.privileges.contains(bundle.SuperUser)}"
+                                      />       
+                    </h:panelGrid>
+                    <p:graphicImage id="prevImage" value="#{userController.imageFile.previewImage()}" rendered="#{!userController.noLogo}"/>
+                    <p:commandButton value="#{message.removeLogo}" action="#{userController.removeLogo()}" rendered="#{!userController.noLogo and loginController.privileges.contains(bundle.SuperUser)}" update="uploadForm"/>
+                </p:panel>
+
+                <br />
+
+                <p:panelGrid columns="3">
+
+                    <p:panelGrid columns="2">
+                        <f:facet name="header">
+                            <h:outputLabel value="#{message.editInformation}"/>
+                        </f:facet>
+                        <h:outputLabel value="#{message.chooseLanguage}:"/>
+                        <h:form>
+                            <p:selectOneMenu value="#{loginController.selectedLanguage}" converter="#{languageSelectorConverter}"
+                                             panelStyle="width:150px"  
+                                             effect="fade" var="s"
+                                             style="width:160px"  filter="false" filterMatchMode="startsWith">
+
+
+                                <f:selectItem itemLabel="#{message.selectLanguage}" itemValue="#{loginController.selectedLanguage.value}" />  
+                                <f:selectItems value="#{loginController.languageSelectors}" var="selector" itemLabel="#{selector.label}" itemValue="#{selector}"/>  
+
+                                <p:column>  
+                                    <p:graphicImage value="/images/countries/#{s.countryCode}.png"/>  
+                                </p:column>  
+
+                                <p:column>  
+                                    #{s.label} 
+                                </p:column>  
+                            </p:selectOneMenu> 
+
+                        </h:form>
+
+                        <h:outputLabel value="#{message.name}:" for="firstName" />
+                        <p:inputText id="firstName" value="#{userController.selectedUser.firstName}" title="#{message.name}"/>
+                        <h:outputLabel value="#{message.lastName}:" for="lastName" />
+                        <p:inputText id="lastName" value="#{userController.selectedUser.lastName}" title="#{message.lastName}"/>
+                        <h:outputLabel value="#{message.timeZone}:" for="timezonedropdown" />
+                        <p:selectOneMenu id="timezonedropdown" value="#{userController.selectedUser.timezone}">  
+                            <f:selectItem itemLabel="#{message.selectTimeZone}:" itemValue=""  />  
+                            <f:selectItems value="#{userController.timezoneList}"/>  
+                        </p:selectOneMenu>
+                        <p:selectBooleanCheckbox value="#{userController.changePassword}" itemLabel="#{message.changePassword}">
+                            <p:ajax update="changePassword"/>
+                        </p:selectBooleanCheckbox>
+                        <p:panelGrid columns="2" id="changePassword">
+                            <h:outputLabel value="#{message.oldPassword}: *" for="password" rendered="#{userController.changePassword}"/>
+                            <p:column rendered="#{userController.changePassword}">
+                                <p:password id="password" value="#{userController.oldPassword}" feedback="false"/>
+                            </p:column>
+                            <h:outputLabel value="#{message.newPassword}: *" for="newPassword" rendered="#{userController.changePassword}"/>
+                            <p:column rendered="#{userController.changePassword}">
+                                <p:password id="newPassword"  value="#{userController.newPassword}" feedback="true" promptLabel="#{message.passwordPromptLabel}" weakLabel="#{message.weak}" goodLabel="#{message.good}" strongLabel="#{message.strong}" />                           
+                            </p:column>
+                            <h:outputLabel value="#{message.verifyNewPassword}: *" for="verifyPassword" rendered="#{userController.changePassword}" />
+                            <p:column rendered="#{userController.changePassword}">
+                                <p:password id="verifyPassword" value="#{userController.verifyPassword}" label="#{message.verifyNewPassword}" feedback="false"/>
+                            </p:column>
+                        </p:panelGrid>
+                        <f:facet name="footer">
+                            <p:commandButton action="#{userController.editUserSettings(userController.selectedUser)}" value="#{message.save}" icon="ui-icon-disk" ajax="false">
+                                <f:param name="#{message.user}" value="#{userController.selectedUser}"/>
+                            </p:commandButton>
+                            <p:commandButton action="/home.xhtml" value="#{message.cancel}" icon="ui-icon-cancel" ajax="false">
+                            </p:commandButton>
+                        </f:facet>
+
+                    </p:panelGrid>
+                    <p:panelGrid columns="2" rendered="#{loginController.privileges.contains(bundle.SuperUser)}">
+                        <f:facet name="header">
+                            <h:outputLabel value="#{message.loggingLevel}"/>
+                        </f:facet>
+                        <h:outputLabel value="#{message.classPath}:" for="classPath" />
+                        <p:inputText id="classPath" value="#{logLevelController.selectedClassPath}" title="Class path"/>
+                        <h:outputLabel value="#{message.logLevel}" for="logleveldropdown" />
+                        <p:selectOneMenu id="logleveldropdown" value="#{logLevelController.selectedLevel}"
+                                         effect="fade" filter="true" filterMatchMode="contains" 
+                                         style="width:200px" panelStyle="width:180px">  
+                            <f:selectItem itemLabel="#{message.selectLogLevel}" itemValue=""  />  
+                            <f:selectItems value="#{logLevelController.logLevels}"/>  
+                        </p:selectOneMenu> 
+                        <p:commandButton action="#{logLevelController.changeLevel()}" value="#{message.changeLevel}" update="@this" title="#{message.changeLevel}"/>
+                    </p:panelGrid>
+                </p:panelGrid>
+            </h:form>
+        </ui:composition>
+    </h:body>
+</html>
